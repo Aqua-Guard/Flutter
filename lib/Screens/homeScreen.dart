@@ -1,3 +1,4 @@
+import 'package:aquaguard/Screens/event/eventScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -75,6 +76,10 @@ class _HomeScreenState extends State<HomeScreen> {
               title: const Text('Events'),
               onTap: () {
                 Navigator.pop(context);
+                  Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const EventScreen()),
+    );
               },
             ),
             ListTile(
