@@ -19,7 +19,7 @@ class _AddEventFormState extends State<AddEventForm> {
   DateTime? _dateFin;
   String _organizer = ''; // You may need to fetch the list of organizers
 
-  Future<void> _selectDate(
+   Future<void> _selectDate(
       BuildContext context, DateTime initialDate, bool isStartDate) async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -38,6 +38,42 @@ class _AddEventFormState extends State<AddEventForm> {
         }
       });
     }
+  }
+
+  String? _validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter the event name';
+    } else if (value.length < 3 || value.length > 30) {
+      return 'Name should be between 3 and 30 characters';
+    }
+    return null;
+  }
+
+  String? _validateLocation(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter the event location';
+    } else if (value.length < 3 || value.length > 30) {
+      return 'Location should be between 3 and 30 characters';
+    }
+    return null;
+  }
+
+  String? _validateDescription(String? value) {
+    if (value != null && (value.length < 10 || value.length > 100)) {
+      return 'Description should be between 10 and 100 characters';
+    }
+    return null;
+  }
+
+  String? _validateDate() {
+    if (_dateDebut == null || _dateFin == null) {
+      return 'Please select both start and end dates';
+    } else if (_dateDebut!.isAfter(_dateFin!)) {
+      return 'Start date should be before end date';
+    } else if (_dateDebut!.isBefore(DateTime.now())) {
+      return 'Start date should be in the future';
+    }
+    return null;
   }
 
   @override
@@ -89,12 +125,7 @@ class _AddEventFormState extends State<AddEventForm> {
                       decoration: const InputDecoration(
                         labelText: 'Event Name',
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter the event name';
-                        }
-                        return null;
-                      },
+                      validator: _validateName,
                       onSaved: (value) {
                         _eventName = value ?? '';
                       },
@@ -105,10 +136,8 @@ class _AddEventFormState extends State<AddEventForm> {
                         labelText: 'Event Description',
                       ),
                       maxLines: 3,
-                      validator: (value) {
-                        // Add validation logic if needed
-                        return null;
-                      },
+                      validator: _validateDescription,
+
                       onSaved: (value) {
                         _eventDescription = value ?? '';
                       },
@@ -118,10 +147,8 @@ class _AddEventFormState extends State<AddEventForm> {
                       decoration: const InputDecoration(
                         labelText: 'Event Location',
                       ),
-                      validator: (value) {
-                        // Add validation logic if needed
-                        return null;
-                      },
+                      validator: _validateLocation,
+
                       onSaved: (value) {
                         _eventLocation = value ?? '';
                       },
@@ -131,7 +158,8 @@ class _AddEventFormState extends State<AddEventForm> {
                       children: [
                         ElevatedButton.icon(
                           onPressed: () => _selectDate(
-                              context, _dateDebut ?? DateTime.now(), true),
+                              context, _dateDebut ?? DateTime.now(), true)
+                              ,
                           icon: const Icon(Icons.calendar_today,
                               color: Color(0xff00689B)),
                           label: const Text('Select Start Date'),
