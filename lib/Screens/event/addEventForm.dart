@@ -19,7 +19,7 @@ class _AddEventFormState extends State<AddEventForm> {
   DateTime? _dateFin;
   String _organizer = ''; // You may need to fetch the list of organizers
 
-   Future<void> _selectDate(
+  Future<void> _selectDate(
       BuildContext context, DateTime initialDate, bool isStartDate) async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -137,7 +137,6 @@ class _AddEventFormState extends State<AddEventForm> {
                       ),
                       maxLines: 3,
                       validator: _validateDescription,
-
                       onSaved: (value) {
                         _eventDescription = value ?? '';
                       },
@@ -148,7 +147,6 @@ class _AddEventFormState extends State<AddEventForm> {
                         labelText: 'Event Location',
                       ),
                       validator: _validateLocation,
-
                       onSaved: (value) {
                         _eventLocation = value ?? '';
                       },
@@ -158,8 +156,7 @@ class _AddEventFormState extends State<AddEventForm> {
                       children: [
                         ElevatedButton.icon(
                           onPressed: () => _selectDate(
-                              context, _dateDebut ?? DateTime.now(), true)
-                              ,
+                              context, _dateDebut ?? DateTime.now(), true),
                           icon: const Icon(Icons.calendar_today,
                               color: Color(0xff00689B)),
                           label: const Text('Select Start Date'),
@@ -228,10 +225,22 @@ class _AddEventFormState extends State<AddEventForm> {
                       children: [
                         ElevatedButton(
                           onPressed: () {
-                            if (_formKey.currentState?.validate() ?? false) {
-                              _formKey.currentState?.save();
-                              // Save the form data or perform any other action
-                              Navigator.pop(context);
+                            // Validate date before saving the form data
+                            String? dateValidation = _validateDate();
+                            if (dateValidation != null) {
+                              // Show a message or handle the validation error
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(dateValidation),
+                                ),
+                              );
+                            } else {
+                              // Proceed with form validation and saving data
+                              if (_formKey.currentState?.validate() ?? false) {
+                                _formKey.currentState?.save();
+                                // Save the form data or perform any other action
+                                Navigator.pop(context);
+                              }
                             }
                           },
                           style: ElevatedButton.styleFrom(
