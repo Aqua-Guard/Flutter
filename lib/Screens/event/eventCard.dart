@@ -108,17 +108,6 @@ class _EventCardState extends State<EventCard> {
                         ],
                       ),
                     ),
-                    PopupMenuItem<String>(
-                      value: 'edit',
-                      child: Row(
-                        children: [
-                          Icon(Icons.edit, color: Colors.amber[700]),
-                          const SizedBox(width: 8.0),
-                          Text('Edit',
-                              style: TextStyle(color: Colors.amber[700])),
-                        ],
-                      ),
-                    ),
                     const PopupMenuItem<String>(
                       value: 'delete',
                       child: Row(

@@ -145,20 +145,6 @@ class _EventDetailsState extends State<EventDetails> {
                       Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton.icon(
-                              onPressed: () {
-                                // Handle Edit button tap
-                                // You can navigate to the edit screen or perform any other action
-                              },
-                              icon: Icon(Icons.edit, color: Colors.amber[700]),
-                              label: const Text('Edit'),
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.all(16.0),
-                              ),
-                            ),
-                          ),
                           Padding(
                             padding: const EdgeInsets.only(
                                 top: 16.0), // Add space between buttons
