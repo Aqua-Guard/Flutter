@@ -1,18 +1,14 @@
+import 'package:aquaguard/Models/Event.dart';
+import 'package:aquaguard/Screens/event/eventDetails.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class EventCard extends StatefulWidget {
-  final String eventName;
-  final String eventDescription;
-  final String imageUrl;
-  final int numberOfParticipants;
+  final Event event;
 
   const EventCard({
     Key? key,
-    required this.eventName,
-    required this.eventDescription,
-    required this.imageUrl,
-    required this.numberOfParticipants,
+    required this.event,
   }) : super(key: key);
 
   @override
@@ -22,6 +18,8 @@ class EventCard extends StatefulWidget {
 class _EventCardState extends State<EventCard> {
   @override
   Widget build(BuildContext context) {
+  
+
     return StaggeredGridTile.count(
       crossAxisCellCount: 1,
       mainAxisCellCount: 1,
@@ -46,7 +44,7 @@ class _EventCardState extends State<EventCard> {
                   topRight: Radius.circular(10.0),
                 ),
                 image: DecorationImage(
-                  image: AssetImage(widget.imageUrl),
+                  image: AssetImage(widget.event.eventImage),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -60,7 +58,7 @@ class _EventCardState extends State<EventCard> {
                 children: [
                   // Event Name
                   Text(
-                    widget.eventName,
+                    widget.event.eventName,
                     style: const TextStyle(
                       fontSize: 16.0,
                       fontWeight: FontWeight.bold,
@@ -68,12 +66,12 @@ class _EventCardState extends State<EventCard> {
                   ),
                   // Event Description
                   Text(
-                    widget.eventDescription,
+                    widget.event.description,
                     style: const TextStyle(fontSize: 14.0),
                   ),
                   // Number of Participants
                   Text(
-                    'Participants: ${widget.numberOfParticipants}',
+                    ' ${widget.event.participants.length} Participants',
                     style: const TextStyle(fontSize: 12.0, color: Colors.grey),
                   ),
                 ],
@@ -87,7 +85,11 @@ class _EventCardState extends State<EventCard> {
                   onSelected: (value) {
                     // Handle menu item selection
                     if (value == 'details') {
-                      // Handle details action
+                     Navigator.push(
+  context,
+  MaterialPageRoute(builder: (context) => EventDetails(event: widget.event)),
+);
+
                     } else if (value == 'edit') {
                       // Handle edit action
                     } else if (value == 'delete') {

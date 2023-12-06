@@ -1,11 +1,25 @@
 class Event {
-  final DateTime DateDebut;
-  final DateTime DateFin;
+  final DateTime dateDebut;
+  final DateTime dateFin;
   final String eventName;
-  final String eventDescription;
-  final String eventLocation;
-  final String event;
+  final String description;
+  final String lieu;
+  final String userImage;
+  final String userName;
   final String eventImage;
+  final List<Map<String, dynamic>> participants;
 
-  Event({required this.DateDebut, required this.DateFin, required this.eventName, required this.eventDescription, required this.eventLocation, required this.event, required this.eventImage});
+
+  Event({
+    required this.dateDebut,
+    required this.dateFin,
+    required this.eventName,
+    required this.description,
+    required this.lieu,
+    required this.userImage,
+    required this.userName,
+    required this.eventImage,
+    required this.participants,
+  });
+
 }
