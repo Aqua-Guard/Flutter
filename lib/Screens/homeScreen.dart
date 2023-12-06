@@ -1,3 +1,4 @@
+import 'package:aquaguard/Screens/Post/postScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -81,7 +82,8 @@ class _HomeScreenState extends State<HomeScreen> {
               leading: const Icon(Icons.post_add),
               title: const Text('Posts'),
               onTap: () {
-                Navigator.pop(context);
+               
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>PostScreen()));
               },
             ),
             ListTile(
