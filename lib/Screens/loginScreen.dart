@@ -118,24 +118,12 @@ class LoginScreenState extends State<LoginScreen>{
                     Navigator.of(context).push(MaterialPageRoute(builder: (context)=>HomeScreen()));
                   },
                 ),
-                  Padding(
-                    padding: const EdgeInsets.all(28.0),
-                    child: RichText(
-                      text: const TextSpan(
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.black,
-                        ),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: 'Forgot password?',
-                            style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              color: Colors.blue,
-
-                            ),
-                          ),
-                        ],
+                const Padding(
+                    padding: EdgeInsets.all(28.0),
+                    child: Text('Forgot password?',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontSize: 20,
                       ),
                     ),
                   ),
