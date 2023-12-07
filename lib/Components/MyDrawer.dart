@@ -1,3 +1,4 @@
+import 'package:aquaguard/Screens/Post/postScreen.dart';
 import 'package:aquaguard/Screens/homeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:aquaguard/Screens/event/eventScreen.dart';
@@ -136,6 +137,10 @@ class MyDrawer extends StatelessWidget {
             onTap: () {
                 onItemTapped(3);
               Navigator.pop(context);
+                Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const PostScreen()),
+              );
             },
             selected: selectedIndex == 3,
             selectedTileColor: Color(0xff00689B), // Background color
