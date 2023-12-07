@@ -17,8 +17,8 @@ class CustomTextField extends StatelessWidget{
         decoration: InputDecoration(
             border: InputBorder.none,
             prefixIcon: Container(
-                height: MediaQuery.of(context).size.height * .09,
-                width: MediaQuery.of(context).size.width * .2,
+                height: MediaQuery.of(context).size.height * .07,
+                width: MediaQuery.of(context).size.width * .18,
                 decoration: BoxDecoration(
                     boxShadow: [
                       BoxShadow(

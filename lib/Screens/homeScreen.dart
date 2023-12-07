@@ -1,4 +1,7 @@
-import 'package:aquaguard/Screens/Post/postScreen.dart';
+import 'package:aquaguard/Components/MyAppBar.dart';
+import 'package:aquaguard/Components/MyDrawer.dart';
+import 'package:aquaguard/Screens/event/eventScreen.dart';
+import 'package:aquaguard/Screens/profileScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -10,107 +13,41 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+    int _selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-      ),
-      body: Center(
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.white,
-                Color.fromRGBO(127, 197, 251, 100)],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter
-            ),
+    return Theme(
+        data: Theme.of(context).copyWith(
+          // This will change the drawer icon color
+          appBarTheme: const AppBarTheme(
+            iconTheme: IconThemeData(color: Colors.white),
+            actionsIconTheme: IconThemeData(color: Colors.white),
           ),
         ),
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              child: Stack(
-                children: [
-                  Image.asset(
-                    "assets/nav_header.png",
-                    fit: BoxFit.fill,
-                    width: double.infinity,
-                    height: double.infinity,
+        child: Scaffold(
+      appBar: MyAppBar(),
+      body: Stack(
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/background_splash_screen.png'),
+                    fit: BoxFit
+                        .cover, // This will fill the background of the container, you can change it as needed.
                   ),
-                  // Align(
-                  //   alignment: Alignment.center,
-                  //     child: CircleAvatar(
-                  //       backgroundColor: Colors.transparent,
-                  //       radius: 40,
-                  //       child: Container(
-                  //           width: MediaQuery.of(context).size.width * .3,
-                  //           height: MediaQuery.of(context).size.height * .3,
-                  //           child: Image.asset("assets/profile_pic.png")
-                  //       ),
-                  //     ),
-                  // ),
-                ]
+                ),
               ),
-
-            ),
-            ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text('Home'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.person_rounded),
-              title: const Text('Users'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.event),
-              title: const Text('Events'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.post_add),
-              title: const Text('Posts'),
-              onTap: () {
-               
-                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>PostScreen()));
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.store),
-              title: const Text('Store'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.report),
-              title: const Text('Reclamation'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Logout'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
+              Text("Home Screen"),
+              ]),
+      drawer:  MyDrawer(
+        selectedIndex: _selectedIndex,
+        onItemTapped: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
       ),
+    )
     );
   }
 }

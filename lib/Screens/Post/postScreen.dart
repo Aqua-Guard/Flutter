@@ -1,3 +1,5 @@
+import 'package:aquaguard/Components/MyAppBar.dart';
+import 'package:aquaguard/Components/MyDrawer.dart';
 import 'package:aquaguard/Models/comment.dart';
 import 'package:aquaguard/Models/like.dart';
 import 'package:aquaguard/Models/post.dart';
@@ -19,6 +21,7 @@ class _PostScreenState extends State<PostScreen> {
   late final List<Comment> comments;
   late final List<Like> likes;
   late final List<Post> myLatestPost;
+  int _selectedIndex = 3;
 
    @override
   void initState() {
@@ -88,49 +91,7 @@ class _PostScreenState extends State<PostScreen> {
           ),
         ),
         child: Scaffold(
-          appBar: AppBar(
-            // title: const Text('Post',style: TextStyle( color: Colors.white // Set text color to white
-            // Make text bold)
-
-            backgroundColor: Color(0xff00689B),
-
-            elevation: 0,
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                const SizedBox(width: 10),
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25),
-                      color: Colors.white,
-                    ),
-                    child: const TextField(
-                      decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        hintText: "Search something...",
-                        icon: Icon(CupertinoIcons.search),
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.notifications),
-                  color: Colors.white,
-                  onPressed: () {
-                    // Handle notification icon action
-                  },
-                ),
-                const CircleAvatar(
-                  // Replace with your image
-                  backgroundImage: AssetImage('assets/images/youssef.jpg'),
-                )
-              ],
-            ),
-          ),
+          appBar:  MyAppBar(),
           body: Stack(
             children: [
               Container(
@@ -168,85 +129,15 @@ class _PostScreenState extends State<PostScreen> {
               ),
             ],
           ),
-          drawer: Drawer(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                DrawerHeader(
-                  child: Stack(children: [
-                    Image.asset(
-                      "assets/nav_header.png",
-                      fit: BoxFit.fill,
-                      width: double.infinity,
-                      height: double.infinity,
-                    ),
-                    // Align(
-                    //   alignment: Alignment.center,
-                    //     child: CircleAvatar(
-                    //       backgroundColor: Colors.transparent,
-                    //       radius: 40,
-                    //       child: Container(
-                    //           width: MediaQuery.of(context).size.width * .3,
-                    //           height: MediaQuery.of(context).size.height * .3,
-                    //           child: Image.asset("assets/profile_pic.png")
-                    //       ),
-                    //     ),
-                    // ),
-                  ]),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.home),
-                  title: const Text('Home'),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.person_rounded),
-                  title: const Text('Users'),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.event),
-                  title: const Text('Events'),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.post_add),
-                  title: const Text('Posts'),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.store),
-                  title: const Text('Store'),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.report),
-                  title: const Text('Reclamation'),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                const Divider(),
-                ListTile(
-                  leading: const Icon(Icons.logout),
-                  title: const Text('Logout'),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            ),
-          ),
+          drawer:  MyDrawer(
+        selectedIndex: _selectedIndex,
+        onItemTapped: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+      ),
+          
         ));
   }
 }
