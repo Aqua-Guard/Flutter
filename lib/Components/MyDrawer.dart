@@ -1,7 +1,7 @@
 import 'package:aquaguard/Screens/Post/postScreen.dart';
+import 'package:aquaguard/Screens/event/eventStatistics.dart';
 import 'package:aquaguard/Screens/homeScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:aquaguard/Screens/event/eventScreen.dart';
 import 'package:aquaguard/Screens/profileScreen.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -120,7 +120,7 @@ class MyDrawer extends StatelessWidget {
               Navigator.pop(context);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const EventScreen()),
+                MaterialPageRoute(builder: (context) => const EventStatistics()),
               );
             },
             selected: selectedIndex == 2,
