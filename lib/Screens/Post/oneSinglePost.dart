@@ -28,27 +28,27 @@ class OneSinglePost extends StatelessWidget {
                       border: Border.all(
                           color: Colors.blue, width: 2), // Add a blue border
                     ),
-                    child: CircleAvatar(
+                    child: const CircleAvatar(
                       backgroundImage: AssetImage(
                           "/images/youssef.jpg"), // Using the userImage from Post
                       radius: 25, // Adjust the size as needed
                     ),
                   ),
-                  Expanded(
+                   const Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding:  EdgeInsets.all(8.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             "Youssef Farhat", // Using the userName from Post
-                            style: const TextStyle(
+                            style:  TextStyle(
                                 fontSize: 16.0, fontWeight: FontWeight.bold),
                           ),
-                          const SizedBox(height: 8.0),
+                           SizedBox(height: 8.0),
                           Text(
                             "Admin", // Using the userRole from Post
-                            style: const TextStyle(
+                            style:  TextStyle(
                                 fontSize: 14.0, color: Colors.grey),
                           ),
                         ],
@@ -127,9 +127,9 @@ class OneSinglePost extends StatelessWidget {
                       );
                     });
                   },
-                  child: Text(
-                    "Submit Form".toUpperCase(),
-                    style: const TextStyle(
+                  child: const Text(
+                    "Validate Creation Post",
+                    style:  TextStyle(
                         fontWeight: FontWeight.bold, color: Color(0xff00689B)),
                   ),
                 ))
