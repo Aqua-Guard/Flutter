@@ -1,3 +1,5 @@
+import 'package:aquaguard/Components/MyAppBar.dart';
+import 'package:aquaguard/Components/MyDrawer.dart';
 import 'package:aquaguard/Models/Event.dart';
 import 'package:aquaguard/Screens/event/addEventForm.dart';
 import 'package:aquaguard/Screens/event/eventDetails.dart';
@@ -13,6 +15,7 @@ class EventScreen extends StatefulWidget {
 }
 
 class _EventScreenState extends State<EventScreen> {
+      int _selectedIndex =2;
   final List<Event> eventsData = [
     Event(
       eventName: 'Clean-up the Sea Tunisia',
@@ -177,46 +180,7 @@ class _EventScreenState extends State<EventScreen> {
           ),
         ),
         child: Scaffold(
-          appBar: AppBar(
-            // title: const Text('Post',style: TextStyle( color: Colors.white // Set text color to white
-            // Make text bold)
-
-            backgroundColor: const Color(0xff00689B),
-
-            elevation: 0,
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                const SizedBox(width: 10),
-                Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Search',
-                      prefixIcon: const Icon(Icons.search),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[200],
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.notifications),
-                  color: Colors.white,
-                  onPressed: () {
-                    // Handle notification icon action
-                  },
-                ),
-                const CircleAvatar(
-                  // Replace with your image
-                  backgroundImage: AssetImage('assets/images/malek.jpg'),
-                )
-              ],
-            ),
-          ),
+          appBar: MyAppBar(),
           body: Stack(
             children: [
               Container(
@@ -255,86 +219,14 @@ class _EventScreenState extends State<EventScreen> {
               ),
             ],
           ),
-          drawer: Drawer(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                DrawerHeader(
-                  child: Stack(children: [
-                    Image.asset(
-                      "assets/nav_header.png",
-                      fit: BoxFit.fill,
-                      width: double.infinity,
-                      height: double.infinity,
-                    ),
-                    // Align(
-                    //   alignment: Alignment.center,
-                    //     child: CircleAvatar(
-                    //       backgroundColor: Colors.transparent,
-                    //       radius: 40,
-                    //       child: Container(
-                    //           width: MediaQuery.of(context).size.width * .3,
-                    //           height: MediaQuery.of(context).size.height * .3,
-                    //           child: Image.asset("assets/profile_pic.png")
-                    //       ),
-                    //     ),
-                    // ),
-                  ]),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.home),
-                  title: const Text('Home'),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.person_rounded),
-                  title: const Text('Users'),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  tileColor: Color(0xff00689B),
-                  leading: const Icon(Icons.event),
-                  title: const Text('Events'),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.post_add),
-                  title: const Text('Posts'),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.store),
-                  title: const Text('Store'),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.report),
-                  title: const Text('Reclamation'),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                const Divider(),
-                ListTile(
-                  leading: const Icon(Icons.logout),
-                  title: const Text('Logout'),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            ),
-          ),
+          drawer:  MyDrawer(
+        selectedIndex: _selectedIndex,
+        onItemTapped: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+      ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               Navigator.push(
