@@ -1,4 +1,5 @@
 import 'package:aquaguard/Screens/event/eventScreen.dart';
+import 'package:aquaguard/Screens/profileScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -41,18 +42,36 @@ class _HomeScreenState extends State<HomeScreen> {
                     width: double.infinity,
                     height: double.infinity,
                   ),
-                  // Align(
-                  //   alignment: Alignment.center,
-                  //     child: CircleAvatar(
-                  //       backgroundColor: Colors.transparent,
-                  //       radius: 40,
-                  //       child: Container(
-                  //           width: MediaQuery.of(context).size.width * .3,
-                  //           height: MediaQuery.of(context).size.height * .3,
-                  //           child: Image.asset("assets/profile_pic.png")
-                  //       ),
-                  //     ),
-                  // ),
+                  Align(
+                    alignment: Alignment.center,
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            child: CircleAvatar(
+                              backgroundColor: Colors.transparent,
+                              radius: 40,
+                              child: Container(
+                                  width: MediaQuery.of(context).size.width * .3,
+                                  height: MediaQuery.of(context).size.height * .3,
+                                  child: Image.asset("assets/profile_pic.png")
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ProfileScreen()), // Replace ProfileScreen() with your desired screen
+                              );
+                            },
+                          ),
+                          // Text("AmiraBM", style: TextStyle(
+                          //     fontSize: 16,color: Colors.white,fontWeight: FontWeight.bold
+                          // ),),
+                          Text("amira.benmbarek@esprit.tn", style: TextStyle(
+                              fontSize: 16,color: Colors.white,fontWeight: FontWeight.bold
+                          ),)
+                        ],
+                      )
+                  ),
                 ]
               ),
 
