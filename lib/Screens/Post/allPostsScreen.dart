@@ -1,6 +1,7 @@
 import 'package:aquaguard/Models/comment.dart';
 import 'package:aquaguard/Models/like.dart';
 import 'package:aquaguard/Models/post.dart';
+import 'package:aquaguard/Screens/Post/AddPostForm.dart';
 
 import 'package:aquaguard/widgets/allPostList.dart';
 
@@ -139,6 +140,20 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
               ),
             ],
           ),
+            floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AddPostForm()),
+              );
+            },
+            backgroundColor: const Color(0xff00689B),
+            shape: const CircleBorder(), // Set FAB background color
+            child: const Icon(
+              Icons.add,
+              color: Colors.white, // Set the color of the icon to white
+            ), // Make the FAB circular
+          ), 
         ));
   }
 }
