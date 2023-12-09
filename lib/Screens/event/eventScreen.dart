@@ -4,7 +4,6 @@ import 'package:aquaguard/Screens/event/eventDetails.dart';
 import 'package:aquaguard/WebService/EventWebService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:aquaguard/Screens/event/eventCard.dart';
 
 class EventScreen extends StatefulWidget {
   const EventScreen({Key? key}) : super(key: key);
