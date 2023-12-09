@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
 
@@ -14,10 +12,6 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   bool isDarkMode = false;
-  //final SharedPreferences prefs = await SharedPreferences.getInstance();
-  static final storage = GetStorage();
-
-  // await prefs.setInt('counter', 10);
 
   @override
   Widget build(BuildContext context) {
@@ -112,9 +106,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               value: isDarkMode,
                               onChanged: (value) {
                                 setState(() {
-                                  SharedPreferences.getInstance().then((sp) {
-                                    sp.setBool("isDarkMode", value);
-                                  });
                                   isDarkMode = value;
                                 });
 
