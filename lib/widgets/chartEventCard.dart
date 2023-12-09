@@ -1,19 +1,30 @@
 import 'package:aquaguard/Screens/event/eventScreen.dart';
-import 'package:aquaguard/data/postChartData.dart';
+import 'package:aquaguard/WebService/EventWebService.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
-class ChartEventCard extends StatelessWidget {
-  final List<Map<String, dynamic>> eventData = [
-    {'eventName': 'Event A', 'participants': 12},
-    {'eventName': 'Event B', 'participants': 15},
-    {'eventName': 'Event C', 'participants': 10},
-    {'eventName': 'Event D', 'participants': 18},
-    {'eventName': 'Event E', 'participants': 20},
-    {'eventName': 'Event F', 'participants': 17},
-    {'eventName': 'Event G', 'participants': 14},
-  ];
+class ChartEventCard extends StatefulWidget {
+  @override
+  State<ChartEventCard> createState() => _ChartEventCardState();
+}
 
+class _ChartEventCardState extends State<ChartEventCard> {
+  late List<Map<String, dynamic>> eventData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchEventsNbParticipants().then((events) {
+      setState(() {
+        eventData = events;
+      });
+    }).catchError((error) {
+      // Handle the error, e.g., show an error message to the user
+      print('Error fetching events: $error');
+    });
+  }
+
+  //const ChartEventCard({Key? key, required this.eventData}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -58,44 +69,83 @@ class ChartEventCard extends StatelessWidget {
             child: const Text('See All'),
             onPressed: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => EventScreen()),
+                MaterialPageRoute(builder: (context) => const EventScreen()),
               );
             },
           ),
         ],
       );
 
-  Widget _buildBarChart(List<Map<String, dynamic>> eventData) => BarChart(
-        BarChartData(
-          barTouchData: BarTouchData(
-            touchTooltipData: BarTouchTooltipData(
-              tooltipBgColor: Colors.grey,
-              getTooltipItem: (_a, _b, _c, _d) => null,
+  Widget _buildBarChart(List<Map<String, dynamic>> eventData) {
+    List<BarChartGroupData> barChartGroups = [];
+
+    for (int i = 0; i < eventData.length; i++) {
+      final double value = eventData[i]['nbParticipants'].toDouble();
+      final String label = eventData[i]['eventName'];
+
+      barChartGroups.add(
+        BarChartGroupData(
+          x: i,
+          barRods: [
+            BarChartRodData(
+              toY: value,
+              color: Colors.blue, // You can customize the color as needed
+              width: 16,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(6),
+                topRight: Radius.circular(6),
+              ),
             ),
+          ],
+          showingTooltipIndicators: [0],
+        ),
+      );
+    }
+
+    return BarChart(
+      BarChartData(
+        barTouchData: BarTouchData(
+          touchTooltipData: BarTouchTooltipData(
+            tooltipBgColor: Colors.grey,
+            getTooltipItem: (group, groupIndex, rod, rodIndex) {
+              final value = rod.toY.toInt();
+              return BarTooltipItem(
+                value.toString(),
+                TextStyle(color: Colors.white),
+              );
+            },
           ),
-          titlesData: FlTitlesData(
-            show: true,
-            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: (value, _) {
+        ),
+        titlesData: FlTitlesData(
+          show: true,
+          leftTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: (double value, TitleMeta meta) {
+                if (value >= 0 && value < eventData.length) {
+                  final String label = eventData[value.toInt()]['eventName'];
                   return Text(
-                    eventData[value.toInt()]['eventName'],
+                    label,
                     style: const TextStyle(
                       color: Colors.grey,
                       fontSize: 12,
                     ),
                   );
-                },
-              ),
+                }
+                return const SizedBox();
+              },
             ),
           ),
-          borderData: FlBorderData(show: false),
-          barGroups: PostChartData.getBarChartItems(
-              eventData.map((data) => data['participants'] as double).toList()),
         ),
-      );
+        borderData: FlBorderData(show: false),
+        barGroups: barChartGroups,
+      ),
+    );
+  }
 }
