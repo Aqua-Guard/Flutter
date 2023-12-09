@@ -1,4 +1,8 @@
+import 'package:aquaguard/Components/MyAppBar.dart';
+import 'package:aquaguard/Components/MyDrawer.dart';
 import 'package:aquaguard/Models/Event.dart';
+import 'package:aquaguard/widgets/chartEventCard.dart';
+import 'package:aquaguard/widgets/totalEventCard.dart';
 import 'package:flutter/material.dart';
 
 class EventStatistics extends StatefulWidget {
@@ -9,6 +13,7 @@ class EventStatistics extends StatefulWidget {
 }
 
 class _EventStatisticsState extends State<EventStatistics> {
+  int _selectedIndex = 2;
   final List<Event> eventsData = [
     Event(
       eventName: 'Clean-up the Sea Tunisia',
@@ -165,52 +170,50 @@ class _EventStatisticsState extends State<EventStatistics> {
   @override
   Widget build(BuildContext context) {
     return Theme(
-        data: Theme.of(context).copyWith(
-          // This will change the drawer icon color
-          appBarTheme: const AppBarTheme(
-            iconTheme: IconThemeData(color: Colors.white),
-            actionsIconTheme: IconThemeData(color: Colors.white),
-          ),
+      data: Theme.of(context).copyWith(
+        // This will change the drawer icon color
+        appBarTheme: const AppBarTheme(
+          iconTheme: IconThemeData(color: Colors.white),
+          actionsIconTheme: IconThemeData(color: Colors.white),
         ),
-        child:Scaffold(
-      appBar: AppBar(
-        title: const Text('Event Statistics',
-                style: TextStyle(
-                  color: Colors.white,
-                )),
-            backgroundColor: const Color(0xff00689B),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Card(
-          elevation: 5.0,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Number of Events',
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+      child: Scaffold(
+        appBar: MyAppBar(),
+        body: Stack(
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/background_splash_screen.png'),
+                  fit: BoxFit
+                      .cover, // This will fill the background of the container, you can change it as needed.
                 ),
-                const SizedBox(height: 10.0),
-                Text(
-                  eventsData.length.toString(),
-                  style: const TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue, // Adjust the color as needed
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+            Column(children: [
+              Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: TotalEventsCard(totalEvents: eventsData.length)),
+              Padding(
+                padding: EdgeInsets.all(16.0),
+                child: SizedBox(
+                  width: 600, // Adjust the width as needed
+                  height: 400, // Adjust the height as needed
+                  child: ChartEventCard(),
+                ),
+              ),
+            ]),
+          ],
+        ),
+        drawer: MyDrawer(
+          selectedIndex: _selectedIndex,
+          onItemTapped: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
         ),
       ),
-    )
     );
   }
 }

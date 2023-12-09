@@ -1,5 +1,3 @@
-import 'package:aquaguard/Components/MyAppBar.dart';
-import 'package:aquaguard/Components/MyDrawer.dart';
 import 'package:aquaguard/Models/Event.dart';
 import 'package:aquaguard/Screens/event/addEventForm.dart';
 import 'package:aquaguard/Screens/event/eventDetails.dart';
@@ -15,7 +13,7 @@ class EventScreen extends StatefulWidget {
 }
 
 class _EventScreenState extends State<EventScreen> {
-      int _selectedIndex =2;
+   
   final List<Event> eventsData = [
     Event(
       eventName: 'Clean-up the Sea Tunisia',
@@ -180,7 +178,13 @@ class _EventScreenState extends State<EventScreen> {
           ),
         ),
         child: Scaffold(
-          appBar: MyAppBar(),
+          appBar: AppBar(
+        title: const Text('Events List',
+                style: TextStyle(
+                  color: Colors.white,
+                )),
+            backgroundColor: const Color(0xff00689B),
+      ),
           body: Stack(
             children: [
               Container(
@@ -219,14 +223,7 @@ class _EventScreenState extends State<EventScreen> {
               ),
             ],
           ),
-          drawer:  MyDrawer(
-        selectedIndex: _selectedIndex,
-        onItemTapped: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-      ),
+         
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               Navigator.push(

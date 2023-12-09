@@ -137,7 +137,7 @@ class _PostScreenState extends State<PostScreen> {
           });
         },
       ),
-          
+       
         ));
   }
 }

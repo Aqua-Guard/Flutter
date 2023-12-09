@@ -1,7 +1,5 @@
 import 'package:aquaguard/Components/MyAppBar.dart';
 import 'package:aquaguard/Components/MyDrawer.dart';
-import 'package:aquaguard/Screens/event/eventScreen.dart';
-import 'package:aquaguard/Screens/profileScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

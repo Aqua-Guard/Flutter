@@ -32,9 +32,10 @@ class LatestPostCard extends StatelessWidget {
                 TextButton(
                   child: Text('See All'),
                   onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) => AllPostsScreen()),
+
+                     Navigator.of(context).push(
+                       MaterialPageRoute(
+                           builder: (context) => AllPostsScreen()),
                     );
                   },
                 ),
