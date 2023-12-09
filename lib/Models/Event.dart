@@ -1,25 +1,40 @@
 class Event {
-  final DateTime dateDebut;
-  final DateTime dateFin;
+  final String idEvent;
+  final String userName;
+  final String userImage;
   final String eventName;
   final String description;
-  final String lieu;
-  final String userImage;
-  final String userName;
   final String eventImage;
-  final List<Map<String, dynamic>> participants;
-
+  final DateTime dateDebut;
+  final DateTime dateFin;
+  final String lieu;
+  final List<dynamic> participants;
 
   Event({
-    required this.dateDebut,
-    required this.dateFin,
+    required this.idEvent,
+    required this.userName,
+    required this.userImage,
     required this.eventName,
     required this.description,
-    required this.lieu,
-    required this.userImage,
-    required this.userName,
     required this.eventImage,
+    required this.dateDebut,
+    required this.dateFin,
+    required this.lieu,
     required this.participants,
   });
 
+  factory Event.fromJson(Map<String, dynamic> json) {
+    return Event(
+      idEvent: json['idEvent'],
+      userName: json['userName'],
+      userImage: json['userImage'],
+      eventName: json['eventName'],
+      description: json['description'],
+      eventImage: json['eventImage'],
+      dateDebut: DateTime.parse(json['DateDebut']),
+      dateFin: DateTime.parse(json['DateFin']),
+      lieu: json['lieu'],
+      participants: List<dynamic>.from(json['participants']),
+    );
+  }
 }
