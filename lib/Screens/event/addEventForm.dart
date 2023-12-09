@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class AddEventForm extends StatefulWidget {
   const AddEventForm({Key? key}) : super(key: key);
@@ -76,6 +78,19 @@ class _AddEventFormState extends State<AddEventForm> {
     return null;
   }
 
+  late File? _pickedImage = null;
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedImage != null) {
+      setState(() {
+        _pickedImage = File(pickedImage!.path);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Theme(
@@ -97,20 +112,19 @@ class _AddEventFormState extends State<AddEventForm> {
           backgroundColor: const Color(0xff00689B),
         ),
         body: Stack(
-            children: [
-              Container(
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/background_splash_screen.png'),
-                    fit: BoxFit.cover,
-                  ),
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/background_splash_screen.png'),
+                  fit: BoxFit.cover,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-               child: SingleChildScrollView(
-          child: 
-                 Card(
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SingleChildScrollView(
+                child: Card(
                   elevation: 4,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
@@ -123,12 +137,17 @@ class _AddEventFormState extends State<AddEventForm> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ElevatedButton.icon(
-                            onPressed: () {
-                              // Handle image selection
-                            },
-                            icon: const Icon(Icons.image, color: Color(0xff00689B)),
+                            onPressed: _pickImage,
+                            icon: const Icon(Icons.image,
+                                color: Color(0xff00689B)),
                             label: const Text('Add Image'),
                           ),
+                          if (_pickedImage != null)
+                            Container(
+                              width: 100,
+                              height: 100,
+                              child: Image.network(_pickedImage!.path),
+                            ),
                           const SizedBox(height: 16.0),
                           TextFormField(
                             decoration: const InputDecoration(
@@ -164,8 +183,8 @@ class _AddEventFormState extends State<AddEventForm> {
                           Row(
                             children: [
                               ElevatedButton.icon(
-                                onPressed: () => _selectDate(
-                                    context, _dateDebut ?? DateTime.now(), true),
+                                onPressed: () => _selectDate(context,
+                                    _dateDebut ?? DateTime.now(), true),
                                 icon: const Icon(Icons.calendar_today,
                                     color: Color(0xff00689B)),
                                 label: const Text('Select Start Date'),
@@ -196,7 +215,9 @@ class _AddEventFormState extends State<AddEventForm> {
                           ),
                           const SizedBox(height: 16.0),
                           DropdownButtonFormField<String>(
-                            value: _organizer.isNotEmpty ? _organizer : 'Malek Labidi',
+                            value: _organizer.isNotEmpty
+                                ? _organizer
+                                : 'Malek Labidi',
                             onChanged: (value) {
                               setState(() {
                                 _organizer = value ?? 'Malek Labidi';
@@ -244,7 +265,8 @@ class _AddEventFormState extends State<AddEventForm> {
                                     );
                                   } else {
                                     // Proceed with form validation and saving data
-                                    if (_formKey.currentState?.validate() ?? false) {
+                                    if (_formKey.currentState?.validate() ??
+                                        false) {
                                       _formKey.currentState?.save();
                                       // Save the form data or perform any other action
                                       Navigator.pop(context);
@@ -266,11 +288,10 @@ class _AddEventFormState extends State<AddEventForm> {
                   ),
                 ),
               ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-      )
-    ;
+      ),
+    );
   }
 }
