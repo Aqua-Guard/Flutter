@@ -12,34 +12,34 @@ class LoginScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => LoginScreenState();
 }
-class LoginScreenState extends State<LoginScreen>{
+
+class LoginScreenState extends State<LoginScreen> {
   bool _isPasswordVisible = false;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Stack(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Image.asset(
-                "assets/login_background.png",
-                fit: BoxFit.cover,
+        body: Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/login_background.png'),
+                fit: BoxFit.fill,
               ),
             ),
-            Column(
+            child: ListView(
               children: [
                 Container(
-                  child: Image.asset(
-                    "assets/logo.png",
-                    width: MediaQuery.of(context).size.width * .8,
+                  width: MediaQuery.of(context).size.width * .8,
+                  height: MediaQuery.of(context).size.width * .8,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/logo.png'),
+                    ),
                   ),
                 ),
                 Padding(
@@ -87,7 +87,7 @@ class LoginScreenState extends State<LoginScreen>{
                       child: CustomTextField(
                         label: 'Password',
                         hintText:
-                        'Enter secure password between 6 and 8 characters',
+                            'Enter secure password between 6 and 8 characters',
                         icon: const Icon(Icons.lock_rounded,
                             size: 40, color: Colors.blue),
                         obscureText: _isPasswordVisible,
@@ -98,11 +98,12 @@ class LoginScreenState extends State<LoginScreen>{
                               });
                             },
                             icon: Icon(
-                              _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                              _isPasswordVisible
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
                               color: Colors.blue,
                               size: 32,
-                            )
-                        ),
+                            )),
                       )),
                 ),
                 GestureDetector(
@@ -111,26 +112,32 @@ class LoginScreenState extends State<LoginScreen>{
                     child: CustomButton(
                       text: 'Login',
                       color: Colors.blue,
-
-                      ),
+                    ),
                   ),
                   onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>HomeScreen()));
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => HomeScreen()));
                   },
                 ),
-                const Padding(
+                Align(
+                  alignment: Alignment.center,
+                  child: const Padding(
                     padding: EdgeInsets.all(28.0),
-                    child: Text('Forgot password?',
+                    child: Text(
+                      'Forgot password?',
                       style: TextStyle(
                         color: Colors.blue,
                         fontSize: 20,
                       ),
                     ),
                   ),
+                ),
                 GestureDetector(
-                  child: Padding(
-                    padding: const EdgeInsets.all(28.0),
-                    child: RichText(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Padding(
+                      padding: const EdgeInsets.all(28.0),
+                      child: RichText(
                         text: const TextSpan(
                           style: TextStyle(
                             fontSize: 20,
@@ -147,6 +154,7 @@ class LoginScreenState extends State<LoginScreen>{
                           ],
                         ),
                       ),
+                    ),
                   ),
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -154,11 +162,6 @@ class LoginScreenState extends State<LoginScreen>{
                   },
                 ),
               ],
-            )
-
-          ],
-        ),
-      )
-    );
+            )));
   }
 }
