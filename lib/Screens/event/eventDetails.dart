@@ -98,8 +98,8 @@ class _EventDetailsState extends State<EventDetails> {
                                 ),
                               ),
                               CircleAvatar(
-                                backgroundImage:
-                                    AssetImage(widget.event.userImage),
+                                backgroundImage: NetworkImage(
+                                    'http://localhost:9090/images/user/${widget.event.userImage}'),
                                 radius: 40.0,
                               ),
                               const SizedBox(height: 8.0),
@@ -119,28 +119,46 @@ class _EventDetailsState extends State<EventDetails> {
                       const SizedBox(height: 10.0),
                       SizedBox(
                         height: 200.0, // Adjust the height as needed
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: widget.event.participants.length,
-                          itemBuilder: (context, index) {
-                            final participant =
-                                widget.event.participants[index];
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                children: [
-                                  CircleAvatar(
-                                    backgroundImage:
-                                        AssetImage(participant['userImage']),
-                                    radius: 40.0,
-                                  ),
-                                  const SizedBox(height: 8.0),
-                                  Text(participant['userName']),
-                                ],
+                        child: widget.event.participants.isNotEmpty
+                            ? ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: widget.event.participants.length,
+                                itemBuilder: (context, index) {
+                                  final participant =
+                                      widget.event.participants[index];
+                                  final participantImage =
+                                      "http://localhost:9090/images/user/${participant['image']}";
+                                  return Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundImage: NetworkImage(
+                                              participantImage ??
+                                                  "assets/images/placeholderImage.jpg"),
+                                          radius: 40.0,
+                                        ),
+                                        const SizedBox(height: 8.0),
+                                        Text(participant['username'] ??
+                                            "Unknown User"),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              )
+                            : Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      "assets/images/no.png",
+                                      height: 100.0,
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    const Text("No participants"),
+                                  ],
+                                ),
                               ),
-                            );
-                          },
-                        ),
                       ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
