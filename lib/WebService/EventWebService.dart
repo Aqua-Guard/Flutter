@@ -4,7 +4,7 @@ import 'dart:convert';
 
 const urievent = 'http://localhost:9090/events/admin';
 const uriparticipation = 'http://localhost:9090/participations/admin';
-const authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVmZjc5MDdkYjE5NTYxMzcyNmNkYjQiLCJ1c2VybmFtZSI6Im1vaGFtZWQiLCJpYXQiOjE3MDIxNDkxOTEsImV4cCI6MTcwMjE1NjM5MX0.B2e_QhPTGkHmNHU_KljoBf90is3WqEwssCbZgYdJNIQ";
+const authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVmZjc5MDdkYjE5NTYxMzcyNmNkYjQiLCJ1c2VybmFtZSI6Im1vaGFtZWQiLCJpYXQiOjE3MDIxNTY4NjMsImV4cCI6MTcwMjE2NDA2M30.pRF1o0_0HqTuv98AQXKpsaWuwjFRhDvljC4ONVULaZc";
 
 Future<List<Event>> fetchEvents() async {
   final response = await http.get(Uri.parse(urievent),
@@ -44,5 +44,34 @@ Future<void> deleteParticipation(String eventId, String userId) async {
   } catch (error) {
     // Exception
     print('Error: $error');
+  }
+}
+
+
+
+Future<List<Map<String, dynamic>>> fetchEventsNbParticipants() async {
+  final response = await http.get(
+    Uri.parse('$urievent/stats'),
+    headers: {
+      'Authorization': 'Bearer $authToken',
+    },
+  );
+
+  if (response.statusCode == 200) {
+    List<dynamic> data = json.decode(response.body);
+
+    List<Map<String, dynamic>> eventsList = data.map((json) {
+
+
+      return {
+        'idEvent': json['_id'],
+        'eventName': json['eventName'],
+        'nbParticipants': json['nbParticipants'],
+      };
+    }).toList();
+
+    return eventsList;
+  } else {
+    throw Exception('Failed to load events stats');
   }
 }
