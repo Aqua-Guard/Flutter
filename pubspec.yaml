@@ -39,6 +39,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   fl_chart: ^0.65.0
   intl: ^0.18.1
+  shared_preferences: ^2.0.15
+  get_storage: ^2.1.1
+
 
 dev_dependencies:
   flutter_test:
