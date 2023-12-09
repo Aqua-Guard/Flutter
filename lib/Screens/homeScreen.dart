@@ -35,7 +35,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              Text("Home Screen"),
               ]),
       drawer:  MyDrawer(
         selectedIndex: _selectedIndex,

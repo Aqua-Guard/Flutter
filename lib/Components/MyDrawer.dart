@@ -1,6 +1,7 @@
 import 'package:aquaguard/Screens/Post/postScreen.dart';
 import 'package:aquaguard/Screens/event/eventStatistics.dart';
 import 'package:aquaguard/Screens/homeScreen.dart';
+import 'package:aquaguard/Screens/loginScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:aquaguard/Screens/profileScreen.dart';
 
@@ -28,9 +29,9 @@ class MyDrawer extends StatelessWidget {
               ),
             ),
             child: Container(
-              padding: EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(20.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   GestureDetector(
                     onTap: () {
@@ -44,9 +45,9 @@ class MyDrawer extends StatelessWidget {
                       backgroundImage: AssetImage("assets/images/malek.jpg"),
                     ),
                   ),
-                  SizedBox(width: 6.0),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  const SizedBox(width: 6.0),
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
                         "Malek Labidi",
@@ -72,7 +73,7 @@ class MyDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            
+
             leading:  Icon(Icons.home, color: selectedIndex == 0 ? Colors.white : Color(0xff00689B)),
             title:  Text(
               'Home',
@@ -89,7 +90,7 @@ class MyDrawer extends StatelessWidget {
               );
             },
             selected: selectedIndex == 0,
-            selectedTileColor: Color(0xff00689B),
+            selectedTileColor: Color(0xb62aacee),
              // Background color
           ),
           ListTile(
@@ -105,7 +106,7 @@ class MyDrawer extends StatelessWidget {
               Navigator.pop(context);
             },
             selected: selectedIndex == 1,
-            selectedTileColor: Color(0xff00689B), // Background color
+            selectedTileColor: Color(0xb62aacee), // Background color
           ),
           ListTile(
             leading:  Icon(Icons.event, color: selectedIndex == 2 ? Colors.white : Color(0xff00689B)),
@@ -124,7 +125,7 @@ class MyDrawer extends StatelessWidget {
               );
             },
             selected: selectedIndex == 2,
-            selectedTileColor: Color(0xff00689B), // Background color
+            selectedTileColor: Color(0xb62aacee), // Background color
           ),
           ListTile(
             leading:  Icon(Icons.post_add, color: selectedIndex == 3 ? Colors.white : Color(0xff00689B)),
@@ -143,7 +144,7 @@ class MyDrawer extends StatelessWidget {
               );
             },
             selected: selectedIndex == 3,
-            selectedTileColor: Color(0xff00689B), // Background color
+            selectedTileColor: Color(0xb62aacee), // Background color
           ),
           ListTile(
             leading:  Icon(Icons.store, color: selectedIndex == 4 ? Colors.white : Color(0xff00689B)),
@@ -158,7 +159,7 @@ class MyDrawer extends StatelessWidget {
               Navigator.pop(context);
             },
             selected: selectedIndex == 4,
-            selectedTileColor: Color(0xff00689B), // Background color
+            selectedTileColor: Color(0xb62aacee), // Background color
           ),
           ListTile(
             leading:  Icon(Icons.report, color: selectedIndex == 5 ? Colors.white : Color(0xff00689B)),
@@ -173,7 +174,7 @@ class MyDrawer extends StatelessWidget {
               Navigator.pop(context);
             },
             selected: selectedIndex == 5,
-            selectedTileColor: Color(0xff00689B), // Background color
+            selectedTileColor: Color(0xb62aacee), // Background color
           ),
           const Divider(),
           ListTile(
@@ -186,16 +187,20 @@ class MyDrawer extends StatelessWidget {
             ),
             onTap: () {
                 onItemTapped(6);
-              Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                );
             },
             selected: selectedIndex == 6,
-            selectedTileColor: Color(0xff00689B), // Background color
+            selectedTileColor: Color(0xb62aacee), // Background color
           ),
         ],
       ),
     );
   }
 
- 
- 
+
+
 }
