@@ -1,6 +1,9 @@
 import 'package:aquaguard/Models/Event.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:aquaguard/WebService/EventWebService.dart';
+import 'dart:async';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class EventDetails extends StatefulWidget {
   final Event event;
@@ -13,6 +16,32 @@ class EventDetails extends StatefulWidget {
 
 class _EventDetailsState extends State<EventDetails> {
   // Sample data for the event details
+Future<bool?> showConfirmationDialog(BuildContext context) async {
+  return showDialog<bool?>(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text('Confirmation'),
+        content: const Text('Are you sure you want to delete this participation?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+            child: const Text('Confirm'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -141,6 +170,42 @@ class _EventDetailsState extends State<EventDetails> {
                                         const SizedBox(height: 8.0),
                                         Text(participant['username'] ??
                                             "Unknown User"),
+                                        ElevatedButton.icon(
+                                          onPressed: () async {
+                                              bool? confirmed =
+                                              await showConfirmationDialog(
+                                                  context);
+                                              if (confirmed == true) {
+                                                setState(() {
+                                              widget.event.participants
+                                                  .removeAt(index);
+                                            });
+                                                // User confirmed, you can perform additional actions if needed
+                                                deleteParticipation(
+                                                    widget.event.idEvent,
+                                                    participant['userId']);
+                                                Fluttertoast.showToast(
+                                                  msg: "Deleted successfully",
+                                                  toastLength:
+                                                      Toast.LENGTH_SHORT,
+                                                  gravity: ToastGravity.BOTTOM,
+                                                  timeInSecForIosWeb: 1,
+                                                  backgroundColor: Colors.green,
+                                                  textColor: Colors.white,
+                                                  fontSize: 16.0,
+                                                );
+
+                                                 
+                                              
+                                            }
+                                          },
+                                          icon: const Icon(Icons.delete,
+                                              color: Colors.red),
+                                          label: const Text('Delete'),
+                                          style: ElevatedButton.styleFrom(
+                                            padding: const EdgeInsets.all(16.0),
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   );
