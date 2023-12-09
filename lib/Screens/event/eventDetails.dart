@@ -1,7 +1,7 @@
 import 'package:aquaguard/Models/Event.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:aquaguard/WebService/EventWebService.dart';
+import 'package:aquaguard/Network/EventWebService.dart';
 import 'dart:async';
 import 'package:fluttertoast/fluttertoast.dart';
 

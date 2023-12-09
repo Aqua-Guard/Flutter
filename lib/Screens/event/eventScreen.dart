@@ -1,7 +1,7 @@
 import 'package:aquaguard/Models/Event.dart';
 import 'package:aquaguard/Screens/event/addEventForm.dart';
 import 'package:aquaguard/Screens/event/eventDetails.dart';
-import 'package:aquaguard/WebService/EventWebService.dart';
+import 'package:aquaguard/Network/EventWebService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
