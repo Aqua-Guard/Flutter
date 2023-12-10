@@ -2,6 +2,7 @@ import 'package:aquaguard/Screens/Post/postScreen.dart';
 import 'package:aquaguard/Screens/event/eventStatistics.dart';
 import 'package:aquaguard/Screens/homeScreen.dart';
 import 'package:aquaguard/Screens/loginScreen.dart';
+import 'package:aquaguard/Screens/user/usersScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:aquaguard/Screens/profileScreen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -107,6 +108,10 @@ class MyDrawer extends StatelessWidget {
             onTap: () {
               onItemTapped(1);
               Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => UsersScreen()),
+                );
             },
             selected: selectedIndex == 1,
             selectedTileColor: Color(0xb62aacee), // Background color
