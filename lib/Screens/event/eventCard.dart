@@ -5,10 +5,11 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class EventCard extends StatefulWidget {
   final Event event;
+  String token;
 
-  const EventCard({
+   EventCard({
     Key? key,
-    required this.event,
+    required this.event, required this.token
   }) : super(key: key);
 
   @override
@@ -87,7 +88,7 @@ class _EventCardState extends State<EventCard> {
                     if (value == 'details') {
                      Navigator.push(
   context,
-  MaterialPageRoute(builder: (context) => EventDetails(event: widget.event)),
+  MaterialPageRoute(builder: (context) => EventDetails(event: widget.event, token: widget.token)),
 );
 
                     } else if (value == 'edit') {

@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class ChartEventCard extends StatefulWidget {
+  String token;
+    ChartEventCard({Key? key, required this.token}) : super(key: key);
+
+
   @override
   State<ChartEventCard> createState() => _ChartEventCardState();
 }
@@ -14,17 +18,16 @@ class _ChartEventCardState extends State<ChartEventCard> {
   @override
   void initState() {
     super.initState();
-    EventWebService().fetchEventsNbParticipants().then((events) {
+    EventWebService().fetchEventsNbParticipants(widget.token).then((events) {
       setState(() {
         eventData = events;
       });
     }).catchError((error) {
       // Handle the error, e.g., show an error message to the user
-      print('Error fetching events: $error');
+      print('Error fetching events state: $error');
     });
   }
 
-  //const ChartEventCard({Key? key, required this.eventData}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -69,7 +72,7 @@ class _ChartEventCardState extends State<ChartEventCard> {
             child: const Text('See All'),
             onPressed: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const EventScreen()),
+                MaterialPageRoute(builder: (context) =>  EventScreen(token : widget.token)),
               );
             },
           ),

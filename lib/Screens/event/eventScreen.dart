@@ -6,7 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class EventScreen extends StatefulWidget {
-  const EventScreen({Key? key}) : super(key: key);
+    String token;
+   EventScreen({Key? key, required this.token}) : super(key: key);
 
   @override
   State<EventScreen> createState() => _EventScreenState();
@@ -18,7 +19,7 @@ class _EventScreenState extends State<EventScreen> {
   @override
   void initState() {
     super.initState();
-    EventWebService().fetchEvents().then((events) {
+    EventWebService().fetchEvents(widget.token).then((events) {
       setState(() {
         eventsData = events;
       });
@@ -200,6 +201,7 @@ class _EventScreenState extends State<EventScreen> {
                                     MaterialPageRoute(
                                       builder: (context) => EventDetails(
                                         event: event,
+                                        token: widget.token,
                                       ),
                                     ),
                                   );

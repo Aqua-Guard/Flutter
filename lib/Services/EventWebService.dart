@@ -4,13 +4,14 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 
-const authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVmZjc5MDdkYjE5NTYxMzcyNmNkYjQiLCJ1c2VybmFtZSI6Im1vaGFtZWQiLCJpYXQiOjE3MDIxNjUwNzAsImV4cCI6MTcwMjE3MjI3MH0.upFMwKE6JgtAG2qcj1_ax1BXA4Q7UcvDjQXTWNsZhFU";
+//const authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVmZjc5MDdkYjE5NTYxMzcyNmNkYjQiLCJ1c2VybmFtZSI6Im1vaGFtZWQiLCJpYXQiOjE3MDIyMDQzMDIsImV4cCI6MTcwMjIxMTUwMn0.qBlg9t3qnvkAC78LZbvvT2rVpkgF-rpO0ybxIjYGr1E";
 class EventWebService{
 
-Future<List<Event>> fetchEvents() async {
-  final response = await http.get(Uri.parse(Constantes.urlParticipation),
+Future<List<Event>> fetchEvents(String token) async {
+  final response = await http.get(Uri.parse(Constantes.urlEvent),
+ 
   headers:  {
-        'Authorization': 'Bearer $authToken',
+        'Authorization': 'Bearer $token',
         
       },);
 
@@ -23,14 +24,14 @@ Future<List<Event>> fetchEvents() async {
 }
 
 
-Future<void> deleteParticipation(String eventId, String userId) async {
+Future<void> deleteParticipation(String token,String eventId, String userId) async {
   final url = Uri.parse('$Constantes.urlParticipation/$eventId/$userId');
 
   try {
     final response = await http.delete(
       url,
       headers: <String, String>{
-        'Authorization': 'Bearer $authToken',
+        'Authorization': 'Bearer $token',
       },
     );
 
@@ -50,11 +51,12 @@ Future<void> deleteParticipation(String eventId, String userId) async {
 
 
 
-Future<List<Map<String, dynamic>>> fetchEventsNbParticipants() async {
+Future<List<Map<String, dynamic>>> fetchEventsNbParticipants(String token) async {
+
   final response = await http.get(
-    Uri.parse('$Constantes.urlEvent/stats'),
+    Uri.parse(Constantes.urlEvent+'/stats'),
     headers: {
-      'Authorization': 'Bearer $authToken',
+      'Authorization': 'Bearer $token',
     },
   );
 

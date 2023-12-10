@@ -7,8 +7,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 class EventDetails extends StatefulWidget {
   final Event event;
+  String token;
 
-  const EventDetails({Key? key, required this.event}) : super(key: key);
+   EventDetails({Key? key, required this.event, required this.token}) : super(key: key);
 
   @override
   State<EventDetails> createState() => _EventDetailsState();
@@ -182,6 +183,7 @@ Future<bool?> showConfirmationDialog(BuildContext context) async {
                                             });
                                                 // User confirmed, you can perform additional actions if needed
                                                 EventWebService().deleteParticipation(
+                                                    widget.token,
                                                     widget.event.idEvent,
                                                     participant['userId']);
                                                 Fluttertoast.showToast(

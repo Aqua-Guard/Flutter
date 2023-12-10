@@ -38,7 +38,8 @@ class MyDrawer extends StatelessWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ProfileScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => ProfileScreen()),
                       );
                     },
                     child: const CircleAvatar(
@@ -74,72 +75,78 @@ class MyDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-
-            leading:  Icon(Icons.home, color: selectedIndex == 0 ? Colors.white : Color(0xff00689B)),
-            title:  Text(
+            leading: Icon(Icons.home,
+                color: selectedIndex == 0 ? Colors.white : Color(0xff00689B)),
+            title: Text(
               'Home',
               style: TextStyle(
                 color: selectedIndex == 0 ? Colors.white : Color(0xff00689B),
               ),
             ),
             onTap: () {
-                onItemTapped(0);
+              onItemTapped(0);
               Navigator.pop(context);
-               Navigator.push(
+              Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const HomeScreen()),
               );
             },
             selected: selectedIndex == 0,
             selectedTileColor: Color(0xb62aacee),
-             // Background color
+            // Background color
           ),
           ListTile(
-            leading:  Icon(Icons.person_rounded, color: selectedIndex == 1 ? Colors.white : Color(0xff00689B)),
-            title:  Text(
+            leading: Icon(Icons.person_rounded,
+                color: selectedIndex == 1 ? Colors.white : Color(0xff00689B)),
+            title: Text(
               'Users',
               style: TextStyle(
                 color: selectedIndex == 1 ? Colors.white : Color(0xff00689B),
               ),
             ),
             onTap: () {
-                onItemTapped(1);
+              onItemTapped(1);
               Navigator.pop(context);
             },
             selected: selectedIndex == 1,
             selectedTileColor: Color(0xb62aacee), // Background color
           ),
           ListTile(
-            leading:  Icon(Icons.event, color: selectedIndex == 2 ? Colors.white : Color(0xff00689B)),
-            title:  Text(
+            leading: Icon(Icons.event,
+                color: selectedIndex == 2 ? Colors.white : Color(0xff00689B)),
+            title: Text(
               'Events',
               style: TextStyle(
                 color: selectedIndex == 2 ? Colors.white : Color(0xff00689B),
               ),
             ),
-            onTap: () {
-                onItemTapped(2);
+            onTap: () async {
+              onItemTapped(2);
+              const storage = FlutterSecureStorage();
+              var token = await storage.read(key: "token");
               Navigator.pop(context);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const EventStatistics()),
+                MaterialPageRoute(
+                    builder: (context) =>  EventStatistics(token: token!)),
               );
             },
             selected: selectedIndex == 2,
             selectedTileColor: Color(0xb62aacee), // Background color
           ),
           ListTile(
-            leading:  Icon(Icons.post_add, color: selectedIndex == 3 ? Colors.white : Color(0xff00689B)),
-            title:  Text(
+            leading: Icon(Icons.post_add,
+                color: selectedIndex == 3 ? Colors.white : Color(0xff00689B)),
+            title: Text(
               'Posts',
               style: TextStyle(
                 color: selectedIndex == 3 ? Colors.white : Color(0xff00689B),
               ),
             ),
             onTap: () {
-                onItemTapped(3);
+              onItemTapped(3);
               Navigator.pop(context);
-                Navigator.push(
+              Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const PostScreen()),
               );
@@ -148,30 +155,32 @@ class MyDrawer extends StatelessWidget {
             selectedTileColor: Color(0xb62aacee), // Background color
           ),
           ListTile(
-            leading:  Icon(Icons.store, color: selectedIndex == 4 ? Colors.white : Color(0xff00689B)),
-            title:  Text(
+            leading: Icon(Icons.store,
+                color: selectedIndex == 4 ? Colors.white : Color(0xff00689B)),
+            title: Text(
               'Store',
               style: TextStyle(
                 color: selectedIndex == 4 ? Colors.white : Color(0xff00689B),
               ),
             ),
             onTap: () {
-                onItemTapped(4);
+              onItemTapped(4);
               Navigator.pop(context);
             },
             selected: selectedIndex == 4,
             selectedTileColor: Color(0xb62aacee), // Background color
           ),
           ListTile(
-            leading:  Icon(Icons.report, color: selectedIndex == 5 ? Colors.white : Color(0xff00689B)),
-            title:  Text(
+            leading: Icon(Icons.report,
+                color: selectedIndex == 5 ? Colors.white : Color(0xff00689B)),
+            title: Text(
               'Reclamation',
               style: TextStyle(
                 color: selectedIndex == 5 ? Colors.white : Color(0xff00689B),
               ),
             ),
             onTap: () {
-                onItemTapped(5);
+              onItemTapped(5);
               Navigator.pop(context);
             },
             selected: selectedIndex == 5,
@@ -179,23 +188,23 @@ class MyDrawer extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading:  Icon(Icons.logout, color: selectedIndex == 6 ? Colors.white : Color(0xff00689B)),
-            title:  Text(
+            leading: Icon(Icons.logout,
+                color: selectedIndex == 6 ? Colors.white : Color(0xff00689B)),
+            title: Text(
               'Logout',
               style: TextStyle(
                 color: selectedIndex == 6 ? Colors.white : Color(0xff00689B),
               ),
             ),
             onTap: () async {
-                onItemTapped(6);
-                const storage = FlutterSecureStorage();
-                await storage.delete(key: "token").then((value) {
-                  Navigator.push(
+              onItemTapped(6);
+              const storage = FlutterSecureStorage();
+              await storage.delete(key: "token").then((value) {
+                Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const LoginScreen()),
                 );
-                });
-                
+              });
             },
             selected: selectedIndex == 6,
             selectedTileColor: Color(0xb62aacee), // Background color
@@ -204,7 +213,4 @@ class MyDrawer extends StatelessWidget {
       ),
     );
   }
-
-
-
 }
