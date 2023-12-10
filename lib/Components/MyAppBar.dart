@@ -1,4 +1,3 @@
-import 'package:aquaguard/Screens/profileScreen.dart';
 import 'package:flutter/material.dart';
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
