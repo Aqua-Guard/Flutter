@@ -1,11 +1,12 @@
 import 'package:aquaguard/Models/Event.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 
 const urievent = 'http://localhost:9090/events/admin';
 const uriparticipation = 'http://localhost:9090/participations/admin';
-const authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVmZjc5MDdkYjE5NTYxMzcyNmNkYjQiLCJ1c2VybmFtZSI6Im1vaGFtZWQiLCJpYXQiOjE3MDIxNTY4NjMsImV4cCI6MTcwMjE2NDA2M30.pRF1o0_0HqTuv98AQXKpsaWuwjFRhDvljC4ONVULaZc";
-
+const authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVmZjc5MDdkYjE5NTYxMzcyNmNkYjQiLCJ1c2VybmFtZSI6Im1vaGFtZWQiLCJpYXQiOjE3MDIxNjUwNzAsImV4cCI6MTcwMjE3MjI3MH0.upFMwKE6JgtAG2qcj1_ax1BXA4Q7UcvDjQXTWNsZhFU";
 Future<List<Event>> fetchEvents() async {
   final response = await http.get(Uri.parse(urievent),
   headers:  {

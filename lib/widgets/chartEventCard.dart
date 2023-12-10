@@ -1,5 +1,5 @@
 import 'package:aquaguard/Screens/event/eventScreen.dart';
-import 'package:aquaguard/Network/EventWebService.dart';
+import 'package:aquaguard/Services/EventWebService.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 

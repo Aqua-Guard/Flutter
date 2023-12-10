@@ -1,7 +1,7 @@
 import 'package:aquaguard/Components/MyAppBar.dart';
 import 'package:aquaguard/Components/MyDrawer.dart';
 import 'package:aquaguard/Models/Event.dart';
-import 'package:aquaguard/Network/EventWebService.dart';
+import 'package:aquaguard/Services/EventWebService.dart';
 import 'package:aquaguard/widgets/chartEventCard.dart';
 import 'package:aquaguard/widgets/totalEventCard.dart';
 import 'package:flutter/material.dart';
