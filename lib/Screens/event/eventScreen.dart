@@ -18,7 +18,7 @@ class _EventScreenState extends State<EventScreen> {
   @override
   void initState() {
     super.initState();
-    fetchEvents().then((events) {
+    EventWebService().fetchEvents().then((events) {
       setState(() {
         eventsData = events;
       });

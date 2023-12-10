@@ -1,14 +1,14 @@
 import 'package:aquaguard/Models/Event.dart';
+import 'package:aquaguard/Utils/constantes.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 
-const urievent = 'http://localhost:9090/events/admin';
-const uriparticipation = 'http://localhost:9090/participations/admin';
 const authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVmZjc5MDdkYjE5NTYxMzcyNmNkYjQiLCJ1c2VybmFtZSI6Im1vaGFtZWQiLCJpYXQiOjE3MDIxNjUwNzAsImV4cCI6MTcwMjE3MjI3MH0.upFMwKE6JgtAG2qcj1_ax1BXA4Q7UcvDjQXTWNsZhFU";
+class EventWebService{
+
 Future<List<Event>> fetchEvents() async {
-  final response = await http.get(Uri.parse(urievent),
+  final response = await http.get(Uri.parse(Constantes.urlParticipation),
   headers:  {
         'Authorization': 'Bearer $authToken',
         
@@ -24,7 +24,7 @@ Future<List<Event>> fetchEvents() async {
 
 
 Future<void> deleteParticipation(String eventId, String userId) async {
-  final url = Uri.parse('$uriparticipation/$eventId/$userId');
+  final url = Uri.parse('$Constantes.urlParticipation/$eventId/$userId');
 
   try {
     final response = await http.delete(
@@ -52,7 +52,7 @@ Future<void> deleteParticipation(String eventId, String userId) async {
 
 Future<List<Map<String, dynamic>>> fetchEventsNbParticipants() async {
   final response = await http.get(
-    Uri.parse('$urievent/stats'),
+    Uri.parse('$Constantes.urlEvent/stats'),
     headers: {
       'Authorization': 'Bearer $authToken',
     },
@@ -76,3 +76,5 @@ Future<List<Map<String, dynamic>>> fetchEventsNbParticipants() async {
     throw Exception('Failed to load events stats');
   }
 }
+}
+
