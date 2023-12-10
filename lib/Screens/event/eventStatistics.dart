@@ -7,7 +7,8 @@ import 'package:aquaguard/widgets/totalEventCard.dart';
 import 'package:flutter/material.dart';
 
 class EventStatistics extends StatefulWidget {
-  const EventStatistics({Key? key}) : super(key: key);
+  String token;
+  EventStatistics({Key? key, required this.token}) : super(key: key);
 
   @override
   State<EventStatistics> createState() => _EventStatisticsState();
@@ -15,12 +16,12 @@ class EventStatistics extends StatefulWidget {
 
 class _EventStatisticsState extends State<EventStatistics> {
   int _selectedIndex = 2;
-  late List<Event> eventsData =[];
+  late List<Event> eventsData = [];
 
   @override
   void initState() {
     super.initState();
-    EventWebService().fetchEvents().then((events) {
+    EventWebService().fetchEvents(widget.token).then((events) {
       setState(() {
         eventsData = events;
       });
@@ -58,10 +59,9 @@ class _EventStatisticsState extends State<EventStatistics> {
                   padding: const EdgeInsets.all(16.0),
                   child: TotalEventsCard(totalEvents: eventsData.length)),
               Expanded(
-                child:
-              Padding(
-                padding: EdgeInsets.all(16.0),
-                child:ChartEventCard(),
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: ChartEventCard(token : widget.token),
                 ),
               ),
             ]),
