@@ -85,27 +85,4 @@ class NetworkService {
     }
   }
 
-  static Future<int>? upload(File img, String type, File? verso) async {
-    var uri = Uri.parse('${Constantes.baseUrl}/step2');
-
-    var request = http.MultipartRequest("POST", uri);
-    String? token = await storage.read(key: "token");
-    request.headers.addAll({'Authorization': 'Bearer ${token ?? ""}'});
-    request.fields.addAll({"type": type});
-    if (type == "cin") {
-      request.files.add(http.MultipartFile.fromBytes(
-          "recto", img.readAsBytesSync(),
-          filename: "Photo.jpg", contentType: MediaType("image", "jpg")));
-      request.files.add(http.MultipartFile.fromBytes(
-          "verso", verso!.readAsBytesSync(),
-          filename: "Photo.jpg", contentType: MediaType("image", "jpg")));
-    } else {
-      request.files.add(http.MultipartFile.fromBytes(
-          "file", img.readAsBytesSync(),
-          filename: "Photo.jpg", contentType: MediaType("image", "jpg")));
-    }
-
-    var response = await request.send();
-    return response.statusCode;
-  }
 }

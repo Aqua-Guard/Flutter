@@ -4,6 +4,7 @@ import 'package:aquaguard/Screens/homeScreen.dart';
 import 'package:aquaguard/Screens/loginScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:aquaguard/Screens/profileScreen.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class MyDrawer extends StatelessWidget {
   final int selectedIndex;
@@ -185,13 +186,16 @@ class MyDrawer extends StatelessWidget {
                 color: selectedIndex == 6 ? Colors.white : Color(0xff00689B),
               ),
             ),
-            onTap: () {
+            onTap: () async {
                 onItemTapped(6);
-                Navigator.pop(context);
-                Navigator.push(
+                const storage = FlutterSecureStorage();
+                await storage.delete(key: "token").then((value) {
+                  Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const LoginScreen()),
                 );
+                });
+                
             },
             selected: selectedIndex == 6,
             selectedTileColor: Color(0xb62aacee), // Background color
