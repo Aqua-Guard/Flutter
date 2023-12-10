@@ -25,7 +25,7 @@ Future<List<Event>> fetchEvents(String token) async {
 
 
 Future<void> deleteParticipation(String token,String eventId, String userId) async {
-  final url = Uri.parse('$Constantes.urlParticipation/$eventId/$userId');
+  final url = Uri.parse('${Constantes.urlParticipation}/$eventId/$userId');
 
   try {
     final response = await http.delete(
@@ -54,7 +54,7 @@ Future<void> deleteParticipation(String token,String eventId, String userId) asy
 Future<List<Map<String, dynamic>>> fetchEventsNbParticipants(String token) async {
 
   final response = await http.get(
-    Uri.parse(Constantes.urlEvent+'/stats'),
+    Uri.parse('${Constantes.urlEvent}/stats'),
     headers: {
       'Authorization': 'Bearer $token',
     },
