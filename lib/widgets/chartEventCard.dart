@@ -14,7 +14,7 @@ class _ChartEventCardState extends State<ChartEventCard> {
   @override
   void initState() {
     super.initState();
-    fetchEventsNbParticipants().then((events) {
+    EventWebService().fetchEventsNbParticipants().then((events) {
       setState(() {
         eventData = events;
       });

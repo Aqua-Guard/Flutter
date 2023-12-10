@@ -20,7 +20,7 @@ class _EventStatisticsState extends State<EventStatistics> {
   @override
   void initState() {
     super.initState();
-    fetchEvents().then((events) {
+    EventWebService().fetchEvents().then((events) {
       setState(() {
         eventsData = events;
       });

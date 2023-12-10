@@ -181,7 +181,7 @@ Future<bool?> showConfirmationDialog(BuildContext context) async {
                                                   .removeAt(index);
                                             });
                                                 // User confirmed, you can perform additional actions if needed
-                                                deleteParticipation(
+                                                EventWebService().deleteParticipation(
                                                     widget.event.idEvent,
                                                     participant['userId']);
                                                 Fluttertoast.showToast(
