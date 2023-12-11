@@ -2,6 +2,9 @@ import 'package:aquaguard/Models/userResponse.dart';
 import 'package:aquaguard/Utils/constantes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:http/http.dart';
+
+import '../../Services/userService.dart';
 
 class UserCard extends StatelessWidget {
   final UserResponse userResponse;
@@ -84,8 +87,44 @@ class UserCard extends StatelessWidget {
                                   ),
                                 ),
                                 TextButton(
-                                  onPressed: () {
+                                  onPressed: () async{
+                                    Response? res = await UserService().deleteUser(userResponse.id!);
                                     Navigator.pop(context);
+
+                                    if(res?.statusCode == 200)
+                                      {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              title: const Text("Information"),
+                                              content: const Text("User successfully deleted!"),
+                                              actions: [
+                                                TextButton(
+                                                    onPressed: () => Navigator.pop(context),
+                                                    child: const Text("Dismiss"))
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      }
+                                    else
+                                      {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              title: const Text("Error"),
+                                              content: const Text("User could not be deleted!"),
+                                              actions: [
+                                                TextButton(
+                                                    onPressed: () => Navigator.pop(context),
+                                                    child: const Text("Dismiss"))
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      }
                                   },
                                   child: const Text(
                                     'Delete',

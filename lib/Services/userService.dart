@@ -19,4 +19,11 @@ class UserService{
       throw Exception('Failed to load users');
     }
   }
+
+  Future<Response?> deleteUser(String id) async {
+    final response = await NetworkService.sendRequest(
+        requestType: RequestType.delete,
+        url: "${Constantes.baseUrl}/deleteUserById/$id");
+    return response;
+  }
 }
