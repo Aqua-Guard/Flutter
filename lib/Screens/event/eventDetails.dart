@@ -9,7 +9,8 @@ class EventDetails extends StatefulWidget {
   final Event event;
   String token;
 
-   EventDetails({Key? key, required this.event, required this.token}) : super(key: key);
+  EventDetails({Key? key, required this.event, required this.token})
+      : super(key: key);
 
   @override
   State<EventDetails> createState() => _EventDetailsState();
@@ -17,32 +18,32 @@ class EventDetails extends StatefulWidget {
 
 class _EventDetailsState extends State<EventDetails> {
   // Sample data for the event details
-Future<bool?> showConfirmationDialog(BuildContext context) async {
-  return showDialog<bool?>(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text('Confirmation'),
-        content: const Text('Are you sure you want to delete this participation?'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(false);
-            },
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(true);
-            },
-            child: const Text('Confirm'),
-          ),
-        ],
-      );
-    },
-  );
-}
-
+  Future<bool?> showConfirmationDialog(BuildContext context) async {
+    return showDialog<bool?>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Confirmation'),
+          content:
+              const Text('Are you sure you want to delete this participation?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: const Text('Confirm'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -173,32 +174,42 @@ Future<bool?> showConfirmationDialog(BuildContext context) async {
                                             "Unknown User"),
                                         ElevatedButton.icon(
                                           onPressed: () async {
-                                              bool? confirmed =
-                                              await showConfirmationDialog(
-                                                  context);
-                                              if (confirmed == true) {
-                                                setState(() {
-                                              widget.event.participants
-                                                  .removeAt(index);
-                                            });
-                                                // User confirmed, you can perform additional actions if needed
-                                                EventWebService().deleteParticipation(
-                                                    widget.token,
-                                                    widget.event.idEvent,
-                                                    participant['userId']);
-                                                Fluttertoast.showToast(
-                                                  msg: "Deleted successfully",
-                                                  toastLength:
-                                                      Toast.LENGTH_SHORT,
-                                                  gravity: ToastGravity.BOTTOM,
-                                                  timeInSecForIosWeb: 1,
-                                                  backgroundColor: Colors.green,
-                                                  textColor: Colors.white,
-                                                  fontSize: 16.0,
-                                                );
+                                            bool? confirmed =
+                                                await showConfirmationDialog(
+                                                    context);
+                                            if (confirmed == true) {
+                                              setState(() {
+                                                widget.event.participants
+                                                    .removeAt(index);
+                                              });
+                                              // User confirmed, you can perform additional actions if needed
+                                              EventWebService()
+                                                  .deleteParticipation(
+                                                      widget.token,
+                                                      widget.event.idEvent,
+                                                      participant['userId']);
+                                              SnackBar snackBar =
+                                                  const SnackBar(
+                                                content: Row(
+                                                  children: [
+                                                    Icon(Icons.check,
+                                                        color: Colors
+                                                            .white), // Replace with your desired icon
+                                                    SizedBox(
+                                                        width:
+                                                            8), // Adjust spacing as needed
+                                                    Text(
+                                                        'Participant Deleted successfully!',
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white)),
+                                                  ],
+                                                ),
+                                                backgroundColor: Colors.green,
+                                              );
 
-                                                 
-                                              
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(snackBar);
                                             }
                                           },
                                           icon: const Icon(Icons.delete,

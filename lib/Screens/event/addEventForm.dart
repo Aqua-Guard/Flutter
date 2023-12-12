@@ -1,13 +1,14 @@
 import 'package:aquaguard/Models/partenaire.dart';
 import 'package:aquaguard/Services/EventWebService.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class AddEventForm extends StatefulWidget {
-   String token;
-   AddEventForm({Key? key ,required this.token}) : super(key: key);
+  String token;
+  AddEventForm({Key? key, required this.token}) : super(key: key);
 
   @override
   State<AddEventForm> createState() => _AddEventFormState();
@@ -258,12 +259,21 @@ class _AddEventFormState extends State<AddEventForm> {
                                   // Validate date before saving the form data
                                   String? dateValidation = _validateDate();
                                   if (dateValidation != null) {
-                                    // Show a message or handle the validation error
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(dateValidation),
+                                    SnackBar snackBar = SnackBar(
+                                      content: Row(
+                                        children: [
+                                          const Icon(Icons.error,color: Colors.white), 
+                                          const SizedBox(width:8), 
+                                          Text(dateValidation,style: const TextStyle(color: Colors.white)),
+                                        ],
                                       ),
+                                      backgroundColor: Colors
+                                          .red, // Use red color for error messages
                                     );
+
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
+                                    // Show a message or handle the validation error
                                   } else {
                                     // Proceed with form validation and saving data
                                     if (_formKey.currentState?.validate() ??
@@ -274,13 +284,34 @@ class _AddEventFormState extends State<AddEventForm> {
                                         userId: _selectedOrganizer!,
                                         name: _eventName,
                                         dateDebut: DateFormat('yyyy-MM-dd')
-                                            .format(_dateDebut!.toLocal()).toString(),
+                                            .format(_dateDebut!.toLocal())
+                                            .toString(),
                                         dateFin: DateFormat('yyyy-MM-dd')
-                                            .format(_dateFin!.toLocal()).toString(),
+                                            .format(_dateFin!.toLocal())
+                                            .toString(),
                                         description: _eventDescription,
                                         lieu: _eventLocation,
                                         image: _pickedImage!,
                                       );
+                                      SnackBar snackBar = const SnackBar(
+                                        content: Row(
+                                          children: [
+                                            Icon(Icons.check,
+                                                color: Colors
+                                                    .white), // Replace with your desired icon
+                                            SizedBox(
+                                                width:
+                                                    8), // Adjust spacing as needed
+                                            Text('Event added successfully!',
+                                                style: TextStyle(
+                                                    color: Colors.white)),
+                                          ],
+                                        ),
+                                        backgroundColor: Colors.green,
+                                      );
+
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(snackBar);
 
                                       Navigator.pop(context);
                                     }
