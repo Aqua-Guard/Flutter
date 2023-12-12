@@ -42,9 +42,9 @@ dependencies:
   intl: ^0.18.1
   flutter_secure_storage: ^9.0.0
   fluttertoast: ^8.2.4
-
 dev_dependencies:
   flutter_test:
+
     sdk: flutter
 
   # The "flutter_lints" package below contains a set of recommended lints to

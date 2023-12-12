@@ -1,4 +1,5 @@
 import 'package:aquaguard/Screens/Post/postScreen.dart';
+import 'package:aquaguard/Screens/actualite/actualiteScreen.dart';
 import 'package:aquaguard/Screens/event/eventStatistics.dart';
 import 'package:aquaguard/Screens/homeScreen.dart';
 import 'package:aquaguard/Screens/loginScreen.dart';
@@ -96,6 +97,31 @@ class MyDrawer extends StatelessWidget {
             selectedTileColor: Color(0xb62aacee),
             // Background color
           ),
+          ///////adem
+                    ListTile(
+            leading: Icon(Icons.newspaper,
+                color: selectedIndex == 1 ? Colors.white : Color(0xff00689B)),
+            title: Text(
+              'News',
+              style: TextStyle(
+                color: selectedIndex == 1 ? Colors.white : Color(0xff00689B),
+              ),
+            ),
+            onTap: () async {
+              onItemTapped(2);
+              const storage = FlutterSecureStorage();
+              var token = await storage.read(key: "token");
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>  NewsScreen(token: token!)),
+              );
+            },
+            selected: selectedIndex == 2,
+            selectedTileColor: Color(0xb62aacee), // Background color
+          ),
+          /////adem
           ListTile(
             leading: Icon(Icons.person_rounded,
                 color: selectedIndex == 1 ? Colors.white : Color(0xff00689B)),
