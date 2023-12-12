@@ -1,10 +1,13 @@
+import 'package:aquaguard/Models/partenaire.dart';
+import 'package:aquaguard/Services/EventWebService.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class AddEventForm extends StatefulWidget {
-  const AddEventForm({Key? key}) : super(key: key);
+   String token;
+   AddEventForm({Key? key ,required this.token}) : super(key: key);
 
   @override
   State<AddEventForm> createState() => _AddEventFormState();
@@ -19,7 +22,7 @@ class _AddEventFormState extends State<AddEventForm> {
   String _eventLocation = '';
   DateTime? _dateDebut;
   DateTime? _dateFin;
-  String _organizer = ''; // You may need to fetch the list of organizers
+  String? _selectedOrganizer;
 
   Future<void> _selectDate(
       BuildContext context, DateTime initialDate, bool isStartDate) async {
@@ -78,7 +81,7 @@ class _AddEventFormState extends State<AddEventForm> {
     return null;
   }
 
-  late File? _pickedImage = null;
+  late XFile? _pickedImage = null;
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -86,9 +89,24 @@ class _AddEventFormState extends State<AddEventForm> {
 
     if (pickedImage != null) {
       setState(() {
-        _pickedImage = File(pickedImage!.path);
+        _pickedImage = pickedImage!;
       });
     }
+  }
+
+  List<Partenaire> partenairesData = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    EventWebService().fetchPartenaires().then((partenaires) {
+      setState(() {
+        partenairesData = partenaires;
+      });
+    }).catchError((error) {
+      print('Error fetching partenaires: $error');
+    });
   }
 
   @override
@@ -215,36 +233,19 @@ class _AddEventFormState extends State<AddEventForm> {
                           ),
                           const SizedBox(height: 16.0),
                           DropdownButtonFormField<String>(
-                            value: _organizer.isNotEmpty
-                                ? _organizer
-                                : 'Malek Labidi',
+                            value: _selectedOrganizer,
                             onChanged: (value) {
                               setState(() {
-                                _organizer = value ?? 'Malek Labidi';
+                                _selectedOrganizer = value;
                               });
                             },
-                            items: const [
-                              DropdownMenuItem(
-                                value: 'Malek Labidi',
-                                child: Text('Malek Labidi'),
-                              ),
-                              DropdownMenuItem(
-                                value: 'Youssef Farhat',
-                                child: Text('Youssef Farhat'),
-                              ),
-                              DropdownMenuItem(
-                                value: 'Mohamed Kout',
-                                child: Text('Mohamed Kout'),
-                              ),
-                              DropdownMenuItem(
-                                value: 'Amira Ben Mbarek',
-                                child: Text('Amira Ben Mbarek'),
-                              ),
-                              DropdownMenuItem(
-                                value: 'Adem Seddik',
-                                child: Text('Adem Seddik'),
-                              ),
-                            ],
+                            items: partenairesData
+                                .map((partenaire) => DropdownMenuItem(
+                                      value: partenaire.id,
+                                      child: Text(
+                                          '${partenaire.firstName} ${partenaire.LastName}'),
+                                    ))
+                                .toList(),
                             decoration: const InputDecoration(
                               labelText: 'Organizer',
                             ),
@@ -253,7 +254,7 @@ class _AddEventFormState extends State<AddEventForm> {
                           Column(
                             children: [
                               ElevatedButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   // Validate date before saving the form data
                                   String? dateValidation = _validateDate();
                                   if (dateValidation != null) {
@@ -268,7 +269,19 @@ class _AddEventFormState extends State<AddEventForm> {
                                     if (_formKey.currentState?.validate() ??
                                         false) {
                                       _formKey.currentState?.save();
-                                      // Save the form data or perform any other action
+                                      await EventWebService().addEventByAdmin(
+                                        token: widget.token,
+                                        userId: _selectedOrganizer!,
+                                        name: _eventName,
+                                        dateDebut: DateFormat('yyyy-MM-dd')
+                                            .format(_dateDebut!.toLocal()).toString(),
+                                        dateFin: DateFormat('yyyy-MM-dd')
+                                            .format(_dateFin!.toLocal()).toString(),
+                                        description: _eventDescription,
+                                        lieu: _eventLocation,
+                                        image: _pickedImage!,
+                                      );
+
                                       Navigator.pop(context);
                                     }
                                   }

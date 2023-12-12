@@ -1,10 +1,11 @@
 import 'package:aquaguard/Models/Event.dart';
+import 'package:aquaguard/Models/partenaire.dart';
 import 'package:aquaguard/Utils/constantes.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
-
-//const authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTVmZjc5MDdkYjE5NTYxMzcyNmNkYjQiLCJ1c2VybmFtZSI6Im1vaGFtZWQiLCJpYXQiOjE3MDIyMDQzMDIsImV4cCI6MTcwMjIxMTUwMn0.qBlg9t3qnvkAC78LZbvvT2rVpkgF-rpO0ybxIjYGr1E";
 class EventWebService{
 
 Future<List<Event>> fetchEvents(String token) async {
@@ -78,5 +79,72 @@ Future<List<Map<String, dynamic>>> fetchEventsNbParticipants(String token) async
     throw Exception('Failed to load events stats');
   }
 }
+
+
+Future<List<Partenaire>> fetchPartenaires() async {
+  final response = await http.get(Uri.parse('${Constantes.baseUrl}/getPartenaires'),
+ 
+ /* headers:  {
+        'Authorization': 'Bearer $token',
+        
+      },*/
+      );
+
+  if (response.statusCode == 200) {
+    List<dynamic> data = json.decode(response.body);
+    return data.map((json) => Partenaire.fromJson(json)).toList();
+  } else {
+    throw Exception('Failed to load partenaires');
+  }
 }
+
+
+
+Future<void> addEventByAdmin({
+  required String token,
+  required String userId,
+  required String name,
+  required String dateDebut,
+  required String dateFin,
+  required String description,
+  required String lieu,
+  required XFile image,
+}) async {
+  var uri = Uri.parse(Constantes.urlEvent);
+  var request = http.MultipartRequest('POST', uri);
+
+  // Add token to headers
+  request.headers['Authorization'] = 'Bearer $token';
+
+  // Add form fields
+  request.fields['userId'] = userId;
+  request.fields['name'] = name;
+  request.fields['DateDebut'] = dateDebut;
+  request.fields['DateFin'] = dateFin;
+  request.fields['Description'] = description;
+  request.fields['lieu'] = lieu;
+  request.fields['image'] =  image.path.split('.').last;
+
+
+  try {
+    var response = await request.send();
+    if (response.statusCode == 201) {
+      print('Event Added Successfully!');
+    } else {
+      print('Failed to add event. Status code: ${response.statusCode}');
+    }
+  } catch (error) {
+    print('Error adding event: $error');
+  }
+}
+
+
+}
+
+
+
+
+
+
+
 
