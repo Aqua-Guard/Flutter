@@ -226,7 +226,7 @@ class _EventScreenState extends State<EventScreen> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const AddEventForm()),
+              MaterialPageRoute(builder: (context) =>  AddEventForm(token: widget.token)),
             );
           },
           backgroundColor: const Color(0xff00689B),
