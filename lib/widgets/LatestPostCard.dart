@@ -3,10 +3,17 @@ import 'package:aquaguard/Screens/Post/allPostsScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 
-class LatestPostCard extends StatelessWidget {
-  final List<Post> latestPosts;
+class LatestPostCard extends StatefulWidget {
+  String token ;
+ 
 
-  LatestPostCard({Key? key, required this.latestPosts}) : super(key: key);
+  LatestPostCard({Key? key,required this.token}) : super(key: key);
+
+ @override
+  State<LatestPostCard> createState() => _LatestPostCardState();
+}
+class _LatestPostCardState extends State<LatestPostCard> {
+
 
   @override
   Widget build(BuildContext context) {
@@ -35,48 +42,48 @@ class LatestPostCard extends StatelessWidget {
 
                      Navigator.of(context).push(
                        MaterialPageRoute(
-                           builder: (context) => AllPostsScreen()),
+                           builder: (context) => AllPostsScreen(token : widget.token)),
                     );
                   },
                 ),
               ],
             ),
             const SizedBox(height: 10),
-            ...latestPosts
-                .map((post) => Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundImage: AssetImage(post.userImage),
-                            radius: 20,
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  post.userName,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  intl.DateFormat.yMMMd().format(DateTime
-                                      .now()), // Replace with post's actual date
-                                  style: TextStyle(
-                                      color: Colors.grey[600], fontSize: 12),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const Icon(Icons.thumb_up, color: Colors.blue),
-                          Text(' ${post.nbLike} Likes'),
-                        ],
-                      ),
-                    ))
-                .toList(),
+            // ...latestPosts
+            //     .map((post) => Padding(
+            //           padding: const EdgeInsets.only(bottom: 10),
+            //           child: Row(
+            //             children: [
+            //               CircleAvatar(
+            //                 backgroundImage: AssetImage(post.userImage),
+            //                 radius: 20,
+            //               ),
+            //               const SizedBox(width: 10),
+            //               Expanded(
+            //                 child: Column(
+            //                   crossAxisAlignment: CrossAxisAlignment.start,
+            //                   children: [
+            //                     Text(
+            //                       post.userName,
+            //                       style: const TextStyle(
+            //                         fontWeight: FontWeight.bold,
+            //                       ),
+            //                     ),
+            //                     Text(
+            //                       intl.DateFormat.yMMMd().format(DateTime
+            //                           .now()), // Replace with post's actual date
+            //                       style: TextStyle(
+            //                           color: Colors.grey[600], fontSize: 12),
+            //                     ),
+            //                   ],
+            //                 ),
+            //               ),
+            //               const Icon(Icons.thumb_up, color: Colors.blue),
+            //               Text(' ${post.nbLike} Likes'),
+            //             ],
+            //           ),
+            //         ))
+            //     .toList(),
           ],
         ),
       ),
