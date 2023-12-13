@@ -2,7 +2,6 @@ import 'package:aquaguard/Models/Event.dart';
 import 'package:aquaguard/Screens/event/addEventForm.dart';
 import 'package:aquaguard/Screens/event/eventDetails.dart';
 import 'package:aquaguard/Services/EventWebService.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class EventScreen extends StatefulWidget {
@@ -120,6 +119,8 @@ class _EventScreenState extends State<EventScreen> {
                         ]),
                   ),
                 if (eventsData.isNotEmpty)
+                  Expanded(
+                    child:
                   SingleChildScrollView(
                     scrollDirection: Axis.vertical,
                     child: Card(
@@ -218,6 +219,7 @@ class _EventScreenState extends State<EventScreen> {
                       ),
                     ),
                   ),
+                  )
               ]),
             ),
           ),
