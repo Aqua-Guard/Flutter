@@ -2,23 +2,23 @@ import 'package:aquaguard/Models/comment.dart';
 import 'package:aquaguard/Models/like.dart';
 
 class Post {
-  final String idPost;
-  final String userName;
-  final String userRole;
-  final String userImage;
-  final String description;
-  final String postImage;
-  final int nbLike;
-  final int nbComments;
-  final int nbShare;
-  final List<Comment> comments;
-  final List<Like> likes;
+  String idPost;
+  String userName;
+  String? userRole; // Making userRole nullable
+  String? userImage; // Making userImage nullable
+  String description;
+  String postImage;
+  int nbLike;
+  int nbComments;
+  int nbShare;
+  List<Comment> comments;
+  List<Like> likes;
 
   Post({
     required this.idPost,
     required this.userName,
-    required this.userRole,
-    required this.userImage,
+    this.userRole, // Nullable
+    this.userImage, // Nullable
     required this.description,
     required this.postImage,
     required this.nbLike,
@@ -27,5 +27,24 @@ class Post {
     required this.comments,
     required this.likes,
   });
-  
+
+  factory Post.fromJson(Map<String, dynamic> json) {
+    var commentList = json['comments'] as List;
+    var likeList = json['likes'] as List;
+    List<Comment> comments = commentList.map((i) => Comment.fromJson(i)).toList();
+    List<Like> likes = likeList.map((i) => Like.fromJson(i)).toList();    
+    return Post(
+      idPost: json['idPost'],
+      userName: json['userName'],
+      userRole: json['userRole'], // Nullable
+      userImage: json['userImage'], // Nullable
+      description: json['description'],
+      postImage: json['postImage'],
+      nbLike: json['nbLike'],
+      nbComments: json['nbComments'],
+      nbShare: json['nbShare'],
+      comments: comments,
+      likes: likes,
+    );
+  }
 }

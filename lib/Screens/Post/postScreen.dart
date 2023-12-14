@@ -3,6 +3,7 @@ import 'package:aquaguard/Components/MyDrawer.dart';
 import 'package:aquaguard/Models/comment.dart';
 import 'package:aquaguard/Models/like.dart';
 import 'package:aquaguard/Models/post.dart';
+import 'package:aquaguard/Services/PostWebService.dart';
 import 'package:aquaguard/widgets/LatestPostCard.dart';
 import 'package:aquaguard/widgets/barChartCard.dart';
 import 'package:aquaguard/widgets/totalPostsCard.dart';
@@ -10,73 +11,31 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class PostScreen extends StatefulWidget {
-
-  const PostScreen({Key? key}) : super(key: key);
+  String token;
+  PostScreen({Key? key, required this.token}) : super(key: key);
 
   @override
   State<PostScreen> createState() => _PostScreenState();
 }
 
 class _PostScreenState extends State<PostScreen> {
-  late final List<Comment> comments;
-  late final List<Like> likes;
-  late final List<Post> myLatestPost;
+late List<Post> postData = [];
   int _selectedIndex = 3;
-
-   @override
+  
+  @override
   void initState() {
     super.initState();
 
-    // Initialize comments
-    comments = [
-      Comment(idUser: '1', idPost: 'post1', idComment: 'comment1', commentAvatar: 'avatar1.png', commentUsername: 'User 1', comment: 'Great post!'),
-      Comment(idUser: '2', idPost: 'post1', idComment: 'comment2', commentAvatar: 'avatar2.png', commentUsername: 'User 2', comment: 'Interesting read.'),
-    ];
-
-    // Initialize likes
-    likes = [
-      Like(idLike: '1', likeAvatar: 'post1', likeUsername: 'youssef'), 
-      Like(idLike: '2', likeAvatar: 'post1', likeUsername: 'youssef'),
-    ];
-
-    // Initialize myLatestPost
-    myLatestPost = [ Post(
-      idPost: '6550ea27aac01c964b6b9e95',
-      userName: 'youssef',
-      userRole: 'consommateur',
-      userImage: 'assets/images/youssef.jpg',
-      description: 'Dive into the serene beauty of aquatic life with AquaGard!',
-      postImage: '1699801639506.png',
-      nbLike: 2,
-      nbComments: 2,
-      nbShare: 5,
-      comments: comments,
-      likes: likes,
-    ),Post(
-      idPost: '6550ea27aac01c964b6b9e95',
-      userName: 'Youssef Farhat',
-      userRole: 'consommateur',
-      userImage: '/images/user1.jpg',
-      description: 'Dive into the serene beauty of aquatic life with AquaGard!',
-      postImage: '1699801639506.png',
-      nbLike: 2,
-      nbComments: 2,
-      nbShare: 5,
-      comments: comments,
-      likes: likes,
-    ),Post(
-      idPost: '6550ea27aac01c964b6b9e95',
-      userName: 'Youssef Farhat',
-      userRole: 'consommateur',
-      userImage: '/images/user2.jpg',
-      description: 'Dive into the serene beauty of aquatic life with AquaGard!',
-      postImage: '1699801639506.png',
-      nbLike: 2,
-      nbComments: 2,
-      nbShare: 5,
-      comments: comments,
-      likes: likes,
-    )];
+    PostWebService()
+        .getAllPosts(widget.token)
+        .then((posts) => {
+              setState(() {
+                postData = posts;          
+              })
+            })
+        .catchError((error) {
+      print("Error Fetch posts: " + error);
+    });
   }
 
 
@@ -105,25 +64,21 @@ class _PostScreenState extends State<PostScreen> {
               ),
               Column(
                 children: [
-                  const Padding(
-                    
+                   Padding(  
                     padding: EdgeInsets.all(8.0),
                     child: TotalPostsCard(
-                        totalPosts:
-                            20), // Replace 100 with your total posts count
+                        totalPosts: postData.length ), // Replace 100 with your total posts count
                   ),
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: BarChartCard(),
+                      child: BarChartCard(token : widget.token),
                     ),
                   ),
                   Padding(
                    
                     padding: const EdgeInsets.all(8.0),
-                    child: LatestPostCard(
-                      latestPosts: myLatestPost, // Replace with your latest Post object
-                    ),
+                    child: LatestPostCard(token : widget.token,postData: postData),
                   ),
                 ],
               ),

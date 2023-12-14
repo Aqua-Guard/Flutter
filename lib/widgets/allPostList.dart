@@ -34,7 +34,7 @@ class AllPostsList extends StatelessWidget {
                   ),
                   child: CircleAvatar(
                     backgroundImage: AssetImage(
-                        post.userImage), // Using the userImage from Post
+                        post.postImage), // Using the userImage from Post
                     radius: 25, // Adjust the size as needed
                   ),
                 ),
@@ -51,7 +51,7 @@ class AllPostsList extends StatelessWidget {
                         ),
                         const SizedBox(height: 8.0),
                         Text(
-                          post.userRole, // Using the userRole from Post
+                         " post.userRole", // Using the userRole from Post
                           style: const TextStyle(
                               fontSize: 14.0, color: Colors.grey),
                         ),

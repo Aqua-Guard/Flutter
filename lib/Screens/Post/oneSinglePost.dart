@@ -124,12 +124,12 @@ class OneSinglePost extends StatelessWidget {
                         fontSize: 16.0);
 
                     // Delay Navigation to PostScreen
-                    Future.delayed(Duration(seconds: 3), () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => PostScreen()),
-                      );
-                    });
+                    // Future.delayed(Duration(seconds: 3), () {
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(builder: (context) => PostScreen()),
+                    //   );
+                    // });
                   },
                   child: const Text(
                     "Validate Creation Post",

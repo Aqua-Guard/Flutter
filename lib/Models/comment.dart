@@ -1,20 +1,29 @@
 
 class Comment {
-  final String idUser;
-  final String idPost;
-  final String idComment;
-  final String commentAvatar;
-  final String commentUsername;
-  final String comment;
+  String idUser;
+  String idPost;
+  String idComment;
+  String commentAvatar;
+  String commentUsername;
+  String comment;
 
   Comment({
-    required this.idUser,
-    required this.idPost,
-    required this.idComment,
-    required this.commentAvatar,
-    required this.commentUsername,
-    required this.comment,
+   required this.idUser,
+   required this.idPost,
+   required this.idComment,
+   required this.commentAvatar,
+   required this.commentUsername,
+   required this.comment,
   });
 
- 
+  factory Comment.fromJson(Map<String, dynamic> json) {
+    return Comment(
+      idUser: json['idUser'],
+      idPost: json['idPost'],
+      idComment: json['idComment'],
+      commentAvatar: json['commentAvatar'],
+      commentUsername: json['commentUsername'],
+      comment: json['comment'],
+    );
+  }
 }
