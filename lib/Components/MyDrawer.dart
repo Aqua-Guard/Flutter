@@ -97,31 +97,6 @@ class MyDrawer extends StatelessWidget {
             selectedTileColor: Color(0xb62aacee),
             // Background color
           ),
-          ///////adem
-                    ListTile(
-            leading: Icon(Icons.newspaper,
-                color: selectedIndex == 1 ? Colors.white : Color(0xff00689B)),
-            title: Text(
-              'News',
-              style: TextStyle(
-                color: selectedIndex == 1 ? Colors.white : Color(0xff00689B),
-              ),
-            ),
-            onTap: () async {
-              onItemTapped(1);
-              const storage = FlutterSecureStorage();
-              var token = await storage.read(key: "token");
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>  NewsScreen(token: token!)),
-              );
-            },
-            selected: selectedIndex == 1,
-            selectedTileColor: Color(0xb62aacee), // Background color
-          ),
-          /////adem
           ListTile(
             leading: Icon(Icons.person_rounded,
                 color: selectedIndex == 1 ? Colors.white : Color(0xff00689B)),
@@ -134,10 +109,10 @@ class MyDrawer extends StatelessWidget {
             onTap: () {
               onItemTapped(1);
               Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => UsersScreen()),
-                );
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => UsersScreen()),
+              );
             },
             selected: selectedIndex == 1,
             selectedTileColor: Color(0xb62aacee), // Background color
@@ -159,7 +134,7 @@ class MyDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>  EventStatistics(token: token!)),
+                    builder: (context) => EventStatistics(token: token!)),
               );
             },
             selected: selectedIndex == 2,
@@ -174,7 +149,7 @@ class MyDrawer extends StatelessWidget {
                 color: selectedIndex == 3 ? Colors.white : Color(0xff00689B),
               ),
             ),
-              onTap: () async {
+            onTap: () async {
               onItemTapped(2);
               const storage = FlutterSecureStorage();
               var token = await storage.read(key: "token");
@@ -182,7 +157,7 @@ class MyDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>  PostScreen(token: token!)),
+                    builder: (context) => PostScreen(token: token!)),
               );
             },
             selected: selectedIndex == 3,
@@ -218,6 +193,29 @@ class MyDrawer extends StatelessWidget {
               Navigator.pop(context);
             },
             selected: selectedIndex == 5,
+            selectedTileColor: Color(0xb62aacee), // Background color
+          ),
+          ListTile(
+            leading: Icon(Icons.newspaper,
+                color: selectedIndex == 7 ? Colors.white : Color(0xff00689B)),
+            title: Text(
+              'News',
+              style: TextStyle(
+                color: selectedIndex == 7 ? Colors.white : Color(0xff00689B),
+              ),
+            ),
+            onTap: () async {
+              onItemTapped(7);
+              const storage = FlutterSecureStorage();
+              var token = await storage.read(key: "token");
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => NewsScreen(token: token!)),
+              );
+            },
+            selected: selectedIndex == 7,
             selectedTileColor: Color(0xb62aacee), // Background color
           ),
           const Divider(),

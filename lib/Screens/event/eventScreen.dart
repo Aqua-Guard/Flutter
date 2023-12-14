@@ -2,7 +2,7 @@ import 'package:aquaguard/Models/Event.dart';
 import 'package:aquaguard/Screens/event/addEventForm.dart';
 import 'package:aquaguard/Screens/event/eventDetails.dart';
 import 'package:aquaguard/Services/EventWebService.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:aquaguard/Utils/constantes.dart';
 import 'package:flutter/material.dart';
 
 class EventScreen extends StatefulWidget {
@@ -113,111 +113,133 @@ class _EventScreenState extends State<EventScreen> {
                         children: [
                           Image.asset(
                             "assets/calendar_amico.png",
-                            height: 100,
+                            height: 400,
+                            width: 400,
                           ),
                           const SizedBox(height: 8.0),
                           const Text("No Events Found"),
                         ]),
                   ),
                 if (eventsData.isNotEmpty)
-                  SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Card(
-                      elevation: 4,
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: DataTable(
-                          columns: const [
-                            DataColumn(
-                              label: Text(
-                                'Event Name',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xff00689B)),
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Location',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xff00689B)),
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Start Date',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xff00689B)),
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'End Date',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xff00689B)),
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Participants',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xff00689B)),
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Actions',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xff00689B)),
-                              ),
-                            ),
-                          ],
-                          rows: eventsData.map((event) {
-                            return DataRow(
-                              cells: [
-                                DataCell(Text(event.eventName)),
-                                DataCell(Text(event.lieu)),
-                                DataCell(Text(event.dateDebut
-                                    .toString()
-                                    .characters
-                                    .take(10)
-                                    .toString())),
-                                DataCell(Text(event.dateFin
-                                    .toString()
-                                    .characters
-                                    .take(10)
-                                    .toString())),
-                                DataCell(
-                                    Text(event.participants.length.toString())),
-                                DataCell(
-                                  IconButton(
-                                    icon: const Icon(Icons.info,
-                                        color: Colors.blue),
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => EventDetails(
-                                            event: event,
-                                            token: widget.token,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Card(
+                        elevation: 4,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: DataTable(
+                            columns: const [
+                              DataColumn(
+                                label: Text(
+                                  'Event Image',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xff00689B)),
                                 ),
-                              ],
-                            );
-                          }).toList(),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'Event Name',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xff00689B)),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'Location',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xff00689B)),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'Start Date',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xff00689B)),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'End Date',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xff00689B)),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'Participants',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xff00689B)),
+                                ),
+                              ),
+                              DataColumn(
+                                label: Text(
+                                  'Actions',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xff00689B)),
+                                ),
+                              ),
+                            ],
+                            rows: eventsData.map((event) {
+                              return DataRow(
+                                cells: [
+                                  DataCell(
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(20),
+                                      child: Image.network(
+                                        '${Constantes.urlImgEvent}${event.eventImage}',
+                                        width: 40,
+                                        height: 40,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  DataCell(Text(event.eventName)),
+                                  DataCell(Text(event.lieu)),
+                                  DataCell(Text(event.dateDebut
+                                      .toString()
+                                      .characters
+                                      .take(10)
+                                      .toString())),
+                                  DataCell(Text(event.dateFin
+                                      .toString()
+                                      .characters
+                                      .take(10)
+                                      .toString())),
+                                  DataCell(Text(
+                                      event.participants.length.toString())),
+                                  DataCell(
+                                    IconButton(
+                                      icon: const Icon(Icons.info,
+                                          color: Colors.blue),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => EventDetails(
+                                              event: event,
+                                              token: widget.token,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }).toList(),
+                          ),
                         ),
                       ),
                     ),
-                  ),
+                  )
               ]),
             ),
           ),
@@ -226,7 +248,8 @@ class _EventScreenState extends State<EventScreen> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) =>  AddEventForm(token: widget.token)),
+              MaterialPageRoute(
+                  builder: (context) => AddEventForm(token: widget.token)),
             );
           },
           backgroundColor: const Color(0xff00689B),

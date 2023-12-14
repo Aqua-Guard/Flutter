@@ -139,6 +139,7 @@ class _AddPostFormState extends State<AddPostForm> {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text("Post added successfully")),
               );
+              Navigator.pop(context);
             } else { 
               // Handle failure, e.g., show error message
               ScaffoldMessenger.of(context).showSnackBar(

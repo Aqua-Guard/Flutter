@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:aquaguard/Components/MyAppBar.dart';
+import 'package:aquaguard/Components/MyDrawer.dart';
 import 'package:aquaguard/Models/userResponse.dart';
 import 'package:aquaguard/Services/userService.dart';
 import 'package:aquaguard/Utils/constantes.dart';
@@ -17,7 +18,7 @@ class UsersScreen extends StatefulWidget {
 }
 
 class _UsersScreenState extends State<UsersScreen> {
-
+ int _selectedIndex = 1;
   late List<UserResponse> userArray = [];
 
   @override
@@ -35,7 +36,15 @@ class _UsersScreenState extends State<UsersScreen> {
   @override
   Widget build(BuildContext context) {
     if (userArray != null) {
-      return Scaffold(
+      return  Theme(
+      data: Theme.of(context).copyWith(
+        // This will change the drawer icon color
+        appBarTheme: const AppBarTheme(
+          iconTheme: IconThemeData(color: Colors.white),
+          actionsIconTheme: IconThemeData(color: Colors.white),
+        ),
+      ),
+      child:Scaffold(
           appBar: MyAppBar(),
           body: ListView(children: [
             Container(
@@ -203,7 +212,16 @@ class _UsersScreenState extends State<UsersScreen> {
                         ),
                       );
                     }))
-          ]));
+          ]),
+           drawer: MyDrawer(
+          selectedIndex: _selectedIndex,
+          onItemTapped: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
+        ),
+          ));
     } else {
       return const Center(
         child: CircularProgressIndicator(),

@@ -1,3 +1,5 @@
+import 'package:aquaguard/Components/MyAppBar.dart';
+import 'package:aquaguard/Components/MyDrawer.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:aquaguard/Models/actualite.dart';
@@ -23,6 +25,7 @@ class NewsScreen extends StatefulWidget {
 }
 
 class _NewsScreenState extends State<NewsScreen> {
+   int _selectedIndex = 7;
   late List<Actualite> newsData = [];
   late TextEditingController _searchController;
   List<Actualite> newsDataOriginal = [];
@@ -72,15 +75,7 @@ class _NewsScreenState extends State<NewsScreen> {
         ),
       ),
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'News List',
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
-          backgroundColor: const Color(0xff00689B),
-        ),
+        appBar: MyAppBar(),
         body: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
@@ -228,6 +223,14 @@ class _NewsScreenState extends State<NewsScreen> {
             Icons.add,
             color: Colors.white,
           ),
+        ),
+          drawer: MyDrawer(
+          selectedIndex: _selectedIndex,
+          onItemTapped: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
         ),
       ),
     );

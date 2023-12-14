@@ -2,12 +2,11 @@ import 'package:aquaguard/Models/partenaire.dart';
 import 'package:aquaguard/Services/EventWebService.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
+import 'dart:html' as html;
 
 class AddEventForm extends StatefulWidget {
-   String token;
-   AddEventForm({Key? key ,required this.token}) : super(key: key);
+  String token;
+  AddEventForm({Key? key, required this.token}) : super(key: key);
 
   @override
   State<AddEventForm> createState() => _AddEventFormState();
@@ -81,17 +80,25 @@ class _AddEventFormState extends State<AddEventForm> {
     return null;
   }
 
-  late XFile? _pickedImage = null;
+html.File? _pickedImage;
+  String? _imageDataUrl; //
 
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+   Future<void> _pickImage() async {
+    final picker = html.FileUploadInputElement()..accept = 'image/*';
+    picker.click();
 
-    if (pickedImage != null) {
-      setState(() {
-        _pickedImage = pickedImage!;
+    picker.onChange.listen((event) {
+      final file = picker.files!.first;
+      final reader = html.FileReader();
+
+      reader.readAsDataUrl(file);
+      reader.onLoadEnd.listen((loadEndEvent) {
+        setState(() {
+          _pickedImage = file;
+          _imageDataUrl = reader.result as String;
+        });
       });
-    }
+    });
   }
 
   List<Partenaire> partenairesData = [];
@@ -160,11 +167,12 @@ class _AddEventFormState extends State<AddEventForm> {
                                 color: Color(0xff00689B)),
                             label: const Text('Add Image'),
                           ),
-                          if (_pickedImage != null)
+                          if (_imageDataUrl != null)
                             Container(
                               width: 100,
                               height: 100,
-                              child: Image.network(_pickedImage!.path),
+                              child: Image.network(_imageDataUrl!),
+
                             ),
                           const SizedBox(height: 16.0),
                           TextFormField(
@@ -258,12 +266,21 @@ class _AddEventFormState extends State<AddEventForm> {
                                   // Validate date before saving the form data
                                   String? dateValidation = _validateDate();
                                   if (dateValidation != null) {
-                                    // Show a message or handle the validation error
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(dateValidation),
+                                    SnackBar snackBar = SnackBar(
+                                      content: Row(
+                                        children: [
+                                          const Icon(Icons.error,color: Colors.white), 
+                                          const SizedBox(width:8), 
+                                          Text(dateValidation,style: const TextStyle(color: Colors.white)),
+                                        ],
                                       ),
+                                      backgroundColor: Colors
+                                          .red, // Use red color for error messages
                                     );
+
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
+                                    // Show a message or handle the validation error
                                   } else {
                                     // Proceed with form validation and saving data
                                     if (_formKey.currentState?.validate() ??
@@ -274,12 +291,15 @@ class _AddEventFormState extends State<AddEventForm> {
                                         userId: _selectedOrganizer!,
                                         name: _eventName,
                                         dateDebut: DateFormat('yyyy-MM-dd')
-                                            .format(_dateDebut!.toLocal()).toString(),
+                                            .format(_dateDebut!.toLocal())
+                                            .toString(),
                                         dateFin: DateFormat('yyyy-MM-dd')
-                                            .format(_dateFin!.toLocal()).toString(),
+                                            .format(_dateFin!.toLocal())
+                                            .toString(),
                                         description: _eventDescription,
                                         lieu: _eventLocation,
-                                        image: _pickedImage!,
+                                        fileimage: _pickedImage!,
+                                        context: context,
                                       );
 
                                       Navigator.pop(context);
