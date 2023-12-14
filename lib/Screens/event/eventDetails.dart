@@ -1,4 +1,5 @@
 import 'package:aquaguard/Models/Event.dart';
+import 'package:aquaguard/Utils/constantes.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:aquaguard/Services/EventWebService.dart';
@@ -130,7 +131,7 @@ class _EventDetailsState extends State<EventDetails> {
                               ),
                               CircleAvatar(
                                 backgroundImage: NetworkImage(
-                                    'http://localhost:9090/images/user/${widget.event.userImage}'),
+                                    '${Constantes.urlImgUser}${widget.event.userImage}'),
                                 radius: 40.0,
                               ),
                               const SizedBox(height: 8.0),
@@ -158,7 +159,7 @@ class _EventDetailsState extends State<EventDetails> {
                                   final participant =
                                       widget.event.participants[index];
                                   final participantImage =
-                                      "http://localhost:9090/images/user/${participant['image']}";
+                                      "${Constantes.urlImgUser}${participant['image']}";
                                   return Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Column(
@@ -187,7 +188,7 @@ class _EventDetailsState extends State<EventDetails> {
                                                   .deleteParticipation(
                                                       widget.token,
                                                       widget.event.idEvent,
-                                                      participant['userId']);
+                                                      participant['userId'],context);
                                               SnackBar snackBar =
                                                   const SnackBar(
                                                 content: Row(
