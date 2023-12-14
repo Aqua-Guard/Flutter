@@ -1,0 +1,302 @@
+import 'dart:html';
+
+import 'package:aquaguard/Models/comment.dart';
+import 'package:aquaguard/Models/like.dart';
+import 'package:aquaguard/Models/post.dart';
+import 'package:aquaguard/Screens/Post/AddPostForm.dart';
+import 'package:aquaguard/Screens/Post/PostDetails.dart';
+import 'package:aquaguard/Services/PostWebService.dart';
+
+import 'package:aquaguard/widgets/allPostList.dart';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+class AllPostsScreen extends StatefulWidget {
+  String token;
+
+  AllPostsScreen({Key? key, required this.token}) : super(key: key);
+
+  @override
+  State<AllPostsScreen> createState() => _AllPostsScreenState();
+}
+
+class _AllPostsScreenState extends State<AllPostsScreen> {
+  late List<Post> postData = [];
+  late List<Post> postDataOriginal = [];
+  late TextEditingController _searchController;
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+    postDataOriginal = postData;
+
+    PostWebService()
+        .getAllPosts(widget.token)
+        .then((posts) => {
+              setState(() {
+                postData = posts;
+
+                postDataOriginal = List.from(postData);
+              })
+            })
+        .catchError((error) {
+      print("Error Fetch posts: " + error);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (postData == null) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            CircularProgressIndicator(),
+            SizedBox(
+                height:
+                    20), // Provides some spacing between the indicator and the text
+            Text(
+              'Loading posts...',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.black,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    return Theme(
+      data: Theme.of(context).copyWith(
+        appBarTheme: const AppBarTheme(
+          iconTheme: IconThemeData(color: Colors.white),
+          actionsIconTheme: IconThemeData(color: Colors.white),
+        ),
+      ),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'Post List',
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+          backgroundColor: const Color(0xff00689B),
+        ),
+        body: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/background_splash_screen.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(children: [
+                Container(
+                  height: 60, // Adjust the height as needed
+                  child: Card(
+                    child: TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide.none,
+                        ),
+                        hintText: 'Search by Description',
+                        prefixIcon: Icon(Icons.search),
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.clear),
+                          onPressed: () {
+                            setState(() {
+                              _searchController.clear();
+                              postData = postDataOriginal;
+                            });
+                          },
+                        ),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          postData = postDataOriginal
+                              .where((post) => post.description
+                                  .toLowerCase()
+                                  .contains(value.toLowerCase()))
+                              .toList();
+                        });
+                      },
+                    ),
+                  ),
+                ),
+                if (postData.isEmpty)
+                  Center(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            "assets/Post_not_found.png",
+                            height: 400,
+                            width: 400,
+                          ),
+                          const SizedBox(height: 8.0),
+                          const Text("No Post Found"),
+                        ]),
+                  ),
+                if (postData.isNotEmpty)
+                  SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Card(
+                      elevation: 4,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: DataTable(
+                          columns:  [
+                            DataColumn(
+                              label: Text(
+                                'Image',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff00689B)),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Post UserName',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff00689B)),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'User Role',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff00689B)),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Description',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff00689B)),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Number of Likes',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff00689B)),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Number of Comments',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff00689B)),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Actions',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff00689B)),
+                              ),
+                            ),
+                          ],
+                          rows: postData.map((post) {
+                            return DataRow(
+                              cells: [
+                                DataCell(
+                                  Container(
+                                    width:
+                                        50, // Set a fixed width for the image
+                                    height:
+                                        50, // Set a fixed height for the image
+                                    // Optional: to provide some padding inside the container
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors
+                                            .blue, // Choose a color for the border
+                                        width:
+                                            2, // Choose the width of the border
+                                      ),
+                                    ),
+
+                                    child: ClipOval(
+                                      child: post.userImage != null
+                                          ? Image.network(
+                                              'http://localhost:9090/images/user/${post.userImage}',
+                                              fit: BoxFit.cover,
+                                            )
+                                          : Image.asset(
+                                              'http://localhost:9090/images/user/user_default.png', // Path to your placeholder image
+                                              fit: BoxFit.cover,
+                                            ),
+                                    ),
+                                  ),
+                                ),
+                                DataCell(Text(post.userName)),
+                                DataCell(Text('${post.userRole}')),
+                                DataCell(Text(post.description
+                                    .toString()
+                                    .characters
+                                    .take(10)
+                                    .toString())),
+                                DataCell(Text('${post.nbLike}')),
+                                DataCell(Text('${post.nbComments}')),
+                                DataCell(
+                                  IconButton(
+                                    icon: const Icon(Icons.info,
+                                        color: Colors.blue),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => PostDetails(
+                                            post: post,
+                                            token: widget.token,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ),
+              ]),
+            ),
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AddPostForm(token: widget.token)),
+            );
+          },
+          backgroundColor: const Color(0xff00689B),
+          shape: const CircleBorder(),
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+}

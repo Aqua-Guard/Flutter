@@ -1,10 +1,10 @@
-import 'package:aquaguard/Screens/homeScreen.dart';
-import 'package:aquaguard/Screens/loginScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../Components/customButton.dart';
 import '../Components/customTextField.dart';
+import 'homeScreen.dart';
+import 'loginScreen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -12,11 +12,12 @@ class RegisterScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => RegisterScreenState();
 }
-class RegisterScreenState extends State<RegisterScreen>{
+
+class RegisterScreenState extends State<RegisterScreen> {
   bool _isPasswordVisible = false;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
   }
 
@@ -125,11 +126,12 @@ class RegisterScreenState extends State<RegisterScreen>{
                                 });
                               },
                               icon: Icon(
-                                _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                _isPasswordVisible
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
                                 color: Colors.blue,
                                 size: 32,
-                              )
-                          ),
+                              )),
                         )),
                   ),
                   GestureDetector(
@@ -138,11 +140,11 @@ class RegisterScreenState extends State<RegisterScreen>{
                       child: CustomButton(
                         text: 'Create account',
                         color: Colors.blue,
-
                       ),
                     ),
                     onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context)=>HomeScreen()));
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => HomeScreen()));
                     },
                   ),
                   GestureDetector(
@@ -167,16 +169,14 @@ class RegisterScreenState extends State<RegisterScreen>{
                       ),
                     ),
                     onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => LoginScreen()));
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => LoginScreen()));
                     },
                   ),
                 ],
               )
-
             ],
           ),
-        )
-    );
+        ));
   }
 }
