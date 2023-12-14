@@ -1,4 +1,6 @@
 import 'package:aquaguard/Models/post.dart';
+import 'package:aquaguard/Screens/Post/allPostsScreen.dart';
+import 'package:aquaguard/Services/PostWebService.dart';
 import 'package:aquaguard/widgets/commentPost.dart';
 import 'package:aquaguard/widgets/likesPost.dart';
 import 'package:flutter/cupertino.dart';
@@ -155,7 +157,8 @@ class _PostDetailsState extends State<PostDetails> {
                                   showDialog(
                                     context: context,
                                     builder: (context) => Dialog(
-                                      child: LikesPost(likes : widget.post.likes),
+                                      child:
+                                          LikesPost(likes: widget.post.likes),
                                     ),
                                   );
                                 },
@@ -167,7 +170,8 @@ class _PostDetailsState extends State<PostDetails> {
                                   showDialog(
                                     context: context,
                                     builder: (context) => Dialog(
-                                      child: CommentPost(comments : widget.post.comments),
+                                      child: CommentPost(
+                                          comments: widget.post.comments),
                                     ),
                                   );
                                 },
@@ -195,9 +199,33 @@ class _PostDetailsState extends State<PostDetails> {
                                 child: SizedBox(
                                   width: double.infinity,
                                   child: ElevatedButton.icon(
-                                    onPressed: () {
-                                      // Handle Delete button tap
-                                      // You can show a confirmation dialog and delete the event if confirmed
+                                    onPressed: () async {
+                                      bool? confirmed =
+                                          await showConfirmationDialog(context);
+                                      if (confirmed == true) {
+                                        // User confirmed, you can perform additional actions if needed
+                                        PostWebService().deletePost(
+                                            widget.token, widget.post.idPost);
+                                        Fluttertoast.showToast(
+                                          msg: "Deleted successfully",
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.BOTTOM,
+                                          timeInSecForIosWeb: 1,
+                                          backgroundColor: Colors.green,
+                                          textColor: Colors.white,
+                                          fontSize: 16.0,
+                                        );
+                                        Future.delayed(Duration(seconds: 2),
+                                            () {
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    AllPostsScreen(
+                                                        token: widget.token)),
+                                          );
+                                        });
+                                      }
                                     },
                                     icon: const Icon(Icons.delete,
                                         color: Colors.red),

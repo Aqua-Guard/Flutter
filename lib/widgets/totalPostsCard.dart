@@ -1,22 +1,23 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
-class TotalPostsCard extends StatelessWidget {
+class TotalPostsCard extends StatefulWidget {
   final int totalPosts; // Total number of posts
 
-  const TotalPostsCard({Key? key, required this.totalPosts}) : super(key: key);
+   TotalPostsCard({Key? key, required this.totalPosts}) : super(key: key);
 
+  @override
+  _TotalPostsCardState createState() => _TotalPostsCardState();
+}
+
+class _TotalPostsCardState extends State<TotalPostsCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10)),
-      color: Colors.white,
-      // add background color white 
+        borderRadius: BorderRadius.circular(10)),
+      color: Colors.white, // add background color white 
       child: Container(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -28,13 +29,12 @@ class TotalPostsCard extends StatelessWidget {
             ),
             SizedBox(height: 8),
             Text(
-              '$totalPosts', // Display the total number of posts
+              '${widget.totalPosts}', // Display the total number of posts
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue),
             ),
           ],
         ),
       ),
     );
-  
   }
 }

@@ -3,6 +3,7 @@ import 'package:aquaguard/Components/MyDrawer.dart';
 import 'package:aquaguard/Models/comment.dart';
 import 'package:aquaguard/Models/like.dart';
 import 'package:aquaguard/Models/post.dart';
+import 'package:aquaguard/Services/PostWebService.dart';
 import 'package:aquaguard/widgets/LatestPostCard.dart';
 import 'package:aquaguard/widgets/barChartCard.dart';
 import 'package:aquaguard/widgets/totalPostsCard.dart';
@@ -18,14 +19,23 @@ class PostScreen extends StatefulWidget {
 }
 
 class _PostScreenState extends State<PostScreen> {
-
+late List<Post> postData = [];
   int _selectedIndex = 3;
-
-   @override
+  
+  @override
   void initState() {
     super.initState();
 
-
+    PostWebService()
+        .getAllPosts(widget.token)
+        .then((posts) => {
+              setState(() {
+                postData = posts;          
+              })
+            })
+        .catchError((error) {
+      print("Error Fetch posts: " + error);
+    });
   }
 
 
@@ -54,23 +64,21 @@ class _PostScreenState extends State<PostScreen> {
               ),
               Column(
                 children: [
-                  const Padding(
-                    
+                   Padding(  
                     padding: EdgeInsets.all(8.0),
                     child: TotalPostsCard(
-                        totalPosts:
-                            20), // Replace 100 with your total posts count
+                        totalPosts: postData.length ), // Replace 100 with your total posts count
                   ),
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: BarChartCard(),
+                      child: BarChartCard(token : widget.token),
                     ),
                   ),
                   Padding(
                    
                     padding: const EdgeInsets.all(8.0),
-                    child: LatestPostCard(token : widget.token),
+                    child: LatestPostCard(token : widget.token,postData: postData),
                   ),
                 ],
               ),

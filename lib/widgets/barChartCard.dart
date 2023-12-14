@@ -1,22 +1,58 @@
-import 'package:aquaguard/data/postChartData.dart';
+import 'package:aquaguard/Models/postCount.dart';
+import 'package:aquaguard/Services/PostWebService.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+ // Import the PostCount model
 
-class BarChartCard extends StatelessWidget {
-    final List<double> postCounts = [12, 15, 10, 18, 20, 17, 14];
+class BarChartCard extends StatefulWidget {
+  final String token;
+
+  BarChartCard({Key? key, required this.token}) : super(key: key);
+
+  @override
+  _BarChartCardState createState() => _BarChartCardState();
+}
+
+class _BarChartCardState extends State<BarChartCard> {
+  late List<PostCount> postCounts = []; // Initialize with zeros
+  bool _isLoaded = false; // To track if the data is loaded
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchPostData();
+    
+  }
+
+  void _fetchPostData() async {
+    try {
+      List<PostCount> postCountsData = await PostWebService().getPostsPerWeek(widget.token);
+      setState(() {
+        postCounts = postCountsData;
+        _isLoaded = true;
+        print('--------------------------------'+postCountsData.length.toString());
+      });
+    } catch (error) {
+      print('Error fetching post counts: $error');
+      // Handle the error appropriately
+    }
+  }
+
+
+
+  
   @override
   Widget build(BuildContext context) {
-    // Sample data representing the number of posts per day
-
     return Container(
       height: 400,
-      padding: const EdgeInsets.all(16),
+      padding:  EdgeInsets.all(16),
       decoration: _buildDecoration(),
       child: Column(
         children: [
-          _buildChartTitle(),
+          _buildChartTitle(context),
           SizedBox(height: 20),
-          Expanded(child: _buildBarChart(postCounts)),
+          Expanded(child: _buildBarChart(postCounts)),//Undefined name 'postCountsData'.
+//Try correcting the name to one that is defined, or defining the name.dartundefined_identifier
         ],
       ),
     );
@@ -27,81 +63,98 @@ class BarChartCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              spreadRadius: 1,
-              blurRadius: 2,
-              offset: Offset(0, 1))
-        ],
-      );
-
-  Widget _buildChartTitle() => Column(
-        children: const [
-          Text('Weekly Post Analysis',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          Text('Number of Posts per Day',
-              style: TextStyle(fontSize: 14, color: Colors.grey)),
-        ],
-      );
-
-  Widget _buildBarChart(postCounts) => BarChart(
-    
-        BarChartData(
-          barTouchData: BarTouchData(
-            touchTooltipData: BarTouchTooltipData(
-                tooltipBgColor: Colors.grey,
-                getTooltipItem: (_a, _b, _c, _d) => null),
+            color: Colors.black.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 2,
+            offset: Offset(0, 1),
           ),
-          titlesData: FlTitlesData(
-            show: true,
-            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: (double value, TitleMeta meta) {
-                  const style = TextStyle(
-                    color: Colors.grey,
-                    fontSize: 12,
-                  );
-                  String text;
-                  switch (value.toInt()) {
-                    case 0:
-                      text = 'Mon';
-                      break;
-                    case 1:
-                      text = 'Tue';
-                      break;
-                    case 2:
-                      text = 'Wed';
-                      break;
-                    case 3:
-                      text = 'Thu';
-                      break;
-                    case 4:
-                      text = 'Fri';
-                      break;
-                    case 5:
-                      text = 'Sat';
-                      break;
-                    case 6:
-                      text = 'Sun';
-                      break;
-                    default:
-                      text = '';
-                  }
-                  return SideTitleWidget(
-                    axisSide: meta.axisSide,
-                    space: 8.0,
-                    child: Text(text, style: style),
-                  );
-                },
-                reservedSize: 40,
+        ],
+      );
+
+  Widget _buildChartTitle(BuildContext context) => const Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+           Column(
+            children: [
+              Text('Post Analysis',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text('Number of Post per Day',
+                  style: TextStyle(fontSize: 14, color: Colors.grey)),
+            ],
+          ),
+        ],
+      );
+
+  Widget _buildBarChart(List<PostCount> postCount) {
+    List<BarChartGroupData> barChartGroups = [];
+
+    for (int i = 0; i < postCount.length; i++) {
+      final double value = postCount[i].count.toDouble();
+      final String label = postCount[i].day;
+
+      barChartGroups.add(
+        BarChartGroupData(
+          x: i,
+          barRods: [
+            BarChartRodData(
+              toY: value,
+              color: Colors.blue, // You can customize the color as needed
+              width: 16,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(6),
+                topRight: Radius.circular(6),
               ),
             ),
-          ),
-          borderData: FlBorderData(show: false),
-          barGroups: PostChartData.getBarChartItems(postCounts),
+          ],
+          showingTooltipIndicators: [0],
         ),
       );
+    }
+
+    return BarChart(
+      BarChartData(
+        barTouchData: BarTouchData(
+          touchTooltipData: BarTouchTooltipData(
+            tooltipBgColor: Colors.grey,
+            getTooltipItem: (group, groupIndex, rod, rodIndex) {
+              final value = rod.toY.toInt();
+              return BarTooltipItem(
+                value.toString(),
+                TextStyle(color: Colors.white),
+              );
+            },
+          ),
+        ),
+        titlesData: FlTitlesData(
+          show: true,
+          leftTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: (double value, TitleMeta meta) {
+                if (value >= 0 && value < postCount.length) {
+                  final String label = postCount[value.toInt()].day.toString();
+                  return Text(
+                    label,
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 12,
+                    ),
+                  );
+                }
+                return const SizedBox();
+              },
+            ),
+          ),
+        ),
+        borderData: FlBorderData(show: false),
+        barGroups: barChartGroups,
+      ),
+    );
+  }
 }

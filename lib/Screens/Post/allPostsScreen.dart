@@ -22,8 +22,6 @@ class AllPostsScreen extends StatefulWidget {
 }
 
 class _AllPostsScreenState extends State<AllPostsScreen> {
-  late List<Comment> comments = [];
-  late List<Like> likes = [];
   late List<Post> postData = [];
   late List<Post> postDataOriginal = [];
   late TextEditingController _searchController;
@@ -155,7 +153,7 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: DataTable(
-                          columns: const [
+                          columns:  [
                             DataColumn(
                               label: Text(
                                 'Image',
@@ -204,7 +202,6 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                                     color: Color(0xff00689B)),
                               ),
                             ),
-                          
                             DataColumn(
                               label: Text(
                                 'Actions',
@@ -219,8 +216,10 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                               cells: [
                                 DataCell(
                                   Container(
-                                    width:50, // Set a fixed width for the image
-                                    height: 50, // Set a fixed height for the image
+                                    width:
+                                        50, // Set a fixed width for the image
+                                    height:
+                                        50, // Set a fixed height for the image
                                     // Optional: to provide some padding inside the container
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
@@ -231,7 +230,7 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                                             2, // Choose the width of the border
                                       ),
                                     ),
-                                    
+
                                     child: ClipOval(
                                       child: post.userImage != null
                                           ? Image.network(
@@ -244,7 +243,6 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                                             ),
                                     ),
                                   ),
-                                  
                                 ),
                                 DataCell(Text(post.userName)),
                                 DataCell(Text('${post.userRole}')),
@@ -254,7 +252,7 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                                     .take(10)
                                     .toString())),
                                 DataCell(Text('${post.nbLike}')),
-                                DataCell(Text('${post.nbComments}')),                              
+                                DataCell(Text('${post.nbComments}')),
                                 DataCell(
                                   IconButton(
                                     icon: const Icon(Icons.info,
@@ -287,7 +285,8 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => AddPostForm()),
+              MaterialPageRoute(
+                  builder: (context) => AddPostForm(token: widget.token)),
             );
           },
           backgroundColor: const Color(0xff00689B),
