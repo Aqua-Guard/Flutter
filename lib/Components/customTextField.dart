@@ -6,19 +6,21 @@ class CustomTextField extends StatelessWidget{
   final Icon? icon;
   final IconButton? suffixIcon;
   final bool obscureText;
-  const CustomTextField({super.key, this.label, this.hintText, this.icon, required this.obscureText, this.suffixIcon});
+  final TextEditingController? textEditingController;
+  const CustomTextField({super.key, this.label, this.hintText, this.icon, required this.obscureText, this.suffixIcon, this.textEditingController});
 
   @override
   Widget build(BuildContext context) {
     return  Padding(
       padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
       child: TextField(
+        controller: textEditingController,
         obscureText: obscureText,
         decoration: InputDecoration(
             border: InputBorder.none,
             prefixIcon: Container(
-                height: MediaQuery.of(context).size.height * .09,
-                width: MediaQuery.of(context).size.width * .2,
+                height: MediaQuery.of(context).size.height * .07,
+                width: MediaQuery.of(context).size.width * .18,
                 decoration: BoxDecoration(
                     boxShadow: [
                       BoxShadow(

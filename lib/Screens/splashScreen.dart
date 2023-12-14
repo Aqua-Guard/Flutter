@@ -1,7 +1,8 @@
-import 'package:aquaguard/Screens/loginScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'loginScreen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -18,7 +19,7 @@ class SplashScreenState extends State<SplashScreen>{
 
     Future.delayed(Duration(seconds: 2),(){
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => LoginScreen(),
+        builder: (context) => LoginScreen(),
       ));
     });
   }
