@@ -128,7 +128,7 @@ class _AddPostFormState extends State<AddPostForm> {
                 content: Text("Please add a description and an image.")),
           );
         } else {
-          // Convert XFile to File
+          
       
 
           try {
