@@ -1,7 +1,9 @@
 import 'package:aquaguard/Screens/Post/postScreen.dart';
+import 'package:aquaguard/Screens/actualite/actualiteScreen.dart';
 import 'package:aquaguard/Screens/event/eventStatistics.dart';
 import 'package:aquaguard/Screens/homeScreen.dart';
 import 'package:aquaguard/Screens/loginScreen.dart';
+import 'package:aquaguard/Screens/user/usersScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:aquaguard/Screens/profileScreen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -107,6 +109,10 @@ class MyDrawer extends StatelessWidget {
             onTap: () {
               onItemTapped(1);
               Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => UsersScreen()),
+              );
             },
             selected: selectedIndex == 1,
             selectedTileColor: Color(0xb62aacee), // Background color
@@ -128,7 +134,7 @@ class MyDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>  EventStatistics(token: token!)),
+                    builder: (context) => EventStatistics(token: token!)),
               );
             },
             selected: selectedIndex == 2,
@@ -143,12 +149,15 @@ class MyDrawer extends StatelessWidget {
                 color: selectedIndex == 3 ? Colors.white : Color(0xff00689B),
               ),
             ),
-            onTap: () {
-              onItemTapped(3);
+            onTap: () async {
+              onItemTapped(2);
+              const storage = FlutterSecureStorage();
+              var token = await storage.read(key: "token");
               Navigator.pop(context);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const PostScreen()),
+                MaterialPageRoute(
+                    builder: (context) => PostScreen(token: token!)),
               );
             },
             selected: selectedIndex == 3,
@@ -184,6 +193,29 @@ class MyDrawer extends StatelessWidget {
               Navigator.pop(context);
             },
             selected: selectedIndex == 5,
+            selectedTileColor: Color(0xb62aacee), // Background color
+          ),
+          ListTile(
+            leading: Icon(Icons.newspaper,
+                color: selectedIndex == 7 ? Colors.white : Color(0xff00689B)),
+            title: Text(
+              'News',
+              style: TextStyle(
+                color: selectedIndex == 7 ? Colors.white : Color(0xff00689B),
+              ),
+            ),
+            onTap: () async {
+              onItemTapped(7);
+              const storage = FlutterSecureStorage();
+              var token = await storage.read(key: "token");
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => NewsScreen(token: token!)),
+              );
+            },
+            selected: selectedIndex == 7,
             selectedTileColor: Color(0xb62aacee), // Background color
           ),
           const Divider(),

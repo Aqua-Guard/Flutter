@@ -8,13 +8,12 @@ import 'package:http_parser/http_parser.dart';
 
 import '../Utils/constantes.dart';
 
-enum RequestType { get, put, post }
+enum RequestType { get, put, post, delete }
 
 const storage = FlutterSecureStorage();
 Future<String?> bearer = storage.read(key: "token");
 
 class NetworkService {
-  const NetworkService._();
 
   static Map<String, String> _getHeaders() => {
     'Content-Type': 'application/json',
@@ -37,12 +36,15 @@ class NetworkService {
           },
           body: jsonEncode(body));
     } else if (requestType == RequestType.put) {
-      return http.patch(uri,
+      return http.put(uri,
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ${token ?? ""}'
           },
           body: jsonEncode(body));
+    }
+    else if (requestType == RequestType.delete) {
+      return http.delete(uri);
     }
     return null;
   }

@@ -3,10 +3,17 @@ import 'package:aquaguard/Screens/Post/allPostsScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 
-class LatestPostCard extends StatelessWidget {
-  final List<Post> latestPosts;
+class LatestPostCard extends StatefulWidget {
+  String token ;
+ List<Post> postData = [];
 
-  LatestPostCard({Key? key, required this.latestPosts}) : super(key: key);
+  LatestPostCard({Key? key,required this.token,required this.postData}) : super(key: key);
+
+ @override
+  State<LatestPostCard> createState() => _LatestPostCardState();
+}
+class _LatestPostCardState extends State<LatestPostCard> {
+
 
   @override
   Widget build(BuildContext context) {
@@ -35,20 +42,20 @@ class LatestPostCard extends StatelessWidget {
 
                      Navigator.of(context).push(
                        MaterialPageRoute(
-                           builder: (context) => AllPostsScreen()),
+                           builder: (context) => AllPostsScreen(token : widget.token)),
                     );
                   },
                 ),
               ],
             ),
-            const SizedBox(height: 10),
-            ...latestPosts
+             SizedBox(height: 10),
+            ...widget.postData
                 .map((post) => Padding(
                       padding: const EdgeInsets.only(bottom: 10),
                       child: Row(
                         children: [
                           CircleAvatar(
-                            backgroundImage: AssetImage(post.userImage),
+                            backgroundImage: NetworkImage('http://localhost:9090/images/user/${post.userImage}'),
                             radius: 20,
                           ),
                           const SizedBox(width: 10),
