@@ -49,7 +49,7 @@ class _LatestPostCardState extends State<LatestPostCard> {
               ],
             ),
              SizedBox(height: 10),
-            ...widget.postData
+            ...widget.postData.take(3)
                 .map((post) => Padding(
                       padding: const EdgeInsets.only(bottom: 10),
                       child: Row(
