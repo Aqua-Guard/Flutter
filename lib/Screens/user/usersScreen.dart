@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
 
 class UsersScreen extends StatefulWidget {
   const UsersScreen({super.key});
@@ -54,7 +55,9 @@ class _UsersScreenState extends State<UsersScreen> {
                 child: ListView.builder(
                     itemCount: userArray.length,
                     itemBuilder: (context, index) {
-                      //return UserCard(userArray[index],userArray);
+                      bool isActivated = userArray[index].isActivated ?? false;
+                      Color indicatorColor = isActivated ? Colors.green : Colors.red;
+                      String activationText = isActivated ? 'Activated' : 'Desactivated';
                       return StaggeredGridTile.count(
                         crossAxisCellCount: 1,
                         mainAxisCellCount: 1,
@@ -101,6 +104,32 @@ class _UsersScreenState extends State<UsersScreen> {
                                         userArray[index].email!,
                                         style: const TextStyle(fontSize: 18),
                                       ),
+                                      Text(
+                                        'Role: ${userArray[index].role}',
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontStyle: FontStyle.italic,
+                                          fontWeight: userArray[index].role == 'admin'
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                        ),
+                                      ),
+                                      if (userArray[index].bannedUntil != null &&
+                                          userArray[index].bannedUntil!.isAfter(DateTime.now()))
+                                        Text(
+                                          'Banned until: ${DateFormat('yyyy-MM-dd HH:mm:ss').format(userArray[index].bannedUntil!)}',
+                                          style: TextStyle(
+                                            color: Colors.red,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      Text(
+                                        activationText,
+                                        style: TextStyle(
+                                          color: indicatorColor,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -115,9 +144,9 @@ class _UsersScreenState extends State<UsersScreen> {
                                             builder: (BuildContext context) {
                                               return AlertDialog(
                                                 title: const Text(
-                                                    'Confirm Deletion'),
+                                                    'Confirm Ban'),
                                                 content: const Text(
-                                                    'Are you sure you want to delete this user?'),
+                                                    'Are you sure you want to ban this user?'),
                                                 actions: [
                                                   TextButton(
                                                     onPressed: () {
@@ -135,7 +164,7 @@ class _UsersScreenState extends State<UsersScreen> {
                                                     onPressed: () async {
                                                       Response? res =
                                                       await UserService()
-                                                          .deleteUser(
+                                                          .banUser(
                                                           userArray[
                                                           index]
                                                               .id!);
@@ -149,10 +178,6 @@ class _UsersScreenState extends State<UsersScreen> {
                                                           userArray.remove(
                                                               userArray[index]);
                                                         });
-
-                                                        print(
-                                                            "---------------------------");
-                                                        print(userArray);
                                                         showDialog(
                                                           context: context,
                                                           builder: (context) {
@@ -160,7 +185,7 @@ class _UsersScreenState extends State<UsersScreen> {
                                                               title: const Text(
                                                                   "Information"),
                                                               content: const Text(
-                                                                  "User successfully deleted!"),
+                                                                  "User successfully banned for 7 days!"),
                                                               actions: [
                                                                 TextButton(
                                                                     onPressed: () =>
@@ -180,7 +205,7 @@ class _UsersScreenState extends State<UsersScreen> {
                                                               title: const Text(
                                                                   "Error"),
                                                               content: const Text(
-                                                                  "User could not be deleted!"),
+                                                                  "User could not be banned!"),
                                                               actions: [
                                                                 TextButton(
                                                                     onPressed: () =>
@@ -195,7 +220,7 @@ class _UsersScreenState extends State<UsersScreen> {
                                                       }
                                                     },
                                                     child: const Text(
-                                                      'Delete',
+                                                      'Ban',
                                                       style: TextStyle(
                                                         color: Colors.red,
                                                         fontSize: 16,
@@ -215,34 +240,54 @@ class _UsersScreenState extends State<UsersScreen> {
                                           );
                                         }
                                       },
-                                      itemBuilder: (BuildContext context) => [
-                                        const PopupMenuItem<String>(
-                                          value: 'Details',
-                                          child: Row(
-                                            children: [
-                                              Icon(Icons.info,
-                                                  color: Colors.blueAccent),
-                                              SizedBox(width: 8.0),
-                                              Text('Details',
-                                                  style: TextStyle(
-                                                      color: Colors.blueAccent)),
-                                            ],
-                                          ),
-                                        ),
-                                        const PopupMenuItem<String>(
-                                          value: 'Delete',
-                                          child: Row(
-                                            children: [
-                                              Icon(Icons.delete,
-                                                  color: Colors.red),
-                                              SizedBox(width: 8.0),
-                                              Text('Delete',
-                                                  style: TextStyle(
-                                                      color: Colors.red)),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
+                                      itemBuilder: (BuildContext context) {
+                                        if (userArray[index].role == 'admin') {
+                                          return [
+                                            const PopupMenuItem<String>(
+                                              value: 'Details',
+                                              child: ListTile(
+                                                leading: Icon(
+                                                  Icons.info,
+                                                  color: Colors.blueAccent,
+                                                ),
+                                                title: Text(
+                                                  'Details',
+                                                  style: TextStyle(color: Colors.blueAccent),
+                                                ),
+                                              ),
+                                            ),
+                                            const PopupMenuItem<String>(
+                                              value: 'Ban',
+                                              child: ListTile(
+                                                leading: Icon(
+                                                  Icons.block,
+                                                  color: Colors.red,
+                                                ),
+                                                title: Text(
+                                                  'Ban',
+                                                  style: TextStyle(color: Colors.red),
+                                                ),
+                                              ),
+                                            ),
+                                          ];
+                                        } else {
+                                          return [
+                                            const PopupMenuItem<String>(
+                                              value: 'Details',
+                                              child: ListTile(
+                                                leading: Icon(
+                                                  Icons.info,
+                                                  color: Colors.blueAccent,
+                                                ),
+                                                title: Text(
+                                                  'Details',
+                                                  style: TextStyle(color: Colors.blueAccent),
+                                                ),
+                                              ),
+                                            ),
+                                          ];
+                                        }
+                                      },
                                     ),
                                   ],
                                 ),

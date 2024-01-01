@@ -20,10 +20,10 @@ class UserService{
     }
   }
 
-  Future<Response?> deleteUser(String id) async {
+  Future<Response?> banUser(String id) async {
     final response = await NetworkService.sendRequest(
-        requestType: RequestType.delete,
-        url: "${Constantes.baseUrl}/deleteUserById/$id");
+        requestType: RequestType.post,
+        url: "${Constantes.baseUrl}/banUser/$id");
     return response;
   }
 
