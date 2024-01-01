@@ -213,4 +213,59 @@ class EventWebService {
     // Get the result as Uint8List
     return Uint8List.fromList(reader.result as List<int>);
   }
+
+
+
+Future<String?> generateWithChatGPT(String promptString, String token) async {
+  try {
+    // Assuming the prompt is the event name
+    String prompt = promptString;
+
+    // Make a GET request to the endpoint
+    final response = await http.get(
+      Uri.parse(Constantes.urlEvent+'/generateDescriptionWithChat/$prompt'),
+       headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      String generatedDescription = data['description'];
+      return generatedDescription;
+    } else {
+      throw Exception('Failed to generate description with ChatGPT');
+    }
+  } catch (error) {
+    print('Error generating description with ChatGPT: $error');
+    return null;
+  }
 }
+/*
+Future<void> updateEventStatus(String eventId, String authToken) async {
+  final url = Uri.parse(Constantes.urlEvent+'/updateStatus/$eventId');
+
+  try {
+    final response = await http.put(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $authToken',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print('Event status updated successfully');
+      // Handle success, if needed
+    } else {
+      print('Failed to update event status: ${response.statusCode}');
+      // Handle error, if needed
+    }
+  } catch (error) {
+    print('Error updating event status: $error');
+    // Handle error, if needed
+  }
+}*/
+
+}
+
