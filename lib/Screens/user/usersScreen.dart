@@ -1,12 +1,13 @@
 import 'dart:convert';
 
 import 'package:aquaguard/Components/MyAppBar.dart';
-import 'package:aquaguard/Components/MyDrawer.dart';
 import 'package:aquaguard/Models/userResponse.dart';
+import 'package:aquaguard/Screens/user/detailUser.dart';
 import 'package:aquaguard/Services/userService.dart';
 import 'package:aquaguard/Utils/constantes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:http/http.dart';
 
@@ -18,33 +19,32 @@ class UsersScreen extends StatefulWidget {
 }
 
 class _UsersScreenState extends State<UsersScreen> {
- int _selectedIndex = 1;
   late List<UserResponse> userArray = [];
 
   @override
   void initState() {
     super.initState();
-    UserService().fetchUsers().then((users) {
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    try {
+      final storage = FlutterSecureStorage();
+      var id = await storage.read(key: "id");
+
+      var users = await UserService().fetchUsers(id!);
       setState(() {
         userArray = users;
       });
-    }).catchError((error) {
+    } catch (error) {
       print('Error getting users: $error');
-    });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     if (userArray != null) {
-      return  Theme(
-      data: Theme.of(context).copyWith(
-        // This will change the drawer icon color
-        appBarTheme: const AppBarTheme(
-          iconTheme: IconThemeData(color: Colors.white),
-          actionsIconTheme: IconThemeData(color: Colors.white),
-        ),
-      ),
-      child:Scaffold(
+      return Scaffold(
           appBar: MyAppBar(),
           body: ListView(children: [
             Container(
@@ -66,7 +66,6 @@ class _UsersScreenState extends State<UsersScreen> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(40.0),
                             ),
-
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
@@ -74,20 +73,22 @@ class _UsersScreenState extends State<UsersScreen> {
                                   child: CircleAvatar(
                                     radius: 80,
                                     child: ClipOval(
-                                      child: Image.network(
+                                      child: userArray[index].image != null
+                                          ? Image.network(
                                         '${Constantes.imageUrl}/${userArray[index].image!}',
                                         fit: BoxFit.cover,
                                         width: MediaQuery.of(context).size.width * .45,
                                         height: MediaQuery.of(context).size.height * .45,
-                                      ),
+                                      )
+                                          : Placeholder(), // Replace with a placeholder widget or handle accordingly
                                     ),
                                   ),
                                 ),
-
                                 Padding(
                                   padding: const EdgeInsets.all(8),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.center,
                                     children: [
                                       Text(
                                         userArray[index].username!,
@@ -108,13 +109,15 @@ class _UsersScreenState extends State<UsersScreen> {
                                   children: [
                                     PopupMenuButton<String>(
                                       onSelected: (value) {
-                                        if (value == 'delete') {
+                                        if (value == 'Delete') {
                                           showDialog(
                                             context: context,
                                             builder: (BuildContext context) {
                                               return AlertDialog(
-                                                title: const Text('Confirm Deletion'),
-                                                content: const Text('Are you sure you want to delete this user?'),
+                                                title: const Text(
+                                                    'Confirm Deletion'),
+                                                content: const Text(
+                                                    'Are you sure you want to delete this user?'),
                                                 actions: [
                                                   TextButton(
                                                     onPressed: () {
@@ -130,46 +133,61 @@ class _UsersScreenState extends State<UsersScreen> {
                                                   ),
                                                   TextButton(
                                                     onPressed: () async {
-                                                      Response? res = await UserService().deleteUser(userArray[index].id!);
+                                                      Response? res =
+                                                      await UserService()
+                                                          .deleteUser(
+                                                          userArray[
+                                                          index]
+                                                              .id!);
                                                       Navigator.pop(context);
 
-                                                      if(res?.statusCode == 200)
-                                                      {
+                                                      if (res?.statusCode ==
+                                                          200) {
                                                         print(userArray);
 
                                                         setState(() {
-                                                          userArray.remove(userArray[index]);
+                                                          userArray.remove(
+                                                              userArray[index]);
                                                         });
 
-                                                        print("---------------------------");
+                                                        print(
+                                                            "---------------------------");
                                                         print(userArray);
                                                         showDialog(
                                                           context: context,
                                                           builder: (context) {
                                                             return AlertDialog(
-                                                              title: const Text("Information"),
-                                                              content: const Text("User successfully deleted!"),
+                                                              title: const Text(
+                                                                  "Information"),
+                                                              content: const Text(
+                                                                  "User successfully deleted!"),
                                                               actions: [
                                                                 TextButton(
-                                                                    onPressed: () => Navigator.pop(context),
-                                                                    child: const Text("Dismiss"))
+                                                                    onPressed: () =>
+                                                                        Navigator.pop(
+                                                                            context),
+                                                                    child: const Text(
+                                                                        "Dismiss"))
                                                               ],
                                                             );
                                                           },
                                                         );
-                                                      }
-                                                      else
-                                                      {
+                                                      } else {
                                                         showDialog(
                                                           context: context,
                                                           builder: (context) {
                                                             return AlertDialog(
-                                                              title: const Text("Error"),
-                                                              content: const Text("User could not be deleted!"),
+                                                              title: const Text(
+                                                                  "Error"),
+                                                              content: const Text(
+                                                                  "User could not be deleted!"),
                                                               actions: [
                                                                 TextButton(
-                                                                    onPressed: () => Navigator.pop(context),
-                                                                    child: const Text("Dismiss"))
+                                                                    onPressed: () =>
+                                                                        Navigator.pop(
+                                                                            context),
+                                                                    child: const Text(
+                                                                        "Dismiss"))
                                                               ],
                                                             );
                                                           },
@@ -181,7 +199,8 @@ class _UsersScreenState extends State<UsersScreen> {
                                                       style: TextStyle(
                                                         color: Colors.red,
                                                         fontSize: 16,
-                                                        fontWeight: FontWeight.bold,
+                                                        fontWeight:
+                                                        FontWeight.bold,
                                                       ),
                                                     ),
                                                   ),
@@ -189,16 +208,37 @@ class _UsersScreenState extends State<UsersScreen> {
                                               );
                                             },
                                           );
+                                        } else if (value == 'Details') {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => DetailUser(user: userArray[index])),
+                                          );
                                         }
                                       },
                                       itemBuilder: (BuildContext context) => [
                                         const PopupMenuItem<String>(
-                                          value: 'delete',
+                                          value: 'Details',
                                           child: Row(
                                             children: [
-                                              Icon(Icons.delete, color: Colors.red),
+                                              Icon(Icons.info,
+                                                  color: Colors.blueAccent),
                                               SizedBox(width: 8.0),
-                                              Text('Delete', style: TextStyle(color: Colors.red)),
+                                              Text('Details',
+                                                  style: TextStyle(
+                                                      color: Colors.blueAccent)),
+                                            ],
+                                          ),
+                                        ),
+                                        const PopupMenuItem<String>(
+                                          value: 'Delete',
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.delete,
+                                                  color: Colors.red),
+                                              SizedBox(width: 8.0),
+                                              Text('Delete',
+                                                  style: TextStyle(
+                                                      color: Colors.red)),
                                             ],
                                           ),
                                         ),
@@ -212,16 +252,7 @@ class _UsersScreenState extends State<UsersScreen> {
                         ),
                       );
                     }))
-          ]),
-           drawer: MyDrawer(
-          selectedIndex: _selectedIndex,
-          onItemTapped: (index) {
-            setState(() {
-              _selectedIndex = index;
-            });
-          },
-        ),
-          ));
+          ]));
     } else {
       return const Center(
         child: CircularProgressIndicator(),
