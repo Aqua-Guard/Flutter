@@ -17,7 +17,7 @@ class LoginService {
 
     return await NetworkService.sendRequest(
         requestType: RequestType.post,
-        url: '${Constantes.baseUrl}/login',
+        url: '${Constantes.baseUrl}/loginFlutter',
         body: userObject);
   }
 }

@@ -8,9 +8,9 @@ import '../Network/networkService.dart';
 
 class UserService{
 
-  Future<List<UserResponse>> fetchUsers() async {
+  Future<List<UserResponse>> fetchUsers(String id) async {
     final response = await NetworkService.sendRequest(
-        requestType: RequestType.get, url: "${Constantes.baseUrl}/getUsers");
+        requestType: RequestType.get, url: "${Constantes.baseUrl}/getUsers/$id");
 
     if (response?.statusCode == 200) {
       List<dynamic> data = json.decode(response!.body);
@@ -20,10 +20,35 @@ class UserService{
     }
   }
 
-  Future<Response?> deleteUser(String id) async {
+  Future<Response?> banUser(String id) async {
     final response = await NetworkService.sendRequest(
-        requestType: RequestType.delete,
-        url: "${Constantes.baseUrl}/deleteUserById/$id");
+        requestType: RequestType.post,
+        url: "${Constantes.baseUrl}/banUser/$id");
+    return response;
+  }
+
+  Future<Response?> sendCode(String email) async {
+    final response = await NetworkService.sendRequest(
+        requestType: RequestType.post,
+        url: "${Constantes.baseUrl}/sendActivationCode",
+        body: {"email": email});
+    return response;
+  }
+
+  Future<Response?> verifyCode(String email, String code) async {
+    print("code-----------"+ code);
+    final response = await NetworkService.sendRequest(
+        requestType: RequestType.post,
+        url: "${Constantes.baseUrl}/verifyCode",
+        body: {"email": email, "resetCode": code});
+    return response;
+  }
+
+  Future<Response?> forgotPassword(String email,String password, String confirmPassword) async {
+    final response = await NetworkService.sendRequest(
+        requestType: RequestType.post,
+        url: "${Constantes.baseUrl}/forgotPassword",
+        body: {"email": email, "newPassword": password, "confirmPassword": confirmPassword});
     return response;
   }
 }

@@ -157,7 +157,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                             color: Colors.black,
                           ),
                           children: <TextSpan>[
-                            TextSpan(text: "Already have an account yet ?"),
+                            TextSpan(text: "Already have an account yet?"),
                             TextSpan(
                                 text: ' Sign in',
                                 style: TextStyle(
