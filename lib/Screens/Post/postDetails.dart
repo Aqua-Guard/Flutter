@@ -171,7 +171,7 @@ class _PostDetailsState extends State<PostDetails> {
                                     context: context,
                                     builder: (context) => Dialog(
                                       child: CommentPost(
-                                          comments: widget.post.comments),
+                                          comments: widget.post.comments , token: widget.token),
                                     ),
                                   );
                                 },
