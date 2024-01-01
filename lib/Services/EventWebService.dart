@@ -213,4 +213,35 @@ class EventWebService {
     // Get the result as Uint8List
     return Uint8List.fromList(reader.result as List<int>);
   }
+
+
+
+Future<String?> generateWithChatGPT(String promptString, String token) async {
+  try {
+    // Assuming the prompt is the event name
+    String prompt = promptString;
+
+    // Make a GET request to the endpoint
+    final response = await http.get(
+      Uri.parse(Constantes.urlEvent+'/generateDescriptionWithChat/$prompt'),
+       headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      String generatedDescription = data['description'];
+      return generatedDescription;
+    } else {
+      throw Exception('Failed to generate description with ChatGPT');
+    }
+  } catch (error) {
+    print('Error generating description with ChatGPT: $error');
+    return null;
+  }
 }
+
+
+}
+
