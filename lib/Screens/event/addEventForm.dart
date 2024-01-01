@@ -186,16 +186,7 @@ class _AddEventFormState extends State<AddEventForm> {
                               _eventName = value ?? '';
                             },
                           ),
-                          const SizedBox(height: 16.0),
-                          TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: 'Event Name',
-                            ),
-                            validator: _validateName,
-                            onSaved: (value) {
-                              _eventName = value ?? '';
-                            },
-                          ),
+
                           const SizedBox(height: 16.0),
                           TextFormField(
                             controller: _descriptionController,

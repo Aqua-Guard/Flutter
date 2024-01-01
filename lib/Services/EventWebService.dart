@@ -241,7 +241,31 @@ Future<String?> generateWithChatGPT(String promptString, String token) async {
     return null;
   }
 }
+/*
+Future<void> updateEventStatus(String eventId, String authToken) async {
+  final url = Uri.parse(Constantes.urlEvent+'/updateStatus/$eventId');
 
+  try {
+    final response = await http.put(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $authToken',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print('Event status updated successfully');
+      // Handle success, if needed
+    } else {
+      print('Failed to update event status: ${response.statusCode}');
+      // Handle error, if needed
+    }
+  } catch (error) {
+    print('Error updating event status: $error');
+    // Handle error, if needed
+  }
+}*/
 
 }
 
