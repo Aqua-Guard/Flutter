@@ -1,6 +1,6 @@
 {
-    "name": "aquaguard",
-    "short_name": "aquaguard",
+    "name": "Aqua Guard",
+    "short_name": "Aqua Guard",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
