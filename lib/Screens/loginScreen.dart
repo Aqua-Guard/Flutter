@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:aquaguard/Screens/user/codeModal.dart';
+import 'package:aquaguard/Screens/user/emailModal.dart';
+import 'package:aquaguard/Screens/user/resetPasswordModal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -130,14 +133,32 @@ class LoginScreenState extends State<LoginScreen> {
 
                         if (response?.statusCode == 200) {
                           final responseData = json.decode(response!.body);
-                          final token = responseData['token'];
                           const storage = FlutterSecureStorage();
-                          await storage.write(key: "token", value: token);
+                          await storage.write(key: "token", value: responseData['token']);
+                          await storage.write(key: "email", value: responseData['email']);
+                          await storage.write(key: "id", value: responseData['id']);
+                          await storage.write(key: "username", value: responseData['username']);
+                          await storage.write(key: "nbPts", value: responseData['nbPts'].toString());
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => const HomeScreen()),
                           );
-                        } else if (response?.statusCode == 400) {
+                        } else if (response?.statusCode == 403) {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text("Error"),
+                                content: const Text("Access Denied. Only admin can login!"),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text("Dismiss"))
+                                ],
+                              );
+                            },
+                          );
+                        }else if (response?.statusCode == 400) {
                           showDialog(
                             context: context,
                             builder: (context) {
@@ -190,18 +211,22 @@ class LoginScreenState extends State<LoginScreen> {
 
                   },
                 ),
-                Align(
-                  alignment: Alignment.center,
-                  child: const Padding(
-                    padding: EdgeInsets.all(28.0),
-                    child: Text(
-                      'Forgot password?',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 20,
+                GestureDetector(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: const Padding(
+                      padding: EdgeInsets.all(28.0),
+                      child: Text(
+                        'Forgot password?',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 20,
+                        ),
                       ),
                     ),
                   ),
+                  onTap: () => showModalBottomSheet(
+                      context: context, builder: (context) => EmailModal()),
                 ),
                 GestureDetector(
                   child: Align(
