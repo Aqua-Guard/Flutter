@@ -99,7 +99,7 @@ class LoginScreenState extends State<LoginScreen> {
                         textEditingController: _password,
                         label: 'Password',
                         hintText:
-                        'Enter secure password between 6 and 8 characters',
+                            'Enter secure password between 6 and 8 characters',
                         icon: const Icon(Icons.lock_rounded,
                             size: 40, color: Colors.blue),
                         obscureText: _isPasswordVisible,
@@ -127,21 +127,29 @@ class LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   onTap: () async {
-                    if (_username.text.isNotEmpty && _password.text.isNotEmpty){
-                      await LoginService().login(context,
-                          _username.text,_password.text).then((response) async {
-
+                    if (_username.text.isNotEmpty &&
+                        _password.text.isNotEmpty) {
+                      await LoginService()
+                          .login(context, _username.text, _password.text)
+                          .then((response) async {
                         if (response?.statusCode == 200) {
                           final responseData = json.decode(response!.body);
                           const storage = FlutterSecureStorage();
-                          await storage.write(key: "token", value: responseData['token']);
-                          await storage.write(key: "email", value: responseData['email']);
-                          await storage.write(key: "id", value: responseData['id']);
-                          await storage.write(key: "username", value: responseData['username']);
-                          await storage.write(key: "nbPts", value: responseData['nbPts'].toString());
+                          await storage.write(
+                              key: "token", value: responseData['token']);
+                          await storage.write(
+                              key: "email", value: responseData['email']);
+                          await storage.write(
+                              key: "id", value: responseData['id']);
+                          await storage.write(
+                              key: "username", value: responseData['username']);
+                          await storage.write(
+                              key: "nbPts",
+                              value: responseData['nbPts'].toString());
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const HomeScreen()),
+                            MaterialPageRoute(
+                                builder: (context) => const HomeScreen()),
                           );
                         } else if (response?.statusCode == 403) {
                           showDialog(
@@ -149,7 +157,8 @@ class LoginScreenState extends State<LoginScreen> {
                             builder: (context) {
                               return AlertDialog(
                                 title: const Text("Error"),
-                                content: const Text("Access Denied. Only admin can login!"),
+                                content: const Text(
+                                    "Access Denied. Only admin can login!"),
                                 actions: [
                                   TextButton(
                                       onPressed: () => Navigator.pop(context),
@@ -158,13 +167,14 @@ class LoginScreenState extends State<LoginScreen> {
                               );
                             },
                           );
-                        }else if (response?.statusCode == 400) {
+                        } else if (response?.statusCode == 400) {
                           showDialog(
                             context: context,
                             builder: (context) {
                               return AlertDialog(
                                 title: const Text("Information"),
-                                content: const Text("wrong username or password!"),
+                                content:
+                                    const Text("wrong username or password!"),
                                 actions: [
                                   TextButton(
                                       onPressed: () => Navigator.pop(context),
@@ -179,7 +189,8 @@ class LoginScreenState extends State<LoginScreen> {
                             builder: (context) {
                               return AlertDialog(
                                 title: const Text("Information"),
-                                content: const Text("Server error! Try again later"),
+                                content:
+                                    const Text("Server error! Try again later"),
                                 actions: [
                                   TextButton(
                                       onPressed: () => Navigator.pop(context),
@@ -190,9 +201,7 @@ class LoginScreenState extends State<LoginScreen> {
                           );
                         }
                       });
-
-                    }
-                    else{
+                    } else {
                       showDialog(
                         context: context,
                         builder: (context) {
@@ -208,7 +217,6 @@ class LoginScreenState extends State<LoginScreen> {
                         },
                       );
                     }
-
                   },
                 ),
                 GestureDetector(

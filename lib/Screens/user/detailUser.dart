@@ -133,7 +133,7 @@ class _DetailUserState extends State<DetailUser> {
                         child: ElevatedButton.icon(
                           onPressed: () async {
                             Response? res =
-                                await UserService().deleteUser(widget.user.id!);
+                                await UserService().banUser(widget.user.id!);
                             Navigator.pop(context);
 
                             if (res?.statusCode == 200) {
@@ -143,7 +143,7 @@ class _DetailUserState extends State<DetailUser> {
                                   return AlertDialog(
                                     title: const Text("Information"),
                                     content: const Text(
-                                        "User successfully deleted!"),
+                                        "User successfully banned!"),
                                     actions: [
                                       TextButton(
                                           onPressed: () => Navigator.push(
@@ -164,7 +164,7 @@ class _DetailUserState extends State<DetailUser> {
                                   return AlertDialog(
                                     title: const Text("Error"),
                                     content: const Text(
-                                        "User could not be deleted!"),
+                                        "User could not be banned!"),
                                     actions: [
                                       TextButton(
                                           onPressed: () =>
@@ -177,7 +177,7 @@ class _DetailUserState extends State<DetailUser> {
                             }
                           },
                           icon: const Icon(Icons.delete, color: Colors.red),
-                          label: const Text('Delete', style: TextStyle(
+                          label: const Text('Ban', style: TextStyle(
                             color: Colors.red
                           ),),
                           style: ElevatedButton.styleFrom(
