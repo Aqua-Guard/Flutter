@@ -2,10 +2,10 @@ import 'package:aquaguard/Screens/Post/postScreen.dart';
 import 'package:aquaguard/Screens/actualite/actualiteScreen.dart';
 import 'package:aquaguard/Screens/event/eventStatistics.dart';
 import 'package:aquaguard/Screens/homeScreen.dart';
-import 'package:aquaguard/Screens/loginScreen.dart';
-import 'package:aquaguard/Screens/user/usersScreen.dart';
+import 'package:aquaguard/Screens/user/loginScreen.dart';
+import 'package:aquaguard/Screens/user/UserStats.dart';
 import 'package:flutter/material.dart';
-import 'package:aquaguard/Screens/profileScreen.dart';
+import 'package:aquaguard/Screens/user/profileScreen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -111,7 +111,7 @@ class MyDrawer extends StatelessWidget {
               Navigator.pop(context);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => UsersScreen()),
+                MaterialPageRoute(builder: (context) => UserStats()),
               );
             },
             selected: selectedIndex == 1,

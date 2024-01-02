@@ -6,11 +6,11 @@ import 'package:aquaguard/Screens/user/resetPasswordModal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../Components/customButton.dart';
-import '../Components/customTextField.dart';
-import '../Services/loginService.dart';
+import '../../Components/customButton.dart';
+import '../../Components/customTextField.dart';
+import '../../Services/loginService.dart';
 import 'RegisterScreen.dart';
-import 'homeScreen.dart';
+import '../homeScreen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,7 +20,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class LoginScreenState extends State<LoginScreen> {
-  bool _isPasswordVisible = false;
+  bool _isPasswordVisible = true;
   final TextEditingController _username = TextEditingController();
   final TextEditingController _password = TextEditingController();
   final storage = const FlutterSecureStorage();
@@ -69,10 +69,10 @@ class LoginScreenState extends State<LoginScreen> {
                     ),
                     child: CustomTextField(
                       textEditingController: _username,
-                      label: 'Email',
-                      hintText: 'Enter valid email id as example@gmail.com',
+                      label: 'Username',
+                      hintText: 'Please enter your username',
                       icon: const Icon(
-                        Icons.email_rounded,
+                        CupertinoIcons.person_crop_circle_fill,
                         size: 40,
                         color: Colors.blue,
                       ),
@@ -99,7 +99,7 @@ class LoginScreenState extends State<LoginScreen> {
                         textEditingController: _password,
                         label: 'Password',
                         hintText:
-                            'Enter secure password between 6 and 8 characters',
+                        'Enter secure password between 6 and 8 characters',
                         icon: const Icon(Icons.lock_rounded,
                             size: 40, color: Colors.blue),
                         obscureText: _isPasswordVisible,
@@ -174,7 +174,7 @@ class LoginScreenState extends State<LoginScreen> {
                               return AlertDialog(
                                 title: const Text("Information"),
                                 content:
-                                    const Text("wrong username or password!"),
+                                const Text("wrong username or password!"),
                                 actions: [
                                   TextButton(
                                       onPressed: () => Navigator.pop(context),
@@ -190,7 +190,7 @@ class LoginScreenState extends State<LoginScreen> {
                               return AlertDialog(
                                 title: const Text("Information"),
                                 content:
-                                    const Text("Server error! Try again later"),
+                                const Text("Server error! Try again later"),
                                 actions: [
                                   TextButton(
                                       onPressed: () => Navigator.pop(context),

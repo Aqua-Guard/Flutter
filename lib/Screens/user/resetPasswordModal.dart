@@ -1,4 +1,4 @@
-import 'package:aquaguard/Screens/loginScreen.dart';
+import 'package:aquaguard/Screens/user/loginScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -131,7 +131,7 @@ class _ResetPasswordModalState extends State<ResetPasswordModal> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                      LoginScreen()),
+                                          LoginScreen()),
                                 );
                               } else if (response?.statusCode == 400) {
                                 showDialog(

@@ -43,7 +43,7 @@ dependencies:
   speech_to_text: ^6.5.1
   showcaseview: ^2.0.3
   table_calendar: ^3.0.9
-
+  pie_chart: ^5.1.0
 
 
   # The following adds the Cupertino Icons font to your application.
