@@ -249,6 +249,7 @@ class _EventDetailsState extends State<EventDetails> {
                               width: double.infinity,
                               child: ElevatedButton.icon(
                                 onPressed: () {
+                                 // EventWebService().updateEventStatus(widget.event.idEvent, widget.token);
                                   // Handle Delete button tap
                                   // You can show a confirmation dialog and delete the event if confirmed
                                 },
