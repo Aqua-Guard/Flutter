@@ -88,7 +88,13 @@ class _UserStatsState extends State<UserStats> {
         generateActivatedAccountsDataMap();
 
     return Scaffold(
-      appBar: MyAppBar(),
+      appBar: AppBar(
+        title: const Text('Users Statistics',
+            style: TextStyle(
+              color: Colors.white,
+            )),
+        backgroundColor: const Color(0xff00689B),
+      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(

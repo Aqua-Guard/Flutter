@@ -46,7 +46,13 @@ class _UsersScreenState extends State<UsersScreen> {
   Widget build(BuildContext context) {
     if (userArray != null) {
       return Scaffold(
-          appBar: MyAppBar(),
+          appBar: AppBar(
+            title: const Text('Users List',
+                style: TextStyle(
+                  color: Colors.white,
+                )),
+            backgroundColor: const Color(0xff00689B),
+          ),
           body: ListView(children: [
             Container(
                 height: MediaQuery.of(context).size.height * .9,
