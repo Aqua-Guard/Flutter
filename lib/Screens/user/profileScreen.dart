@@ -1,3 +1,4 @@
+import 'package:aquaguard/Screens/user/changePassword.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -82,12 +83,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const SizedBox(
                           height: 20,
                         ),
-                        Text(
-                          'Change password',
-                          style: TextStyle(
-                            color: isDarkMode ? Colors.lightBlueAccent : Colors.blueAccent,
-                            fontSize: 22,
+
+                        GestureDetector(
+                          child: Text(
+                            'Change password',
+                            style: TextStyle(
+                              color: Colors.blueAccent,
+                              fontSize: 22,
+                            ),
                           ),
+                          onTap: () {
+                            Navigator.of(context).push(
+                                MaterialPageRoute(builder: (context) => ChangePassword()));
+                          },
                         ),
                         const SizedBox(
                           height: 15,

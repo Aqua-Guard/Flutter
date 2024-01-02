@@ -51,4 +51,12 @@ class UserService{
         body: {"email": email, "newPassword": password, "confirmPassword": confirmPassword});
     return response;
   }
+
+  Future<Response?> changePassword(String email,String oldPassword,String newPassword, String confirmPassword) async {
+    final response = await NetworkService.sendRequest(
+        requestType: RequestType.post,
+        url: "${Constantes.baseUrl}/changePassword",
+        body: {"email": email, "oldPassword": oldPassword, "newPassword": newPassword, "confirmPassword": confirmPassword});
+    return response;
+  }
 }
