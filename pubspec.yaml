@@ -40,6 +40,8 @@ dependencies:
   intl: ^0.18.1
   flutter_secure_storage: ^9.0.0
   fluttertoast: ^8.2.4
+  speech_to_text: ^6.5.1
+  showcaseview: ^2.0.3
   table_calendar: ^3.0.9
   pie_chart: ^5.1.0
 

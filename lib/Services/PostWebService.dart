@@ -1,3 +1,4 @@
+
 import 'dart:html' as html;
 import 'dart:typed_data';
 
@@ -111,5 +112,92 @@ Future<List<PostCount>> getPostsPerWeek(String token) async {
     throw Exception('Failed to load posts per week');
   }
 }
+
+Future<String?> generatePostDescriptionWithChatGPT(String promptString, String token) async {
+  try {
+    // Assuming the prompt is the event name
+    String prompt = promptString;
+
+    // Make a GET request to the endpoint
+    final response = await http.get(
+      Uri.parse(Constantes.urlPost+'/generateDescriptionWithChat/$prompt'),
+       headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      String generatedDescription = data['description'];
+      return generatedDescription;
+    } else {
+      throw Exception('Failed to generate description with ChatGPT');
+    }
+  } catch (error) {
+    print('Error generating description with ChatGPT: $error');
+    return null;
+  }
+}
+
+
+Future<bool?> detectDiscriminationInText(String promptString, String token) async {
+  try {
+    // Assuming the prompt is the event name
+    String prompt = promptString;
+
+    // Make a GET request to the endpoint
+    final response = await http.get(
+      Uri.parse(Constantes.urlPost+'/detectDiscrimination/$prompt'),
+       headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      // convert this "true" to "false" to boolean
+     if (data['analysis']?.toLowerCase() == 'true' ) {
+      return true;  
+     }else{
+      return false;  
+     }
+ //Error generating description with ChatGPT: Expected a value of type 'bool', but got one of type 'String'
+      
+    } else {
+      throw Exception('Failed to detect Discrimination with ChatGPT');
+    }
+  } catch (error) {
+    print('Error generating description with ChatGPT: $error');
+    return null;
+  }
+}
+
+
+
+Future<void> deleteComment(String token,String commentId ) async {
+  final url = Uri.parse('${Constantes.urlComment}/admin/$commentId');
+  try {
+    final response = await http.delete(
+      url,
+      headers: <String, String>{
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Success
+      print('comment deleted successfully');
+    } else {
+      // Error
+      print('Failed to delete Comment. Status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+    }
+  } catch (error) {
+    // Exception
+    print('Error: $error');
+  }
+}
+
+
 
 }
