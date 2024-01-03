@@ -14,7 +14,7 @@ class EventDetails extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<EventDetails> createState() => _EventDetailsState();
+  State<EventDetails> crreateState() => _EventDetailsState();
 }
 
 class _EventDetailsState extends State<EventDetails> {

@@ -1,8 +1,6 @@
-import 'package:aquaguard/Models/partenaire.dart';
-import 'package:aquaguard/Services/EventWebService.dart';
+import 'package:aquaguard/Services/ActualiteWebService.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
+import 'dart:html' as html;
 
 class AddNews extends StatefulWidget {
   String token;
@@ -18,36 +16,34 @@ class _AddNewsFormState extends State<AddNews> {
 
   // Variables to store form data
   String _newsTitle = '';
-  String _newsContent = '';
-  String? _selectedOrganizer;
+  String _newsDescription = '';
+    String _newstext = '';
 
-  late XFile? _pickedImage = null;
+
+
+html.File? _pickedImage;
+  String? _imageDataUrl; //
 
   Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+    final picker = html.FileUploadInputElement()..accept = 'image/*';
+    picker.click();
 
-    if (pickedImage != null) {
-      setState(() {
-        _pickedImage = pickedImage!;
+    picker.onChange.listen((event) {
+      final file = picker.files!.first;
+      final reader = html.FileReader();
+
+      reader.readAsDataUrl(file);
+      reader.onLoadEnd.listen((loadEndEvent) {
+        setState(() {
+          _pickedImage = file;
+          _imageDataUrl = reader.result as String;
+        });
       });
-    }
-  }
-
-  List<Partenaire> partenairesData = [];
-
-  @override
-  void initState() {
-    super.initState();
-
-    EventWebService().fetchPartenaires().then((partenaires) {
-      setState(() {
-        partenairesData = partenaires;
-      });
-    }).catchError((error) {
-      print('Error fetching partenaires: $error');
     });
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -100,11 +96,11 @@ class _AddNewsFormState extends State<AddNews> {
                                 color: Color(0xff00689B)),
                             label: const Text('Add Image'),
                           ),
-                          if (_pickedImage != null)
+                          if (_imageDataUrl != null)
                             Container(
                               width: 100,
                               height: 100,
-                              child: Image.network(_pickedImage!.path),
+                              child: Image.network(_imageDataUrl!),
                             ),
                           const SizedBox(height: 16.0),
                           TextFormField(
@@ -119,43 +115,44 @@ class _AddNewsFormState extends State<AddNews> {
                           const SizedBox(height: 16.0),
                           TextFormField(
                             decoration: const InputDecoration(
-                              labelText: 'News Content',
+                              labelText: 'News Description',
                             ),
                             maxLines: 3,
                             
                             onSaved: (value) {
-                              _newsContent = value ?? '';
+                              _newsDescription = value ?? '';
                             },
                           ),
-                          const SizedBox(height: 16.0),
-                          DropdownButtonFormField<String>(
-                            value: _selectedOrganizer,
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedOrganizer = value;
-                              });
-                            },
-                            items: partenairesData
-                                .map((partenaire) => DropdownMenuItem(
-                                      value: partenaire.id,
-                                      child: Text(
-                                          '${partenaire.firstName} ${partenaire.LastName}'),
-                                    ))
-                                .toList(),
+                        const SizedBox(height: 16.0),
+                          TextFormField(
                             decoration: const InputDecoration(
-                              labelText: 'Organizer',
+                              labelText: 'News Text',
                             ),
+                            maxLines: 3,
+                            
+                            onSaved: (value) {
+                              _newstext = value ?? '';
+                            },
                           ),
                           const SizedBox(height: 16.0),
                           Column(
                             children: [
                               ElevatedButton(
                                 onPressed: () async {
-                                  // Validate form data
-                                  if (_formKey.currentState?.validate() ??
-                                      false) {
-                                  
-                                  }
+                                                                  if (_formKey.currentState?.validate() ??
+                                        false) {
+                                      _formKey.currentState?.save();
+                                      await ActualiteWebService().addActualite(
+                                        token: widget.token,
+                                        title: _newsTitle,
+                                        description: _newsDescription,
+                                        text: _newstext,
+                                        fileimage: _pickedImage!,
+                                        context: context,
+                                      );
+
+                                      Navigator.pop(context);
+                                    }
                                 },
                                 style: ElevatedButton.styleFrom(
                                   primary: const Color(0xff00689B),
