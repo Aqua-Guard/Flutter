@@ -2,10 +2,10 @@ import 'package:aquaguard/Screens/Post/postScreen.dart';
 import 'package:aquaguard/Screens/actualite/actualiteScreen.dart';
 import 'package:aquaguard/Screens/event/eventStatistics.dart';
 import 'package:aquaguard/Screens/homeScreen.dart';
-import 'package:aquaguard/Screens/loginScreen.dart';
-import 'package:aquaguard/Screens/user/usersScreen.dart';
+import 'package:aquaguard/Screens/user/loginScreen.dart';
+import 'package:aquaguard/Screens/user/UserStats.dart';
 import 'package:flutter/material.dart';
-import 'package:aquaguard/Screens/profileScreen.dart';
+import 'package:aquaguard/Screens/user/profileScreen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -16,6 +16,19 @@ class MyDrawer extends StatelessWidget {
     required this.selectedIndex,
     required this.onItemTapped,
   });
+
+  Future<Map<String, String>> getUserDetails() async {
+    final storage = FlutterSecureStorage();
+    final email = await storage.read(key: 'email');
+    final username = await storage.read(key: 'username');
+    final image = await storage.read(key: 'image');
+
+    return {
+      'email': email ?? "",
+      'username': username ?? "",
+      'image': image ?? ""
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,46 +46,65 @@ class MyDrawer extends StatelessWidget {
             ),
             child: Container(
               padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ProfileScreen()),
-                      );
-                    },
-                    child: const CircleAvatar(
-                      radius: 40,
-                      backgroundImage: AssetImage("assets/images/malek.jpg"),
-                    ),
-                  ),
-                  const SizedBox(width: 6.0),
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Malek Labidi",
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+              child: FutureBuilder(
+                future: getUserDetails(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasData) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ProfileScreen()),
+                            );
+                          },
+                          child: CircleAvatar(
+                            radius: 40,
+                            backgroundImage:
+                                AssetImage(snapshot.data!['image']!),
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 8.0),
-                      Text(
-                        "labidi.malek@esprit.tn",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                        const SizedBox(width: 6.0),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              snapshot.data!['username']!,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 8.0),
+                            Text(
+                              snapshot.data!['email']!,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
+                      ],
+                    );
+                  } else {
+                    return Text(
+                      'Error fetching user details',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
                       ),
-                    ],
-                  ),
-                ],
+                    );
+                  }
+                },
               ),
             ),
           ),
@@ -111,7 +143,7 @@ class MyDrawer extends StatelessWidget {
               Navigator.pop(context);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => UsersScreen()),
+                MaterialPageRoute(builder: (context) => UserStats()),
               );
             },
             selected: selectedIndex == 1,

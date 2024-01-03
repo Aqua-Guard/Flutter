@@ -15,6 +15,9 @@ class AddEventForm extends StatefulWidget {
 class _AddEventFormState extends State<AddEventForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  TextEditingController _descriptionController = TextEditingController();
+  bool _isLoading = false;
+
   // Variables to store form data
   String _eventName = '';
   String _eventDescription = '';
@@ -56,15 +59,15 @@ class _AddEventFormState extends State<AddEventForm> {
   String? _validateLocation(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter the event location';
-    } else if (value.length < 3 || value.length > 30) {
-      return 'Location should be between 3 and 30 characters';
+    } else if (value.length < 3 || value.length > 50) {
+      return 'Location should be between 3 and 50 characters';
     }
     return null;
   }
 
   String? _validateDescription(String? value) {
-    if (value != null && (value.length < 10 || value.length > 100)) {
-      return 'Description should be between 10 and 100 characters';
+    if (value != null && (value.length < 10 || value.length > 500)) {
+      return 'Description should be between 10 and 500 characters';
     }
     return null;
   }
@@ -80,10 +83,10 @@ class _AddEventFormState extends State<AddEventForm> {
     return null;
   }
 
-html.File? _pickedImage;
+  html.File? _pickedImage;
   String? _imageDataUrl; //
 
-   Future<void> _pickImage() async {
+  Future<void> _pickImage() async {
     final picker = html.FileUploadInputElement()..accept = 'image/*';
     picker.click();
 
@@ -172,7 +175,6 @@ html.File? _pickedImage;
                               width: 100,
                               height: 100,
                               child: Image.network(_imageDataUrl!),
-
                             ),
                           const SizedBox(height: 16.0),
                           TextFormField(
@@ -184,8 +186,10 @@ html.File? _pickedImage;
                               _eventName = value ?? '';
                             },
                           ),
+
                           const SizedBox(height: 16.0),
                           TextFormField(
+                            controller: _descriptionController,
                             decoration: const InputDecoration(
                               labelText: 'Event Description',
                             ),
@@ -193,7 +197,97 @@ html.File? _pickedImage;
                             validator: _validateDescription,
                             onSaved: (value) {
                               _eventDescription = value ?? '';
+                              print('event description: $_eventDescription');
                             },
+                            onChanged: (value) {
+                              // This will be called whenever the text in the field changes
+                              print('Changed: $value');
+                              // Update _eventDescription if needed
+                              setState(() {
+                                _eventDescription = value;
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 16.0),
+                          ElevatedButton(
+                            onPressed: () async {
+                              print('prompting chatgpt : $_eventDescription');
+                              setState(() {
+                                // Set a flag to indicate that the operation is in progress
+                                _isLoading = true;
+                              });
+
+                              try {
+                                String? generatedDescription =
+                                    await EventWebService().generateWithChatGPT(
+                                        _eventDescription, widget.token);
+
+                                if (generatedDescription == null) {
+                                  // Show error message
+                                  SnackBar snackBar = const SnackBar(
+                                    content: Row(
+                                      children: [
+                                        Icon(Icons.error, color: Colors.white),
+                                        SizedBox(width: 8),
+                                        Text(
+                                          'You must provide a prompt to generate a description',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ],
+                                    ),
+                                    backgroundColor: Colors.red,
+                                  );
+
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
+                                  print('Generated description is null');
+                                } else {
+                                  // Update the _eventDescription with the generated result
+                                  setState(() {
+                                    _eventDescription = generatedDescription;
+                                    _descriptionController.text =
+                                        generatedDescription; // Update controller value
+                                  });
+
+                                  print(
+                                      'Generated description: $_eventDescription');
+                                }
+                              } finally {
+                                setState(() {
+                                  // Set the flag back to false after the operation is complete
+                                  _isLoading = false;
+                                });
+                              }
+
+                              // Additional logic after the generation if needed
+                            },
+                            child: _isLoading
+                                ? Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      CircularProgressIndicator(),
+                                      SizedBox(width: 8.0),
+                                      Text('Generating...'),
+                                    ],
+                                  )
+                                : Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      ColorFiltered(
+                                        colorFilter: ColorFilter.mode(
+                                          Color(0xff00689B),
+                                          BlendMode.srcIn,
+                                        ),
+                                        child: Image.asset(
+                                          'images/openai-icon.png',
+                                          width: 24.0,
+                                          height: 24.0,
+                                        ),
+                                      ),
+                                      SizedBox(width: 8.0),
+                                      Text('Generate with ChatGPT'),
+                                    ],
+                                  ),
                           ),
                           const SizedBox(height: 16.0),
                           TextFormField(
@@ -269,9 +363,12 @@ html.File? _pickedImage;
                                     SnackBar snackBar = SnackBar(
                                       content: Row(
                                         children: [
-                                          const Icon(Icons.error,color: Colors.white), 
-                                          const SizedBox(width:8), 
-                                          Text(dateValidation,style: const TextStyle(color: Colors.white)),
+                                          const Icon(Icons.error,
+                                              color: Colors.white),
+                                          const SizedBox(width: 8),
+                                          Text(dateValidation,
+                                              style: const TextStyle(
+                                                  color: Colors.white)),
                                         ],
                                       ),
                                       backgroundColor: Colors
