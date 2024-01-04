@@ -9,8 +9,9 @@ import 'package:showcaseview/showcaseview.dart';
 
 class AddPostForm extends StatefulWidget {
   String token;
+  final Function onPostUpdated;
 
-  AddPostForm({Key? key, required this.token}) : super(key: key);
+  AddPostForm({Key? key, required this.token,required this.onPostUpdated}) : super(key: key);
   @override
   State<AddPostForm> createState() => _AddPostFormState();
 }
@@ -152,6 +153,7 @@ class _AddPostFormState extends State<AddPostForm> {
                         myIcon: Icons.article,
                         prefixIconColor: const Color(0xff00689B),
                         onMicTap: _listen,
+                        isListening: _isListening,
                       ),
                       const SizedBox(height: 20.0),
 
@@ -165,14 +167,14 @@ class _AddPostFormState extends State<AddPostForm> {
                                 // Set a flag to indicate that the operation is in progress
                                 _isLoading = true;
                               });
-                          
+
                               try {
                                 String? generatedDescription =
                                     await PostWebService()
                                         .generatePostDescriptionWithChatGPT(
                                             _postDescriptionController.text,
                                             widget.token);
-                          
+
                                 if (generatedDescription == null) {
                                   // Show error message
                                   SnackBar snackBar = const SnackBar(
@@ -188,7 +190,7 @@ class _AddPostFormState extends State<AddPostForm> {
                                     ),
                                     backgroundColor: Colors.red,
                                   );
-                          
+
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(snackBar);
                                   print('Generated description is null');
@@ -200,7 +202,7 @@ class _AddPostFormState extends State<AddPostForm> {
                                     _postDescriptionController.text =
                                         generatedDescription; // Update controller value
                                   });
-                          
+
                                   print(
                                       'Generated description: $_postDescriptionController');
                                 }
@@ -210,7 +212,7 @@ class _AddPostFormState extends State<AddPostForm> {
                                   _isLoading = false;
                                 });
                               }
-                          
+
                               // Additional logic after the generation if needed
                             },
                             child: _isLoading
@@ -221,7 +223,8 @@ class _AddPostFormState extends State<AddPostForm> {
                                         height: 20.0, // Set the size
                                         width: 20.0, // Set the size
                                         child: CircularProgressIndicator(
-                                          valueColor: AlwaysStoppedAnimation<Color>(
+                                          valueColor: AlwaysStoppedAnimation<
+                                                  Color>(
                                               Colors.blue), // Change the color
                                           strokeWidth:
                                               4.0, // Change the stroke width
@@ -287,6 +290,7 @@ class _AddPostFormState extends State<AddPostForm> {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text("Post added successfully")),
               );
+             widget.onPostUpdated();
               Navigator.pop(context);
             } else {
               // Handle failure, e.g., show error message
@@ -323,6 +327,7 @@ class MyTextField extends StatelessWidget {
     this.myIcon = Icons.verified_user_outlined,
     this.prefixIconColor = Colors.blueAccent,
     this.onMicTap,
+    required this.isListening,
   }) : super(key: key);
 
   final TextEditingController myController;
@@ -330,6 +335,7 @@ class MyTextField extends StatelessWidget {
   final IconData myIcon;
   final Color prefixIconColor;
   final VoidCallback? onMicTap;
+  final bool isListening;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -338,7 +344,8 @@ class MyTextField extends StatelessWidget {
         labelText: fieldName,
         prefixIcon: Icon(myIcon, color: prefixIconColor),
         suffixIcon: IconButton(
-          icon: Icon(Icons.mic, color: Colors.blueAccent),
+          icon: Icon(Icons.mic,
+              color: isListening ? Colors.blueAccent : Colors.grey),
           onPressed: onMicTap,
         ),
         border: const OutlineInputBorder(),
