@@ -1,5 +1,6 @@
 import 'dart:html';
 
+import 'package:aquaguard/Components/MyDrawer.dart';
 import 'package:aquaguard/Models/comment.dart';
 import 'package:aquaguard/Models/like.dart';
 import 'package:aquaguard/Models/post.dart';
@@ -22,6 +23,8 @@ class AllPostsScreen extends StatefulWidget {
 }
 
 class _AllPostsScreenState extends State<AllPostsScreen> {
+    int _selectedIndex = 3;
+
   late List<Post> postData = [];
   late List<Post> postDataOriginal = [];
   late TextEditingController _searchController;
@@ -368,6 +371,14 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
             Icons.add,
             color: Colors.white,
           ),
+        ),
+        drawer: MyDrawer(
+          selectedIndex: _selectedIndex,
+          onItemTapped: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
         ),
       ),
     );

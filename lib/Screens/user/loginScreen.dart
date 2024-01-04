@@ -146,10 +146,11 @@ class LoginScreenState extends State<LoginScreen> {
                           await storage.write(
                               key: "nbPts",
                               value: responseData['nbPts'].toString());
+              var token = await storage.read(key: "token");
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const HomeScreen()),
+                                builder: (context) =>  HomeScreen(token: token!,)),
                           );
                         } else if (response?.statusCode == 403) {
                           showDialog(
