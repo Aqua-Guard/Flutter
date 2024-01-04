@@ -241,7 +241,7 @@ Future<String?> generateWithChatGPT(String promptString, String token) async {
     return null;
   }
 }
-/*
+
 Future<void> updateEventStatus(String eventId, String authToken) async {
   final url = Uri.parse(Constantes.urlEvent+'/updateStatus/$eventId');
 
@@ -265,7 +265,7 @@ Future<void> updateEventStatus(String eventId, String authToken) async {
     print('Error updating event status: $error');
     // Handle error, if needed
   }
-}*/
+}
 
 }
 
