@@ -3,6 +3,7 @@ import 'package:aquaguard/Services/EventWebService.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:html' as html;
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class AddEventForm extends StatefulWidget {
   String token;
@@ -17,6 +18,9 @@ class _AddEventFormState extends State<AddEventForm> {
 
   TextEditingController _descriptionController = TextEditingController();
   bool _isLoading = false;
+
+  late stt.SpeechToText _speechToText;
+  bool _isListening = false;
 
   // Variables to store form data
   String _eventName = '';
@@ -106,10 +110,51 @@ class _AddEventFormState extends State<AddEventForm> {
 
   List<Partenaire> partenairesData = [];
 
+  void _showMicInfoDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Voice Typing'),
+          content: const Text(
+              'Tap the microphone icon to use voice typing for your description.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _listen() async {
+    if (!_isListening) {
+      bool available = await _speechToText.initialize();
+      if (available) {
+        setState(() => _isListening = true);
+        _speechToText.listen(
+          onResult: (result) {
+            setState(() {
+              _descriptionController.text = result.recognizedWords;
+            });
+          },
+        );
+      }
+    } else {
+      setState(() => _isListening = false);
+      _speechToText.stop();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-
+    _speechToText = stt.SpeechToText();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _showMicInfoDialog());
     EventWebService().fetchPartenaires().then((partenaires) {
       setState(() {
         partenairesData = partenaires;
@@ -186,12 +231,22 @@ class _AddEventFormState extends State<AddEventForm> {
                               _eventName = value ?? '';
                             },
                           ),
-
                           const SizedBox(height: 16.0),
                           TextFormField(
                             controller: _descriptionController,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               labelText: 'Event Description',
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.mic,
+                                  color: _isListening
+                                      ? Colors.blueAccent
+                                      : Colors.grey,
+                                ),
+                                onPressed: () {
+                                  _listen();
+                                },
+                              ),
                             ),
                             maxLines: 3,
                             validator: _validateDescription,
