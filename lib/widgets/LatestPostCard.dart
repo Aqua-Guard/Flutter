@@ -70,8 +70,7 @@ class _LatestPostCardState extends State<LatestPostCard> {
                                   ),
                                 ),
                                 Text(
-                                  intl.DateFormat.yMMMd().format(DateTime
-                                      .now()), // Replace with post's actual date
+                                 '${post.postedAt}' , // Replace with post's actual date
                                   style: TextStyle(
                                       color: Colors.grey[600], fontSize: 12),
                                 ),

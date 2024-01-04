@@ -10,15 +10,31 @@ import 'package:fluttertoast/fluttertoast.dart';
 class PostDetails extends StatefulWidget {
   final Post post;
   String token;
+  final Function onPostUpdated;
 
-  PostDetails({Key? key, required this.post, required this.token})
-      : super(key: key);
+  PostDetails({Key? key, required this.post, required this.token, required this.onPostUpdated}) : super(key: key);
+
 
   @override
   State<PostDetails> createState() => _PostDetailsState();
 }
 
+enum VerificationStatus { notVerified, verified, failed }
+
 class _PostDetailsState extends State<PostDetails> {
+  VerificationStatus verificationStatus = VerificationStatus.notVerified;
+
+  @override
+  void initState() {
+    super.initState();
+
+    verificationStatus = widget.post.verified == true
+        ? VerificationStatus.verified
+        : widget.post.verified == false
+            ? VerificationStatus.failed
+            : VerificationStatus.notVerified;
+  }
+
   Future<bool?> showConfirmationDialog(BuildContext context) async {
     return showDialog<bool?>(
       context: context,
@@ -120,6 +136,149 @@ class _PostDetailsState extends State<PostDetails> {
                                   ),
                                 ),
                               ),
+                              // i want to add the tile of the post posted at on the left side of the container(${widget.post.postedAt})
+                              // and i want to add bottom have text that tel inside the bottom (tcheck the content of the post )to see if it contains discrimination just static btn with pretty ched icon
+                              Text(
+                                '${widget.post.postedAt}',
+                                style: TextStyle(
+                                    fontSize: isDesktop ? 16.0 : 14.0),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(16.0),
+                                child: TextButton(
+                                  onPressed: () async {
+                                    // Initial status set based on widget.post.verified
+
+                                    // Call the function to check for discriminatory content
+                                    bool? isDiscriminatory =
+                                        await PostWebService()
+                                            .detectDiscriminationInPost(
+                                                widget.post.idPost,
+                                                widget.token);
+
+                                    if (isDiscriminatory != null) {
+                                      // Show dialog and ask for user confirmation
+                                      bool verify = await showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: const Text(
+                                                    'Post Verification'),
+                                                content: Text(
+                                                    'Based on Chat GPT, the description of this post ${isDiscriminatory ? "does" : "does not"} include discrimination. Do you want to verify this post?'),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    child: Text('Verify'),
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop(
+                                                          true); // Close dialog and proceed with verification
+                                                      PostWebService()
+                                                          .verifyPost(
+                                                              widget
+                                                                  .post.idPost,
+                                                              widget.token);
+                                                              widget.onPostUpdated();
+                                                      // Show SnackBar
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                        SnackBar(
+                                                          content: Text(
+                                                              'Post verified successfully'),
+                                                          backgroundColor:
+                                                              Colors.green,
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                  TextButton(
+                                                    child: Text('Dont Verify',
+                                                        style: TextStyle(
+                                                            color: Colors.red)),
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop(
+                                                          false); // Close dialog and proceed with not verifying
+                                                      PostWebService()
+                                                          .notVerifyPost(
+                                                              widget
+                                                                  .post.idPost,
+                                                              widget.token);
+                                                              widget.onPostUpdated();
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                        SnackBar(
+                                                          content: Text(
+                                                              'Post verification declined'),
+                                                          backgroundColor:
+                                                              Colors.red,
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          ) ??
+                                          false; // Handle null (dialog dismissed)
+
+                                      // Update the UI based on the user's decision
+                                      if (verify) {
+                                        setState(() {
+                                          verificationStatus =
+                                              VerificationStatus.verified;
+                                          widget.post.verified =
+                                              true; // Update the post's verified status
+                                        });
+                                      } else {
+                                        setState(() {
+                                          verificationStatus =
+                                              VerificationStatus.failed;
+                                          widget.post.verified =
+                                              false; // Update the post's verified status
+                                        });
+                                      }
+                                    }
+                                  },
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize
+                                        .min, // Keep the row size to the size of its children
+                                    children: [
+                                      Icon(
+                                        verificationStatus ==
+                                                VerificationStatus.verified
+                                            ? Icons.check_circle
+                                            : verificationStatus ==
+                                                    VerificationStatus.failed
+                                                ? Icons.close_rounded
+                                                : Icons.warning,
+                                        color: Colors.white,
+                                      ),
+                                      SizedBox(width: 8),
+                                      Text(
+                                        verificationStatus ==
+                                                VerificationStatus.verified
+                                            ? "Verified"
+                                            : verificationStatus ==
+                                                    VerificationStatus.failed
+                                                ? "Not Verified"
+                                                : "Not Verified Yet",
+                                      ),
+                                    ],
+                                  ),
+                                  style: TextButton.styleFrom(
+                                    primary: Colors.white,
+                                    backgroundColor: verificationStatus ==
+                                            VerificationStatus.verified
+                                        ? Colors.green
+                                        : verificationStatus ==
+                                                VerificationStatus.failed
+                                            ? Colors.red
+                                            : Colors.orange,
+                                    onSurface: Colors.grey,
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -171,7 +330,9 @@ class _PostDetailsState extends State<PostDetails> {
                                     context: context,
                                     builder: (context) => Dialog(
                                       child: CommentPost(
-                                          comments: widget.post.comments , token: widget.token),
+                                          onPostUpdated : widget.onPostUpdated,
+                                          comments: widget.post.comments,
+                                          token: widget.token),
                                     ),
                                   );
                                 },

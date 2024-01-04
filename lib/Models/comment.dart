@@ -6,6 +6,7 @@ class Comment {
   String commentAvatar;
   String commentUsername;
   String comment;
+  String commentedAt;
 
   Comment({
    required this.idUser,
@@ -14,6 +15,7 @@ class Comment {
    required this.commentAvatar,
    required this.commentUsername,
    required this.comment,
+   required this.commentedAt,
   });
 
   factory Comment.fromJson(Map<String, dynamic> json) {
@@ -24,6 +26,7 @@ class Comment {
       commentAvatar: json['commentAvatar'],
       commentUsername: json['commentUsername'],
       comment: json['comment'],
+      commentedAt: json['commentedAt'],
     );
   }
 }

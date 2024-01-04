@@ -13,6 +13,8 @@ class Post {
   int nbShare;
   List<Comment> comments;
   List<Like> likes;
+  String postedAt;
+  bool? verified;
 
   Post({
     required this.idPost,
@@ -26,6 +28,8 @@ class Post {
     required this.nbShare,
     required this.comments,
     required this.likes,
+    required this.postedAt,
+    required this.verified,
   });
 
   factory Post.fromJson(Map<String, dynamic> json) {
@@ -43,6 +47,8 @@ class Post {
       nbLike: json['nbLike'],
       nbComments: json['nbComments'],
       nbShare: json['nbShare'],
+      postedAt: json['postedAt'],
+      verified: json['verified'],
       comments: comments,
       likes: likes,
     );
