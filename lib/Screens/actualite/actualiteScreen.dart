@@ -183,81 +183,128 @@ print('//////=-------------============----------------========== $about');
       );
     }
 
-    return Column(
-      children: [
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Card(
-            elevation: 4,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columns: [
-                  DataColumn(
-                    label: Text(
-                      'News Title',
+  return Column(
+    children: [
+      SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Card(
+          elevation: 4,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columns: [
+                DataColumn(
+                  label: Text(
+                    'News Title',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xff00689B),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Container(
+                    width: 150,
+                    child: Text(
+                      'Description',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Color(0xff00689B),
                       ),
                     ),
                   ),
-                  DataColumn(
-                    label: Container(
-                      width: 150,
-                      child: Text(
-                        'Description',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xff00689B),
-                        ),
-                      ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Views Number',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xff00689B),
                     ),
                   ),
-                  DataColumn(
-                    label: Text(
-                      'Actions',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xff00689B),
-                      ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Like Number',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xff00689B),
                     ),
                   ),
-                ],
-                rows: newsData.map((news) {
-                  return DataRow(
-                    cells: [
-                      DataCell(
-                        Text(
-                          news.title,
+                ),
+                DataColumn(
+                  label: Text(
+                    'Dislike Number',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xff00689B),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Text(
+                    'Actions',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xff00689B),
+                    ),
+                  ),
+                ),
+              ],
+              rows: newsData.map((news) {
+                return DataRow(
+                  cells: [
+                    DataCell(
+                      Text(
+                        news.title,
+                        softWrap: true,
+                      ),
+                    ),
+                    DataCell(
+                      Container(
+                        width: 150,
+                        child: Text(
+                          news.description,
                           softWrap: true,
                         ),
                       ),
-                      DataCell(
-                        Container(
-                          width: 150,
-                          child: Text(
-                            news.description,
-                            softWrap: true,
-                          ),
-                        ),
+                    ),
+                    DataCell(
+                      Text(
+                        '${news.views}',
+                        softWrap: true,
                       ),
-                      DataCell(
-                        IconButton(
-                          icon: const Icon(Icons.info, color: Colors.blue),
-                          onPressed: () {
-                           _navigateToNewsDetail(news);                          },
-                        ),
+                    ),
+                    DataCell(
+                      Text(
+                        '${news.like}',
+                        softWrap: true,
                       ),
-                    ],
-                  );
-                }).toList(),
-              ),
+                    ),
+                    DataCell(
+                      Text(
+                        '${news.dislike}',
+                        softWrap: true,
+                      ),
+                    ),
+                    DataCell(
+                      IconButton(
+                        icon: const Icon(Icons.info, color: Colors.blue),
+                        onPressed: () {
+                          _navigateToNewsDetail(news);
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              }).toList(),
             ),
           ),
         ),
-      ],
-    );
+      ),
+    ],
+  );
+
   }
 
   Widget _buildSwitchButton() {

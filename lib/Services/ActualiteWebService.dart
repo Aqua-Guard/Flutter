@@ -13,7 +13,7 @@ import 'package:path/path.dart' as path;
 class ActualiteWebService{
 
 Future<List<Actualite>> fetchActualite(String token) async {
-  final response = await http.get(Uri.parse(Constantes.urlActualite),
+  final response = await http.get(Uri.parse(Constantes.urlReclamation),
       headers: {
         'Authorization': 'Bearer $token',
       },);
