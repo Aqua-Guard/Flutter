@@ -1,5 +1,7 @@
+import 'package:aquaguard/Screens/Post/allPostsScreen.dart';
 import 'package:aquaguard/Screens/Post/postScreen.dart';
 import 'package:aquaguard/Screens/actualite/actualiteScreen.dart';
+import 'package:aquaguard/Screens/event/eventScreen.dart';
 import 'package:aquaguard/Screens/event/eventStatistics.dart';
 import 'package:aquaguard/Screens/homeScreen.dart';
 import 'package:aquaguard/Screens/user/loginScreen.dart';
@@ -117,12 +119,14 @@ class MyDrawer extends StatelessWidget {
                 color: selectedIndex == 0 ? Colors.white : Color(0xff00689B),
               ),
             ),
-            onTap: () {
+            onTap: () async {
               onItemTapped(0);
+               const storage = FlutterSecureStorage();
+              var token = await storage.read(key: "token");
               Navigator.pop(context);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()),
+                MaterialPageRoute(builder: (context) =>  HomeScreen(token: token!)),
               );
             },
             selected: selectedIndex == 0,
@@ -166,7 +170,7 @@ class MyDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => EventStatistics(token: token!)),
+                    builder: (context) => EventScreen(token: token!)),
               );
             },
             selected: selectedIndex == 2,
@@ -189,7 +193,7 @@ class MyDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => PostScreen(token: token!)),
+                    builder: (context) => AllPostsScreen(token: token!)),
               );
             },
             selected: selectedIndex == 3,
