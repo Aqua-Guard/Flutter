@@ -9,6 +9,7 @@ class UserResponse {
   String? email;
   bool? isActivated;
   bool? isBlocked;
+  DateTime? bannedUntil;
 
   UserResponse(
       this.id,
@@ -20,7 +21,8 @@ class UserResponse {
       this.lastName,
       this.firstName,
       this.email,
-      this.isActivated);
+      this.isActivated,
+      this.bannedUntil);
 
   UserResponse.fromJson(Map<String, dynamic> json) {
     id = json['_id'];
@@ -33,5 +35,8 @@ class UserResponse {
     role = json['role'];
     email = json['email'];
     isActivated = json['isActivated'];
+    bannedUntil = json['bannedUntil'] != null
+        ? DateTime.parse(json['bannedUntil'])
+        : null;
   }
 }

@@ -5,6 +5,7 @@ class Constantes {
   static const String urlImgEvent = 'http://localhost:9090/images/event/';
   static const String urlImgUser = 'http://localhost:9090/images/user/';
   static const String urlPost = 'http://localhost:9090/posts';
+  static const String urlComment = 'http://localhost:9090/comments';
   static const String urlParticipation = 'http://localhost:9090/participations/admin';
   static const String urlActualite = 'http://localhost:9090/act';
 }
