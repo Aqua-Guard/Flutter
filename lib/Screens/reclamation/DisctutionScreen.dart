@@ -38,7 +38,7 @@ class _DiscutionScreenState extends State<DiscutionScreen> {
 
   Future<void> sendMessageAdmin(String token, String reclamationId, String message) async {
     final response = await http.post(
-      Uri.parse('http://localhost:9090/discution/sendmessageadmin'),
+      Uri.parse('https://aquaguard-tux1.onrender.com/discution/sendmessageadmin'),
       headers: {
         'Authorization': 'Bearer $token',
       },

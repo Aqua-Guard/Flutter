@@ -7,6 +7,7 @@ import 'package:aquaguard/Models/post.dart';
 import 'package:aquaguard/Screens/Post/AddPostForm.dart';
 import 'package:aquaguard/Screens/Post/PostDetails.dart';
 import 'package:aquaguard/Services/PostWebService.dart';
+import 'package:aquaguard/Utils/constantes.dart';
 
 import 'package:aquaguard/widgets/allPostList.dart';
 
@@ -265,11 +266,11 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                                     child: ClipOval(
                                       child: post.userImage != null
                                           ? Image.network(
-                                              'http://localhost:9090/images/user/${post.userImage}',
+                                              '${Constantes.imageUrl}/${post.userImage}',
                                               fit: BoxFit.cover,
                                             )
                                           : Image.asset(
-                                              'http://localhost:9090/images/user/user_default.png', // Path to your placeholder image
+                                              '${Constantes.imageUrl}/user_default.png', // Path to your placeholder image
                                               fit: BoxFit.cover,
                                             ),
                                     ),

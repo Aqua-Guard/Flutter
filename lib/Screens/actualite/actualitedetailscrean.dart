@@ -1,3 +1,4 @@
+import 'package:aquaguard/Utils/constantes.dart';
 import 'package:flutter/material.dart';
 import 'package:aquaguard/Models/actualite.dart';
 
@@ -35,7 +36,7 @@ class _newsdetail extends State<newsdetail> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Image.network(
-                  'http://localhost:9090/images/actualite/${widget.news.image}',
+                  '${Constantes.urlImgactualite}/${widget.news.image}',
                   width: double.infinity,
                   height: isDesktop ? 400 : 200,
                   fit: BoxFit.cover,

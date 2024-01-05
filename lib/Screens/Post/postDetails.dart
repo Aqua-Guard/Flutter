@@ -1,6 +1,7 @@
 import 'package:aquaguard/Models/post.dart';
 import 'package:aquaguard/Screens/Post/allPostsScreen.dart';
 import 'package:aquaguard/Services/PostWebService.dart';
+import 'package:aquaguard/Utils/constantes.dart';
 import 'package:aquaguard/widgets/commentPost.dart';
 import 'package:aquaguard/widgets/likesPost.dart';
 import 'package:flutter/cupertino.dart';
@@ -108,7 +109,7 @@ class _PostDetailsState extends State<PostDetails> {
                                 ),
                                 child: CircleAvatar(
                                   backgroundImage: NetworkImage(
-                                      'http://localhost:9090/images/user/${widget.post.userImage}'),
+                                      '${Constantes.imageUrl}/${widget.post.userImage}'),
                                   radius: isDesktop ? 40 : 25,
                                 ),
                               ),
@@ -297,7 +298,7 @@ class _PostDetailsState extends State<PostDetails> {
                           ),
                         ),
                         Image.network(
-                          'http://localhost:9090/images/post/${widget.post.postImage}',
+                          '${Constantes.urlImgPost}/${widget.post.postImage}',
                           width: double.infinity,
                           height: isDesktop ? 400 : 200,
                           fit: BoxFit.cover,
