@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:aquaguard/Screens/user/profileScreen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import '../Utils/constantes.dart';
+
 class MyDrawer extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onItemTapped;
@@ -68,8 +70,11 @@ class MyDrawer extends StatelessWidget {
                           },
                           child: CircleAvatar(
                             radius: 40,
-                            backgroundImage:
-                                AssetImage(snapshot.data!['image']!),
+                            backgroundImage: snapshot.data != null &&
+                                snapshot.data!['image'] != null
+                                ? NetworkImage(
+                                '${Constantes.imageUrl}/${snapshot.data!['image']!}')
+                                : null,
                           ),
                         ),
                         const SizedBox(width: 6.0),

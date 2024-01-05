@@ -30,6 +30,14 @@ class _ChangePasswordState extends State<ChangePassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.blue,),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -60,7 +68,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                   ),
                   child: RegularTextField(
                     label: 'Old Password',
-                    hintText: 'Enter old password',
                     textEditingController: oldPasswordController,
                     obscureText: _isPasswordVisible,
                     suffixIcon: IconButton(
@@ -97,7 +104,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                   ),
                   child: RegularTextField(
                     label: 'New Password',
-                    hintText: 'Enter new password',
                     textEditingController: newPasswordController,
                     obscureText: _isPasswordVisible2,
                     suffixIcon: IconButton(
@@ -134,7 +140,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                   ),
                   child: RegularTextField(
                     label: 'Confirm Password',
-                    hintText: 'Confirm new password',
                     textEditingController: confirmPasswordController,
                     obscureText: _isPasswordVisible3,
                     suffixIcon: IconButton(

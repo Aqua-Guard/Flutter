@@ -25,6 +25,7 @@ class RegisterScreenState extends State<RegisterScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
 
@@ -37,8 +38,7 @@ class RegisterScreenState extends State<RegisterScreen> {
   String? _imageDataUrl;
 
   Future<void> _pickImage() async {
-    final filePicker = html.FileUploadInputElement()
-      ..accept = 'image/*';
+    final filePicker = html.FileUploadInputElement()..accept = 'image/*';
     filePicker.click();
 
     filePicker.onChange.listen((event) {
@@ -53,6 +53,15 @@ class RegisterScreenState extends State<RegisterScreen> {
         });
       });
     });
+  }
+
+  bool validateEmail(String email) {
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    return emailRegex.hasMatch(email);
+  }
+
+  bool containsNumber(String value) {
+    return RegExp(r'[0-9]').hasMatch(value);
   }
 
   @override
@@ -74,10 +83,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                     Container(
                       child: Image.asset(
                         "assets/logo.png",
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width * .8,
+                        width: MediaQuery.of(context).size.width * .8,
                       ),
                     ),
                     Padding(
@@ -141,17 +147,13 @@ class RegisterScreenState extends State<RegisterScreen> {
                       children: [
                         ElevatedButton.icon(
                           onPressed: _pickImage,
-                          icon: const Icon(
-                              Icons.image, color: Color(0xff00689B)),
+                          icon: const Icon(Icons.image, color: Color(0xff00689B)),
                           label: const Text('Select Profile Picture'),
                         ),
                         const SizedBox(width: 8),
                         if (_imageDataUrl != null)
                           CircleAvatar(
-                            radius: MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.1,
+                            radius: MediaQuery.of(context).size.width * 0.1,
                             backgroundImage: _imageDataUrl != null
                                 ? NetworkImage(_imageDataUrl!)
                                 : null,
@@ -256,6 +258,44 @@ class RegisterScreenState extends State<RegisterScreen> {
                                 )),
                           )),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.blue.withOpacity(0.5),
+                                spreadRadius: 5,
+                                blurRadius: 7,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                            color: Colors.white,
+                          ),
+                          child: CustomTextField(
+                            textEditingController: confirmPasswordController,
+                            label: 'Confirm Password',
+                            hintText:
+                            'Enter secure password between 6 and 8 characters',
+                            icon: const Icon(Icons.lock_rounded,
+                                size: 40, color: Colors.blue),
+                            obscureText: _isPasswordVisible,
+                            suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _isPasswordVisible = !_isPasswordVisible;
+                                  });
+                                },
+                                icon: Icon(
+                                  _isPasswordVisible
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                  color: Colors.blue,
+                                  size: 32,
+                                )),
+                          )),
+                    ),
                     GestureDetector(
                       child: const Padding(
                         padding: EdgeInsets.all(18.0),
@@ -265,10 +305,10 @@ class RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       onTap: () async {
-
                         if (emailController.text.isNotEmpty &&
                             usernameController.text.isNotEmpty &&
                             passwordController.text.isNotEmpty &&
+                            confirmPasswordController.text.isNotEmpty &&
                             firstNameController.text.isNotEmpty &&
                             lastNameController.text.isNotEmpty) {
                           await LoginService()
@@ -292,12 +332,10 @@ class RegisterScreenState extends State<RegisterScreen> {
                                 builder: (context) {
                                   return AlertDialog(
                                     title: const Text("Information"),
-                                    content:
-                                    const Text("Username already exists"),
+                                    content: const Text("Username already exists"),
                                     actions: [
                                       TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context),
+                                          onPressed: () => Navigator.pop(context),
                                           child: const Text("Dismiss"))
                                     ],
                                   );
@@ -313,8 +351,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                                     const Text("Server error! Try again later"),
                                     actions: [
                                       TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context),
+                                          onPressed: () => Navigator.pop(context),
                                           child: const Text("Dismiss"))
                                     ],
                                   );
@@ -322,6 +359,69 @@ class RegisterScreenState extends State<RegisterScreen> {
                               );
                             }
                           });
+                        } else if (containsNumber(firstNameController.text)) {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text("Error"),
+                                content: const Text("First name cannot contain numbers!"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: const Text("Dismiss"),
+                                  )
+                                ],
+                              );
+                            },
+                          );
+                        } else if (containsNumber(lastNameController.text)) {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text("Error"),
+                                content: const Text("Last name cannot contain numbers!"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: const Text("Dismiss"),
+                                  )
+                                ],
+                              );
+                            },
+                          );
+                        } else if (passwordController.text != confirmPasswordController.text) {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text("Error"),
+                                content: const Text("Passwords have to match!"),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text("Dismiss"))
+                                ],
+                              );
+                            },
+                          );
+                        } else if (!validateEmail(emailController.text)) {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text("Error"),
+                                content: const Text("Please enter a valid email address!"),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text("Dismiss"))
+                                ],
+                              );
+                            },
+                          );
+
                         } else {
                           showDialog(
                             context: context,
@@ -363,8 +463,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                       ),
                       onTap: () {
                         Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (context) => LoginScreen()));
+                            MaterialPageRoute(builder: (context) => LoginScreen()));
                       },
                     ),
                   ],

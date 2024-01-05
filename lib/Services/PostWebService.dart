@@ -58,7 +58,7 @@ Future<void> deletePost(String token,String postId) async {
 
 
 Future<bool> addPost(String token, String description, html.File imageFile) async {
-  var uri = Uri.parse('http://localhost:9090/posts/');
+  var uri = Uri.parse('${Constantes.urlPost}/');
   var request = http.MultipartRequest('POST', uri)
     ..headers.addAll({
       'Authorization': 'Bearer $token',

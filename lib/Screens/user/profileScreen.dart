@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:aquaguard/Screens/user/changePassword.dart';
+import 'package:aquaguard/Screens/user/updateProfile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import '../../Utils/constantes.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -29,6 +34,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.blue,),
+          onPressed: () {
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -42,16 +56,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 8, left: 8),
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back_ios,
-                    size: 28, color: Colors.blue),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
             Expanded(
               child: ListView(
                 children: [
@@ -63,21 +67,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return Center(
+                            return const Center(
                                 child: CircularProgressIndicator());
                           } else if (snapshot.hasData) {
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 CircleAvatar(
-                                  radius: 70,
-                                  backgroundImage:
-                                      AssetImage(snapshot.data!['image']!),
+                                  radius: 80,
+                                  backgroundImage: snapshot.data != null && snapshot.data!['image'] != null
+                                      ? NetworkImage('${Constantes.imageUrl}/${snapshot.data!['image']!}')
+                                      : null,
                                 ),
                                 const SizedBox(width: 8),
                                 Column(
                                   crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                  CrossAxisAlignment.center,
                                   children: [
                                     Text(
                                       snapshot.data!['username']!,
@@ -122,13 +127,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Edit profile',
-                          style: TextStyle(
-                            color: isDarkMode
-                                ? Colors.lightBlueAccent
-                                : Colors.blueAccent,
-                            fontSize: 22,
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateProfile()));
+                          },
+                          child: Text(
+                            'Edit profile',
+                            style: TextStyle(
+                              color: isDarkMode
+                                  ? Colors.lightBlueAccent
+                                  : Colors.blueAccent,
+                              fontSize: 22,
+                            ),
                           ),
                         ),
                         const SizedBox(
@@ -149,50 +159,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const SizedBox(
                           height: 15,
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              'Dark Mode',
-                              style: TextStyle(
-                                color: isDarkMode
-                                    ? Colors.lightBlueAccent
-                                    : Colors.blueAccent,
-                                fontSize: 22,
-                              ),
-                            ),
-                            const Spacer(),
-                            Switch(
-                              value: isDarkMode,
-                              onChanged: (value) {
-                                setState(() {
-                                  isDarkMode = value;
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 12,
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              'Language',
-                              style: TextStyle(
-                                color: isDarkMode
-                                    ? Colors.lightBlueAccent
-                                    : Colors.blueAccent,
-                                fontSize: 22,
-                              ),
-                            ),
-                            const Spacer(),
-                            IconButton(
-                              icon: const Icon(Icons.switch_right,
-                                  size: 28, color: Colors.blueAccent),
-                              onPressed: () {},
-                            ),
-                          ],
                         ),
                         const SizedBox(
                           height: 15,
