@@ -11,6 +11,7 @@ import '../../Components/customTextField.dart';
 import '../../Services/loginService.dart';
 import 'RegisterScreen.dart';
 import '../homeScreen.dart';
+import 'UserStats.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -144,13 +145,19 @@ class LoginScreenState extends State<LoginScreen> {
                           await storage.write(
                               key: "username", value: responseData['username']);
                           await storage.write(
+                              key: "image", value: responseData['image']);
+                          await storage.write(
+                              key: "firstName", value: responseData['firstName']);
+                          await storage.write(
+                              key: "lastName", value: responseData['lastName']);
+                          await storage.write(
                               key: "nbPts",
                               value: responseData['nbPts'].toString());
-              var token = await storage.read(key: "token");
+                          var token = await storage.read(key: "token");
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>  HomeScreen(token: token!,)),
+                                builder: (context) => HomeScreen(token: token!,)),
                           );
                         } else if (response?.statusCode == 403) {
                           showDialog(

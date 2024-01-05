@@ -57,6 +57,36 @@ class LoginService {
     return http.Response.fromStream(response);
   }
 
+  Future<Response?> updateProfile({
+    required String id,
+    required String username,
+    required String email,
+    required String firstName,
+    required String lastName,
+    required html.File image,
+  }) async {
+    var uri = Uri.parse('${Constantes.baseUrl}/updateProfile/${id}');
+    var request = http.MultipartRequest('PUT', uri);
+
+    request.fields['newUsername'] = username;
+    request.fields['email'] = email;
+    request.fields['firstName'] = firstName;
+    request.fields['lastName'] = lastName;
+
+    Uint8List imageBytes = await _readFileBytes(image);
+
+    var multipartFile = http.MultipartFile.fromBytes(
+      'image',
+      imageBytes,
+      filename: image.name,
+      contentType: MediaType('image', 'jpeg'),
+    );
+    request.files.add(multipartFile);
+
+    var response = await request.send();
+    return http.Response.fromStream(response);
+  }
+
 
 
   Future<Uint8List> _readFileBytes(html.File file) async {
