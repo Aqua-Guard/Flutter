@@ -2,6 +2,7 @@ import 'package:aquaguard/Screens/Post/allPostsScreen.dart';
 import 'package:aquaguard/Screens/Post/postScreen.dart';
 import 'package:aquaguard/Screens/actualite/actualiteScreen.dart';
 import 'package:aquaguard/Screens/event/eventScreen.dart';
+import 'package:aquaguard/Screens/reclamation/reclamationScreen.dart';
 import 'package:aquaguard/Screens/event/eventStatistics.dart';
 import 'package:aquaguard/Screens/homeScreen.dart';
 import 'package:aquaguard/Screens/user/loginScreen.dart';
@@ -224,9 +225,16 @@ class MyDrawer extends StatelessWidget {
                 color: selectedIndex == 5 ? Colors.white : Color(0xff00689B),
               ),
             ),
-            onTap: () {
+            onTap: () async {
               onItemTapped(5);
+               const storage = FlutterSecureStorage();
+              var token = await storage.read(key: "token");
               Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ReclamationScreen(token: token!)),
+              );
             },
             selected: selectedIndex == 5,
             selectedTileColor: Color(0xb62aacee), // Background color
