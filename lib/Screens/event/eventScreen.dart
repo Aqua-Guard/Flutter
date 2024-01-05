@@ -1,3 +1,5 @@
+import 'package:aquaguard/Components/MyAppBar.dart';
+import 'package:aquaguard/Components/MyDrawer.dart';
 import 'package:aquaguard/Models/Event.dart';
 import 'package:aquaguard/Screens/event/addEventForm.dart';
 import 'package:aquaguard/Screens/event/eventDetails.dart';
@@ -15,6 +17,8 @@ class EventScreen extends StatefulWidget {
 }
 
 class _EventScreenState extends State<EventScreen> {
+    int _selectedIndex = 2;
+
   late List<Event> eventsData = [];
   late TextEditingController _searchController;
   List<Event> eventsDataOriginal = [];
@@ -100,9 +104,9 @@ class _EventScreenState extends State<EventScreen> {
         ),
       ),
       child: Scaffold(
-        appBar: AppBar(
+           appBar: AppBar(
           title: const Text(
-            'Events List',
+            'Event List',
             style: TextStyle(
               color: Colors.white,
             ),
@@ -448,6 +452,14 @@ class _EventScreenState extends State<EventScreen> {
             Icons.add,
             color: Colors.white,
           ),
+        ),
+        drawer: MyDrawer(
+          selectedIndex: _selectedIndex,
+          onItemTapped: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
         ),
       ),
     );
