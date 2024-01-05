@@ -1,5 +1,8 @@
+import 'package:aquaguard/Screens/Post/allPostsScreen.dart';
 import 'package:aquaguard/Screens/Post/postScreen.dart';
 import 'package:aquaguard/Screens/actualite/actualiteScreen.dart';
+import 'package:aquaguard/Screens/event/eventScreen.dart';
+import 'package:aquaguard/Screens/reclamation/reclamationScreen.dart';
 import 'package:aquaguard/Screens/event/eventStatistics.dart';
 import 'package:aquaguard/Screens/homeScreen.dart';
 import 'package:aquaguard/Screens/user/loginScreen.dart';
@@ -7,6 +10,10 @@ import 'package:aquaguard/Screens/user/UserStats.dart';
 import 'package:flutter/material.dart';
 import 'package:aquaguard/Screens/user/profileScreen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:aquaguard/Screens/Store/ProductListScreen.Dart';
+
+
+import '../Utils/constantes.dart';
 
 class MyDrawer extends StatelessWidget {
   final int selectedIndex;
@@ -65,8 +72,11 @@ class MyDrawer extends StatelessWidget {
                           },
                           child: CircleAvatar(
                             radius: 40,
-                            backgroundImage:
-                                AssetImage(snapshot.data!['image']!),
+                            backgroundImage: snapshot.data != null &&
+                                snapshot.data!['image'] != null
+                                ? NetworkImage(
+                                '${Constantes.imageUrl}/${snapshot.data!['image']!}')
+                                : null,
                           ),
                         ),
                         const SizedBox(width: 6.0),
@@ -117,12 +127,14 @@ class MyDrawer extends StatelessWidget {
                 color: selectedIndex == 0 ? Colors.white : Color(0xff00689B),
               ),
             ),
-            onTap: () {
+            onTap: () async {
               onItemTapped(0);
+               const storage = FlutterSecureStorage();
+              var token = await storage.read(key: "token");
               Navigator.pop(context);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()),
+                MaterialPageRoute(builder: (context) =>  HomeScreen(token: token!)),
               );
             },
             selected: selectedIndex == 0,
@@ -166,7 +178,7 @@ class MyDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => EventStatistics(token: token!)),
+                    builder: (context) => EventScreen(token: token!)),
               );
             },
             selected: selectedIndex == 2,
@@ -189,7 +201,7 @@ class MyDrawer extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => PostScreen(token: token!)),
+                    builder: (context) => AllPostsScreen(token: token!)),
               );
             },
             selected: selectedIndex == 3,
@@ -204,13 +216,15 @@ class MyDrawer extends StatelessWidget {
                 color: selectedIndex == 4 ? Colors.white : Color(0xff00689B),
               ),
             ),
-            onTap: () {
+              onTap: () async {
               onItemTapped(4);
               Navigator.pop(context);
-            },
-            selected: selectedIndex == 4,
-            selectedTileColor: Color(0xb62aacee), // Background color
-          ),
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ProductListScreen()),
+              );
+            }
           ListTile(
             leading: Icon(Icons.report,
                 color: selectedIndex == 5 ? Colors.white : Color(0xff00689B)),
@@ -220,9 +234,16 @@ class MyDrawer extends StatelessWidget {
                 color: selectedIndex == 5 ? Colors.white : Color(0xff00689B),
               ),
             ),
-            onTap: () {
+            onTap: () async {
               onItemTapped(5);
+               const storage = FlutterSecureStorage();
+              var token = await storage.read(key: "token");
               Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ReclamationScreen(token: token!)),
+              );
             },
             selected: selectedIndex == 5,
             selectedTileColor: Color(0xb62aacee), // Background color

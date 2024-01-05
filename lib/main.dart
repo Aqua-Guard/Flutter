@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'Screens/SplashScreen.dart';
+import 'package:aquaguard/Screens/splashScreen.dart';
 
 void main() {
   runApp(const MyApp());

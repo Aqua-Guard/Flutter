@@ -9,7 +9,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../Components/customButton.dart';
 import '../../Components/customTextField.dart';
 import '../../Services/loginService.dart';
-import 'RegisterScreen.dart';
+import 'package:aquaguard/Screens/user/registerScreen.dart';
 import '../homeScreen.dart';
 
 class LoginScreen extends StatefulWidget {
