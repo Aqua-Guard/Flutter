@@ -17,7 +17,7 @@ class EventScreen extends StatefulWidget {
 }
 
 class _EventScreenState extends State<EventScreen> {
-    int _selectedIndex = 2;
+  int _selectedIndex = 2;
 
   late List<Event> eventsData = [];
   late TextEditingController _searchController;
@@ -69,6 +69,18 @@ class _EventScreenState extends State<EventScreen> {
     );
   }
 
+  void refreshEvents() {
+    EventWebService().fetchEvents(widget.token).then((events) {
+      setState(() {
+        eventsData = events;
+        eventsDataOriginal = List.from(eventsData);
+      });
+    }).catchError((error) {
+      // Handle the error, e.g., show an error message to the user
+      print('Error fetching events: $error');
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -104,7 +116,7 @@ class _EventScreenState extends State<EventScreen> {
         ),
       ),
       child: Scaffold(
-           appBar: AppBar(
+        appBar: AppBar(
           title: const Text(
             'Event List',
             style: TextStyle(
@@ -443,7 +455,7 @@ class _EventScreenState extends State<EventScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => AddEventForm(token: widget.token)),
+                  builder: (context) => AddEventForm(token: widget.token,onEventUpdated: refreshEvents)),
             );
           },
           backgroundColor: const Color(0xff00689B),

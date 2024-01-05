@@ -7,7 +7,9 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class AddEventForm extends StatefulWidget {
   String token;
-  AddEventForm({Key? key, required this.token}) : super(key: key);
+    final Function onEventUpdated;
+
+  AddEventForm({Key? key, required this.token,required this.onEventUpdated}) : super(key: key);
 
   @override
   State<AddEventForm> createState() => _AddEventFormState();
@@ -453,7 +455,7 @@ class _AddEventFormState extends State<AddEventForm> {
                                         fileimage: _pickedImage!,
                                         context: context,
                                       );
-
+                                      widget.onEventUpdated();
                                       Navigator.pop(context);
                                     }
                                   }
