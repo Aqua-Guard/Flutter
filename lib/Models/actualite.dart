@@ -4,7 +4,9 @@ class Actualite {
   final String description;
   final String image;
   final String text;
-  final num views; // Change the type to num or int
+  final num? views; // Change the type to num or int
+  final num? like;
+  final num? dislike;
 
   Actualite({
     required this.userId,
@@ -13,6 +15,8 @@ class Actualite {
     required this.image,
     required this.text,
     required this.views,
+    required this.like,
+    required this.dislike,
   });
 
   factory Actualite.fromJson(Map<String, dynamic> json) {
@@ -23,6 +27,8 @@ class Actualite {
       image: json['image'],
       text: json['text'],
       views: json['views'],
+      like: json['like'],
+      dislike: json['dislike'],
     );
   }
 }
