@@ -7,7 +7,6 @@ import 'package:aquaguard/Models/post.dart';
 import 'package:aquaguard/Screens/Post/addPostForm.dart';
 import 'package:aquaguard/Screens/Post/postDetails.dart';
 import 'package:aquaguard/Services/PostWebService.dart';
-import 'package:aquaguard/Utils/constantes.dart';
 
 import 'package:aquaguard/widgets/allPostList.dart';
 
@@ -45,50 +44,73 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
   void initState() {
     super.initState();
     _searchController = TextEditingController();
+    postDataOriginal = postData;
 
     PostWebService()
         .getAllPosts(widget.token)
-        .then((posts) {
-      setState(() {
-        postData = posts;
-        postDataOriginal = List.from(postData);
-      });
-    })
-    .catchError((error) {
-      print("Error Fetch posts: $error");
+        .then((posts) => {
+              setState(() {
+                postData = posts;
+
+                postDataOriginal = List.from(postData);
+              })
+            })
+        .catchError((error) {
+      print("Error Fetch posts: " + error);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (postData.isEmpty) {
+    if (postData == null) {
       return const Center(
-        child: CircularProgressIndicator(),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            CircularProgressIndicator(),
+            SizedBox(
+                height:
+                    20), // Provides some spacing between the indicator and the text
+            Text(
+              'Loading posts...',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.black,
+              ),
+            ),
+          ],
+        ),
       );
     }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Post List',
-          style: TextStyle(
-            color: Colors.white,
-          ),
+    return Theme(
+      data: Theme.of(context).copyWith(
+        appBarTheme: const AppBarTheme(
+          iconTheme: IconThemeData(color: Colors.white),
+          actionsIconTheme: IconThemeData(color: Colors.white),
         ),
-        backgroundColor: const Color(0xff00689B),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/background_splash_screen.png'),
-            fit: BoxFit.cover,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'Post List',
+            style: TextStyle(
+              color: Colors.white,
+            ),
           ),
+          backgroundColor: const Color(0xff00689B),
         ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
+        body: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/background_splash_screen.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(children: [
                 Container(
                   height: 60, // Adjust the height as needed
                   child: Card(
@@ -127,24 +149,24 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                 if (postData.isEmpty)
                   Center(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          "assets/Post_not_found.png",
-                          height: 400,
-                          width: 400,
-                        ),
-                        const SizedBox(height: 8.0),
-                        const Text("No Post Found"),
-                      ],
-                    ),
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            "assets/Post_not_found.png",
+                            height: 400,
+                            width: 400,
+                          ),
+                          const SizedBox(height: 8.0),
+                          const Text("No Post Found"),
+                        ]),
                   ),
                 if (postData.isNotEmpty)
-                  Expanded(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: Card(
-                        elevation: 4,
+                  SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Card(
+                      elevation: 4,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
                         child: DataTable(
                           columns: [
                             DataColumn(
@@ -159,50 +181,13 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                               label: Text(
                                 'Post UserName',
                                 style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: const Color(0xff00689B),
-                                ),
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff00689B)),
                               ),
                             ),
                             DataColumn(
                               label: Text(
                                 'User Role',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: const Color(0xff00689B),
-                                ),
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Description',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: const Color(0xff00689B),
-                                ),
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Number of Likes',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: const Color(0xff00689B),
-                                ),
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Number of Comments',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: const Color(0xff00689B),
-                                ),
-                              ),
-                            ),
-                            DataColumn(
-                              label: Text(
-                                'Posted At',
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Color(0xff00689B)),
@@ -210,7 +195,23 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                             ),
                             DataColumn(
                               label: Text(
-                                'Status',
+                                'Description',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff00689B)),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Number of Likes',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff00689B)),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Number of Comments',
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Color(0xff00689B)),
@@ -236,9 +237,8 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                               label: Text(
                                 'Actions',
                                 style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: const Color(0xff00689B),
-                                ),
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff00689B)),
                               ),
                             ),
                           ],
@@ -265,11 +265,11 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                                     child: ClipOval(
                                       child: post.userImage != null
                                           ? Image.network(
-                                              '${Constantes.imageUrl}/${post.userImage}',
+                                              'http://localhost:9090/images/user/${post.userImage}',
                                               fit: BoxFit.cover,
                                             )
                                           : Image.asset(
-                                              '${Constantes.imageUrl}/user_default.png', // Path to your placeholder image
+                                              'http://localhost:9090/images/user/user_default.png', // Path to your placeholder image
                                               fit: BoxFit.cover,
                                             ),
                                     ),
@@ -277,7 +277,11 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                                 ),
                                 DataCell(Text(post.userName)),
                                 DataCell(Text('${post.userRole}')),
-                                DataCell(Text(post.description)),
+                                DataCell(Text(post.description
+                                    .toString()
+                                    .characters
+                                    .take(10)
+                                    .toString())),
                                 DataCell(Text('${post.nbLike}')),
                                 DataCell(Text('${post.nbComments}')),
                                 DataCell(Text('${post.postedAt}')),
@@ -326,10 +330,8 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                                 ),
                                 DataCell(
                                   IconButton(
-                                    icon: const Icon(
-                                      Icons.info,
-                                      color: Colors.blue,
-                                    ),
+                                    icon: const Icon(Icons.info,
+                                        color: Colors.blue),
                                     onPressed: () {
                                       Navigator.push(
                                         context,

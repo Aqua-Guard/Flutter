@@ -3,7 +3,7 @@ import 'package:aquaguard/Components/MyAppBar.dart';
 import 'package:aquaguard/Components/MyDrawer.dart';
 import 'package:aquaguard/Models/reclamation.dart';
 import 'package:aquaguard/Services/ReclamationWebService.dart';
-import 'package:aquaguard/screens/reclamation/DisctutionScreen.dart';
+import 'package:aquaguard/Screens/reclamation/DisctutionScreen.dart';
 
 class ReclamationScreen extends StatefulWidget {
   String token;

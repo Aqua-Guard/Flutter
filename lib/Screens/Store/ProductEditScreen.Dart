@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'dart:html' as html;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -21,7 +22,7 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
   TextEditingController priceController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
-  XFile? _imageFile;
+  Uint8List? _imageBytes; // To store the byte array of the picked image
 
   @override
   void initState() {
@@ -33,89 +34,107 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
     categoryController.text = widget.product.category;
   }
 
-Future<void> updateProduct() async {
-  Product updatedProduct = Product(
-    id: widget.product.id,
-    name: nameController.text,
-    description: descriptionController.text,
-    price: double.parse(priceController.text),
-    quantity: int.parse(quantityController.text),
-    image: _imageFile?.path ?? widget.product.image,
-    category: categoryController.text,
-  );
-  try {
-    await networkService.ProductService.updateProduct(updatedProduct.id, updatedProduct.toJson());
-    Navigator.pop(context);
-  } catch (e) {
-    print('Error: $e');
+  Future<void> updateProduct() async {
+    Product updatedProduct = Product(
+      id: widget.product.id,
+      name: nameController.text,
+      description: descriptionController.text,
+      price: double.parse(priceController.text),
+      quantity: int.parse(quantityController.text),
+      image: _imageBytes != null ? base64Encode(_imageBytes!) : widget.product.image,
+      category: categoryController.text,
+    );
+    try {
+      await networkService.ProductService.updateProduct(updatedProduct.id, updatedProduct.toJson());
+      Navigator.pop(context);
+    } catch (e) {
+      print('Error: $e');
+    }
   }
-}
 
-Future<void> _pickImage() async {
-  final picker = ImagePicker();
-  final pickedImage = await picker.pickImage(source: ImageSource.gallery);
-  if (pickedImage != null) {
-    setState(() {
-      _imageFile = pickedImage;
-    });
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedImage != null) {
+      File pickedFile = File(pickedImage.path);
+      
+      // Read the file as bytes
+      Uint8List bytes = await pickedFile.readAsBytes();
 
-    
-    String fileName = pickedImage.path.split('/').last;
-    print('File Name: $fileName');
+      setState(() {
+        _imageBytes = bytes; // Store the byte array of the image
+      });
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Product'),
+        title: Text('Edit Product', style: TextStyle(color: Colors.white)),
+        backgroundColor: Color(0xff00689B),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextFormField(
-              controller: nameController,
-              decoration: InputDecoration(labelText: 'Product Name'),
-            ),
-            TextFormField(
-              controller: descriptionController,
-              decoration: InputDecoration(labelText: 'Description'),
-            ),
-            TextFormField(
-              controller: categoryController,
-              decoration: InputDecoration(labelText: 'Category'),
-            ),
-            TextFormField(
-              controller: priceController,
-              decoration: InputDecoration(labelText: 'Price'),
-              keyboardType: TextInputType.number,
-            ),
-            TextFormField(
-              controller: quantityController,
-              decoration: InputDecoration(labelText: 'Quantity'),
-              keyboardType: TextInputType.number,
-            ),
-            SizedBox(height: 20),
-            _imageFile != null
-                ? Image.file(File(_imageFile!.path))
-                : Image.network(widget.product.image),
-            ElevatedButton(
-              onPressed: () {
-                _pickImage();
-              },
-              child: Text('Pick Image'),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                updateProduct();
-              },
-              child: Text('Update Product'),
-            ),
-          ],
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/background_splash_screen.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextFormField(
+                controller: nameController,
+                decoration: InputDecoration(labelText: 'Product Name', filled: true, fillColor: Colors.white),
+              ),
+              TextFormField(
+                controller: descriptionController,
+                decoration: InputDecoration(labelText: 'Description', filled: true, fillColor: Colors.white),
+              ),
+              TextFormField(
+                controller: categoryController,
+                decoration: InputDecoration(labelText: 'Category', filled: true, fillColor: Colors.white),
+              ),
+              TextFormField(
+                controller: priceController,
+                decoration: InputDecoration(labelText: 'Price', filled: true, fillColor: Colors.white),
+                keyboardType: TextInputType.number,
+              ),
+              TextFormField(
+                controller: quantityController,
+                decoration: InputDecoration(labelText: 'Quantity', filled: true, fillColor: Colors.white),
+                keyboardType: TextInputType.number,
+              ),
+              SizedBox(height: 20),
+              _imageBytes != null
+                  ? Image.memory(_imageBytes!)
+                  : Image.network(widget.product.image),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Color(0xff00689B), // Background color
+                  onPrimary: Colors.white,   // Text color
+                ),
+                onPressed: () {
+                  _pickImage();
+                },
+                child: Text('Pick Image'),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Color(0xff00689B), // Background color
+                  onPrimary: Colors.white,   // Text color
+                ),
+                onPressed: () {
+                  updateProduct();
+                },
+                child: Text('Update Product'),
+              ),
+            ],
+          ),
         ),
       ),
     );

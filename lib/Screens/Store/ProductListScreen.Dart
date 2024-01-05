@@ -6,6 +6,7 @@ import 'package:aquaguard/Screens/Store/ProductAddScreen.Dart';
 import 'package:aquaguard/Models/Product.Dart';
 import 'package:aquaguard/Screens/Store/ProductStatisticsScreen.Dart';
 
+
 class ProductListScreen extends StatefulWidget {
   @override
   _ProductListScreenState createState() => _ProductListScreenState();
@@ -17,7 +18,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
   @override
   void initState() {
     super.initState();
-    products = []; // Initialize products as an empty list
+    products = [];
     fetchProducts();
   }
 
@@ -25,17 +26,32 @@ class _ProductListScreenState extends State<ProductListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Product List'),
+        title: Text('Product List', style: TextStyle(color: Colors.white)),
+        backgroundColor: Color(0xff00689B),
       ),
-      body: products.isEmpty ? Center(child: CircularProgressIndicator()) : buildProductList(),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/background_splash_screen.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: products.isEmpty
+            ? Center(child: CircularProgressIndicator())
+            : buildProductList(),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           navigateToAddScreen();
         },
         child: Icon(Icons.add),
+        backgroundColor: Color(0xff00689B),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 0,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white,
+        backgroundColor: Color(0xff00689B),
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
@@ -75,7 +91,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
               ),
             ),
             title: Text(products[index].name),
-            subtitle: Text('Price: \$${products[index].price.toStringAsFixed(2)}'),
+            subtitle: Text('Price: ${products[index].price.toStringAsFixed(1)}\ \P\T'),
             onTap: () {
               navigateToProductDetailScreen(products[index]);
             },

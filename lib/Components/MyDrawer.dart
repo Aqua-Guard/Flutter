@@ -1,19 +1,18 @@
 import 'package:aquaguard/Screens/Post/allPostsScreen.dart';
 import 'package:aquaguard/Screens/Post/postScreen.dart';
+import 'package:aquaguard/Screens/Store/ProductDetailScreen.Dart';
 import 'package:aquaguard/Screens/actualite/actualiteScreen.dart';
 import 'package:aquaguard/Screens/event/eventScreen.dart';
 import 'package:aquaguard/Screens/reclamation/reclamationScreen.dart';
 import 'package:aquaguard/Screens/event/eventStatistics.dart';
+import 'package:aquaguard/Screens/Store/ProductListScreen.Dart';
 import 'package:aquaguard/Screens/homeScreen.dart';
 import 'package:aquaguard/Screens/user/loginScreen.dart';
-import 'package:aquaguard/Screens/user/UserStats.dart';
+import 'package:aquaguard/Screens/user/userStats.dart';
 import 'package:flutter/material.dart';
 import 'package:aquaguard/Screens/user/profileScreen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:aquaguard/Screens/Store/ProductListScreen.Dart';
 
-
-import '../Utils/constantes.dart';
 
 import '../Utils/constantes.dart';
 
@@ -218,7 +217,7 @@ class MyDrawer extends StatelessWidget {
                 color: selectedIndex == 4 ? Colors.white : Color(0xff00689B),
               ),
             ),
-              onTap: () async {
+            onTap: () async {
               onItemTapped(4);
               Navigator.pop(context);
               Navigator.push(
@@ -226,7 +225,10 @@ class MyDrawer extends StatelessWidget {
                 MaterialPageRoute(
                     builder: (context) => ProductListScreen()),
               );
-            }
+            },
+            selected: selectedIndex == 4,
+            selectedTileColor: Color(0xb62aacee), // Background color
+          ),
           ListTile(
             leading: Icon(Icons.report,
                 color: selectedIndex == 5 ? Colors.white : Color(0xff00689B)),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:aquaguard/Models/Product.Dart';
+
 class ProductDetailScreen extends StatelessWidget {
   final Product product;
 
@@ -9,47 +10,75 @@ class ProductDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Product Details'),
+        title: Text('Product Details', style: TextStyle(color: Colors.white)),
+        backgroundColor: Color(0xff00689B), // Set app bar background color
       ),
-      body: Center(
-        child: Card(
-          margin: EdgeInsets.all(16.0),
-          elevation: 4.0,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: Image.network(
-                  'https://aquaguard-tux1.onrender.com/public/images/produit/${product.image}',
-                  fit: BoxFit.cover,
-                  height: 200, 
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/background_splash_screen.jpg'), // Set your background image
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Center(
+          child: Card(
+            margin: EdgeInsets.all(16.0),
+            elevation: 4.0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(12.0),
+                    topRight: Radius.circular(12.0),
+                  ),
+                  child: Image.network(
+                    'https://aquaguard-tux1.onrender.com/public/images/produit/${product.image}',
+                    fit: BoxFit.cover,
+                    height: 200,
+                  ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      product.name,
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 16),
-                    Text('Price: ${product.price.toStringAsFixed(2)}'),
-                    SizedBox(height: 8),
-                    Text('Description: ${product.description}'),
-                    SizedBox(height: 8),
-                    Text('Category: ${product.category}'),
-                    SizedBox(height: 8),
-                  ],
+                Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        product.name,
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        'Price: ${product.price.toStringAsFixed(1)} PT',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Description: ${product.description}',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Category: ${product.category}',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Quantity: ${product.quantity.toStringAsFixed(0)} Articles remaining',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                      SizedBox(height: 8)
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
-

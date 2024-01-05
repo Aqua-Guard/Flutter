@@ -21,11 +21,28 @@ class _ProductStatisticsScreenState extends State<ProductStatisticsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Product Sales Statistics'),
+        title: Text('Product Sales Statistics', style: TextStyle(color: Colors.white)),
+        backgroundColor: Color(0xff00689B),
       ),
-      body: _buildProductsChart(),
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/background_splash_screen.png'),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          _buildProductsChart(),
+        ],
+      ),
+
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 1,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white,
+        backgroundColor: Color(0xff00689B),
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.list),

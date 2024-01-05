@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:aquaguard/Models/actualite.dart';
 import 'package:aquaguard/Screens/actualite/addActualite.dart';
 import 'package:aquaguard/Services/ActualiteWebService.dart';
-import 'package:aquaguard/screens/actualite/actualitedetailscrean.dart';
+import 'package:aquaguard/Screens/actualite/actualitedetailscrean.dart';
 
 class NewsScreen extends StatefulWidget {
   String token;

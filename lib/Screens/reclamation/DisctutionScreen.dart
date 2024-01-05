@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:aquaguard/Models/discution.dart';
-import 'package:aquaguard/services/ReclamationWebService.dart'; // Import your ReclamationWebService
+import 'package:aquaguard/Services/ReclamationWebService.dart'; // Import your ReclamationWebService
 import 'package:http/http.dart' as http;
 
 class DiscutionScreen extends StatefulWidget {
