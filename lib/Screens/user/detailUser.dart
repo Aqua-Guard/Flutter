@@ -73,9 +73,9 @@ class _DetailUserState extends State<DetailUser> {
                                 Text(
                                   widget.user.username!,
                                   style: const TextStyle(
-                                    fontSize: 26,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black87
+                                      fontSize: 26,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87
                                   ),
                                 ),
                               ],
@@ -126,67 +126,63 @@ class _DetailUserState extends State<DetailUser> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16),
-                      child: Container(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          onPressed: () async {
-                            Response? res =
-                                await UserService().banUser(widget.user.id!);
-                            // Navigator.pop(context);
+                    if (widget.user.role != "admin")
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Container(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            onPressed: () async {
+                              Response? res =
+                              await UserService().banUser(widget.user.id!);
+                              // Navigator.pop(context);
 
-                            if (res?.statusCode == 200) {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: const Text("Information"),
-                                    content: const Text(
-                                        "User successfully banned!"),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () => Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        UsersScreen()),
-                                              ),
-                                          child: const Text("Dismiss"))
-                                    ],
-                                  );
-                                },
-                              );
-                            } else {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: const Text("Error"),
-                                    content: const Text(
-                                        "User could not be banned!"),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context),
-                                          child: const Text("Dismiss"))
-                                    ],
-                                  );
-                                },
-                              );
-                            }
-                          },
-                          icon: const Icon(Icons.block, color: Colors.red),
-                          label: const Text('Ban', style: TextStyle(
-                            color: Colors.red
-                          ),),
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.all(16.0),
-                            primary: Colors.blue.shade100,
+                              if (res?.statusCode == 200) {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: const Text("Information"),
+                                      content: const Text(
+                                          "User successfully banned!"),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () => Navigator.pop(context),
+                                            child: const Text("Dismiss"))
+                                      ],
+                                    );
+                                  },
+                                );
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: const Text("Error"),
+                                      content: const Text(
+                                          "User could not be banned!"),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context),
+                                            child: const Text("Dismiss"))
+                                      ],
+                                    );
+                                  },
+                                );
+                              }
+                            },
+                            icon: const Icon(Icons.block, color: Colors.red),
+                            label: const Text('Ban', style: TextStyle(
+                                color: Colors.red
+                            ),),
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.all(16.0),
+                              primary: Colors.blue.shade100,
+                            ),
                           ),
                         ),
                       ),
-                    ),
                   ],
                 ),
               ],
