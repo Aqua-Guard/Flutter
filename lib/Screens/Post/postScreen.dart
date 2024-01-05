@@ -20,7 +20,7 @@ class PostScreen extends StatefulWidget {
 
 class _PostScreenState extends State<PostScreen> {
 late List<Post> postData = [];
-  int _selectedIndex = 3;
+  //int _selectedIndex = 3;
   
   @override
   void initState() {
@@ -84,14 +84,14 @@ late List<Post> postData = [];
               ),
             ],
           ),
-          drawer:  MyDrawer(
+          /*drawer:  MyDrawer(
         selectedIndex: _selectedIndex,
         onItemTapped: (index) {
           setState(() {
             _selectedIndex = index;
           });
         },
-      ),
+      ),*/
        
         ));
   }

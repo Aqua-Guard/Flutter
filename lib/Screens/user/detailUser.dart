@@ -134,7 +134,7 @@ class _DetailUserState extends State<DetailUser> {
                           onPressed: () async {
                             Response? res =
                                 await UserService().banUser(widget.user.id!);
-                            Navigator.pop(context);
+                            // Navigator.pop(context);
 
                             if (res?.statusCode == 200) {
                               showDialog(
@@ -176,7 +176,7 @@ class _DetailUserState extends State<DetailUser> {
                               );
                             }
                           },
-                          icon: const Icon(Icons.delete, color: Colors.red),
+                          icon: const Icon(Icons.block, color: Colors.red),
                           label: const Text('Ban', style: TextStyle(
                             color: Colors.red
                           ),),

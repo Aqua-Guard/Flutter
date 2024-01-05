@@ -58,7 +58,7 @@ Future<void> deletePost(String token,String postId) async {
 
 
 Future<bool> addPost(String token, String description, html.File imageFile) async {
-  var uri = Uri.parse('http://localhost:9090/posts/');
+  var uri = Uri.parse('${Constantes.urlPost}/');
   var request = http.MultipartRequest('POST', uri)
     ..headers.addAll({
       'Authorization': 'Bearer $token',
@@ -171,6 +171,37 @@ Future<bool?> detectDiscriminationInText(String promptString, String token) asyn
     return null;
   }
 }
+Future<bool?> detectDiscriminationInPost(String postId, String token) async {
+  try {
+    // Assuming the prompt is the event name
+    String postid = postId;
+
+    // Make a GET request to the endpoint
+    final response = await http.get(
+      Uri.parse(Constantes.urlPost+'/detectDiscriminationPostAdmin/$postid'),
+       headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      // convert this "true" to "false" to boolean
+     if (data['analysis']?.toLowerCase() == 'true' ) {
+      return true;  
+     }else{
+      return false;  
+     }
+ //Error generating description with ChatGPT: Expected a value of type 'bool', but got one of type 'String'
+      
+    } else {
+      throw Exception('Failed to detect Discrimination with ChatGPT');
+    }
+  } catch (error) {
+    print('Error generating description with ChatGPT: $error');
+    return null;
+  }
+}
 
 
 
@@ -195,6 +226,79 @@ Future<void> deleteComment(String token,String commentId ) async {
   } catch (error) {
     // Exception
     print('Error: $error');
+  }
+}
+Future<bool> verifyPost(String postId, String token) async {
+  final url = Constantes.urlPost+'/verifyPost/$postId' ; // Replace with your actual server URL
+  try {
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        'Authorization': 'Bearer $token', // If you're using token-based authentication
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Handle successful verification
+      return true;
+    } else {
+      // Handle failure
+      print('Failed to verify post: ${response.body}');
+      return false;
+    }
+  } catch (e) {
+    print('Error verifying post: $e');
+    return false;
+  }
+}
+Future<bool> notVerifyPost(String postId, String token) async {
+  final url = Constantes.urlPost+'/NotverifyPost/$postId' ; // Replace with your actual server URL
+  try {
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        'Authorization': 'Bearer $token', // If you're using token-based authentication
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Handle successful operation
+      return true;
+    } else {
+      // Handle failure
+      print('Failed to not verify post: ${response.body}');
+      return false;
+    }
+  } catch (e) {
+    print('Error not verifying post: $e');
+    return false;
+  }
+}
+
+Future<bool> deletePostAndSendEmail(String postId, String token) async {
+  final url = Constantes.urlPost+'/deleteAndSendEmail/$postId'; // Replace with your server URL
+  try {
+    final response = await http.delete(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token', // If you're using token-based authentication
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Handle successful response
+      print('Post deleted successfully');
+      return true;
+    } else {
+      // Handle server errors
+      print('Failed to delete post: ${response.body}');
+      return false;
+    }
+  } catch (e) {
+    // Handle any errors
+    print('Error deleting post: $e');
+    return false;
   }
 }
 

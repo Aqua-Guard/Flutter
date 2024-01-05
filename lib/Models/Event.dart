@@ -8,6 +8,7 @@ class Event {
   final DateTime dateDebut;
   final DateTime dateFin;
   final String lieu;
+  bool hidden;
   final List<dynamic> participants;
 
   Event({
@@ -20,6 +21,7 @@ class Event {
     required this.dateDebut,
     required this.dateFin,
     required this.lieu,
+    required this.hidden,
     required this.participants,
   });
 
@@ -34,6 +36,7 @@ class Event {
       dateDebut: DateTime.parse(json['DateDebut']),
       dateFin: DateTime.parse(json['DateFin']),
       lieu: json['lieu'],
+      hidden: json['hidden'],
       participants: List<dynamic>.from(json['participants']),
     );
   }

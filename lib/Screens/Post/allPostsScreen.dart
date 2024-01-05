@@ -1,11 +1,13 @@
 import 'dart:html';
 
+import 'package:aquaguard/Components/MyDrawer.dart';
 import 'package:aquaguard/Models/comment.dart';
 import 'package:aquaguard/Models/like.dart';
 import 'package:aquaguard/Models/post.dart';
 import 'package:aquaguard/Screens/Post/addPostForm.dart';
 import 'package:aquaguard/Screens/Post/postDetails.dart';
 import 'package:aquaguard/Services/PostWebService.dart';
+import 'package:aquaguard/Utils/constantes.dart';
 
 import 'package:aquaguard/widgets/allPostList.dart';
 
@@ -22,9 +24,23 @@ class AllPostsScreen extends StatefulWidget {
 }
 
 class _AllPostsScreenState extends State<AllPostsScreen> {
+    int _selectedIndex = 3;
+
   late List<Post> postData = [];
   late List<Post> postDataOriginal = [];
   late TextEditingController _searchController;
+
+  void refreshPosts() {
+  PostWebService().getAllPosts(widget.token).then((posts) {
+    setState(() {
+      postData = posts;
+      postDataOriginal = List.from(postData);
+    });
+  }).catchError((error) {
+    print("Error Fetch posts: " + error);
+  });
+}
+
   @override
   void initState() {
     super.initState();
@@ -133,6 +149,14 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                           columns: [
                             DataColumn(
                               label: Text(
+                                'Image',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff00689B)),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
                                 'Post UserName',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -178,6 +202,38 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                             ),
                             DataColumn(
                               label: Text(
+                                'Posted At',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff00689B)),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Status',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff00689B)),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Posted At',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff00689B)),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Status',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff00689B)),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
                                 'Actions',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -189,11 +245,85 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                           rows: postData.map((post) {
                             return DataRow(
                               cells: [
+                                DataCell(
+                                  Container(
+                                    width:
+                                        50, // Set a fixed width for the image
+                                    height:
+                                        50, // Set a fixed height for the image
+                                    // Optional: to provide some padding inside the container
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors
+                                            .blue, // Choose a color for the border
+                                        width:
+                                            2, // Choose the width of the border
+                                      ),
+                                    ),
+
+                                    child: ClipOval(
+                                      child: post.userImage != null
+                                          ? Image.network(
+                                              '${Constantes.imageUrl}/${post.userImage}',
+                                              fit: BoxFit.cover,
+                                            )
+                                          : Image.asset(
+                                              '${Constantes.imageUrl}/user_default.png', // Path to your placeholder image
+                                              fit: BoxFit.cover,
+                                            ),
+                                    ),
+                                  ),
+                                ),
                                 DataCell(Text(post.userName)),
                                 DataCell(Text('${post.userRole}')),
                                 DataCell(Text(post.description)),
                                 DataCell(Text('${post.nbLike}')),
                                 DataCell(Text('${post.nbComments}')),
+                                DataCell(Text('${post.postedAt}')),
+                                DataCell(
+                                  Builder(
+                                    builder: (context) {
+                                      // Determine the color and icon based on the post's verified status
+                                      Color bgColor;
+                                      IconData iconData;
+                                      String tooltipText;
+
+                                      if (post.verified == null) {
+                                        bgColor = Colors.orange;
+                                        iconData = Icons.warning;
+                                        tooltipText = 'Not yet verified';
+                                      } else if (post.verified == true) {
+                                        bgColor = Colors.green;
+                                        iconData = Icons.check;
+                                        tooltipText = 'Verified';
+                                      } else {
+                                        bgColor = Colors.red;
+                                        iconData = Icons.close;
+                                        tooltipText = 'Not verified';
+                                      }
+
+                                      return Container(
+                                        width: 24,
+                                        height: 24,
+                                        decoration: BoxDecoration(
+                                          color: bgColor,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Center(
+                                          child: Tooltip(
+                                            message: tooltipText,
+                                            child: Icon(
+                                              iconData,
+                                              size: 16,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
                                 DataCell(
                                   IconButton(
                                     icon: const Icon(
@@ -207,6 +337,7 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                                           builder: (context) => PostDetails(
                                             post: post,
                                             token: widget.token,
+                                            onPostUpdated: refreshPosts
                                           ),
                                         ),
                                       );
@@ -220,25 +351,32 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                       ),
                     ),
                   ),
-              ],
+              ]),
             ),
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AddPostForm(token: widget.token),
-            ),
-          );
-        },
-        backgroundColor: const Color(0xff00689B),
-        shape: const CircleBorder(),
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AddPostForm(onPostUpdated: refreshPosts ,token: widget.token)),
+            );
+          },
+          backgroundColor: const Color(0xff00689B),
+          shape: const CircleBorder(),
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
+        ),
+        drawer: MyDrawer(
+          selectedIndex: _selectedIndex,
+          onItemTapped: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
         ),
       ),
     );

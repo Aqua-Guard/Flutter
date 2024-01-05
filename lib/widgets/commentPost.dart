@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 class CommentPost extends StatefulWidget {
   final List<Comment> comments;
   String token;
-
-  CommentPost({Key? key, required this.comments, required this.token})
+  final Function onPostUpdated; 
+  CommentPost({Key? key, required this.comments, required this.token,required this.onPostUpdated})
       : super(key: key);
 
   @override
@@ -89,7 +89,7 @@ class _CommentPostState extends State<CommentPost> {
                               return ListTile(
                                 leading: CircleAvatar(radius: 30),
                                 title: Text(comment.commentUsername ?? ""),
-                                subtitle: Text(comment.comment ?? ""),                       
+                                subtitle: Text(comment.comment ?? ""),
                               );
                             }
 
@@ -109,7 +109,8 @@ class _CommentPostState extends State<CommentPost> {
                                       fontWeight: FontWeight.bold),
                                 ),
                               ),
-                              subtitle: Row(
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(comment.comment ?? "",
                                       style: TextStyle(color: Colors.black)),
@@ -119,55 +120,73 @@ class _CommentPostState extends State<CommentPost> {
                                 mainAxisSize: MainAxisSize
                                     .min, // Ensure Row size is based on children size
                                 children: [
-                                  if (isDiscriminated)
-                                      Icon(Icons.warning, color:  Color.fromARGB(255, 255, 139, 0)),
                                   
-                                 if(true)
-                                  IconButton(
-                                    icon: Icon(Icons.delete, color: Colors.red),
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: Text("Delete Comment"),
-                                            content: Text(
-                                                "Are you sure you want to delete this comment?"),
-                                            actions: <Widget>[
-                                              TextButton(
-                                                child: Text("Cancel"),
-                                                onPressed: () {
-                                                  Navigator.of(context)
-                                                      .pop(); // Close the dialog
-                                                },
-                                              ),
-                                              TextButton(
-                                                child: Text("OK"),
-                                                onPressed: () {
-                                                PostWebService().deleteComment(widget.token, comment.idComment);
-                                                  Navigator.of(context)
-                                                      .pop(); 
-                                                        SnackBar snackBar = const SnackBar(
-                                      content:  Row(
-                                        children: [
-                                           Icon(Icons.error,color: Colors.white), 
-                                           SizedBox(width:8), 
-                                          Text("Comment deleted successfully",style:  TextStyle(color: Colors.white)),
-                                        ],
-                                      ),
-                                      backgroundColor: Colors.green, // Use red color for error messages
-                                    );
-                 
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(snackBar);// Close the dialog
-                                                },
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    },
-                                  ),
+                                  if (isDiscriminated)
+                                    Icon(Icons.warning,
+                                        color:
+                                            Color.fromARGB(255, 255, 139, 0)),
+                                  if (true)
+                                    IconButton(
+                                      icon:
+                                          Icon(Icons.delete, color: Colors.red),
+                                      onPressed: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text("Delete Comment"),
+                                              content: Text(
+                                                  "Are you sure you want to delete this comment?"),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  child: Text("Cancel"),
+                                                  onPressed: () {
+                                                    Navigator.of(context)
+                                                        .pop(); // Close the dialog
+                                                  },
+                                                ),
+                                                TextButton(
+                                                  child: Text("OK"),
+                                                  onPressed: () {
+                                                    PostWebService()
+                                                        .deleteComment(
+                                                            widget.token,
+                                                            comment.idComment);
+                                                            widget.onPostUpdated();
+                                                    Navigator.of(context).pop();
+                                                    SnackBar snackBar =
+                                                        const SnackBar(
+                                                      content: Row(
+                                                        children: [
+                                                          Icon(Icons.error,
+                                                              color:
+                                                                  Colors.white),
+                                                          SizedBox(width: 8),
+                                                          Text(
+                                                              "Comment deleted successfully",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white)),
+                                                        ],
+                                                      ),
+                                                      backgroundColor: Colors
+                                                          .green, // Use red color for error messages
+                                                    );
+
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(
+                                                            snackBar); // Close the dialog
+                                                  },
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                    ),
+                                    Text(comment.commentedAt ?? "",
+                                      style: TextStyle(color: Colors.black54)),
                                 ],
                               ),
                             );

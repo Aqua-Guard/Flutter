@@ -188,7 +188,8 @@ class _EventDetailsState extends State<EventDetails> {
                                                   .deleteParticipation(
                                                       widget.token,
                                                       widget.event.idEvent,
-                                                      participant['userId'],context);
+                                                      participant['userId'],
+                                                      context);
                                               SnackBar snackBar =
                                                   const SnackBar(
                                                 content: Row(
@@ -248,14 +249,71 @@ class _EventDetailsState extends State<EventDetails> {
                             child: SizedBox(
                               width: double.infinity,
                               child: ElevatedButton.icon(
-                                onPressed: () {
-                                 // EventWebService().updateEventStatus(widget.event.idEvent, widget.token);
-                                  // Handle Delete button tap
-                                  // You can show a confirmation dialog and delete the event if confirmed
+                                onPressed: () async {
+                                  bool confirmed = await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text('Confirm Status Update'),
+                                        content: Text(
+                                            'Are you sure you want to update the event status?'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop(
+                                                  false); // User pressed No
+                                            },
+                                            child: Text('No'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop(
+                                                  true); // User pressed Yes
+                                            },
+                                            child: Text('Yes'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+
+                                  if (confirmed == true) {
+                                    EventWebService().updateEventStatus(
+                                        widget.event.idEvent, widget.token);
+
+                                    setState(() {
+                                      widget.event.hidden =
+                                          !widget.event.hidden;
+                                    });
+                                    SnackBar snackBar = const SnackBar(
+                                      content: Row(
+                                        children: [
+                                          Icon(Icons.check,
+                                              color: Colors
+                                                  .white), // Replace with your desired icon
+                                          SizedBox(
+                                              width:
+                                                  8), // Adjust spacing as needed
+                                          Text(
+                                              'Event status updated successfully!',
+                                              style: TextStyle(
+                                                  color: Colors.white)),
+                                        ],
+                                      ),
+                                      backgroundColor: Colors.green,
+                                    );
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
+                                  }
                                 },
-                                icon:
-                                    const Icon(Icons.delete, color: Colors.red),
-                                label: const Text('Delete'),
+                                icon: widget.event.hidden
+                                    ? const Icon(Icons.visibility_rounded,
+                                        color: Colors.green)
+                                    : const Icon(Icons.visibility_off_rounded,
+                                        color: Colors.red),
+                                label: widget.event.hidden
+                                    ? const Text('Show Event')
+                                    : const Text('Hide Event'),
                                 style: ElevatedButton.styleFrom(
                                   padding: const EdgeInsets.all(16.0),
                                 ),

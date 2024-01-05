@@ -1,3 +1,5 @@
+import 'package:aquaguard/Components/MyAppBar.dart';
+import 'package:aquaguard/Components/MyDrawer.dart';
 import 'package:aquaguard/Models/Event.dart';
 import 'package:aquaguard/Screens/event/addEventForm.dart';
 import 'package:aquaguard/Screens/event/eventDetails.dart';
@@ -15,6 +17,8 @@ class EventScreen extends StatefulWidget {
 }
 
 class _EventScreenState extends State<EventScreen> {
+  int _selectedIndex = 2;
+
   late List<Event> eventsData = [];
   late TextEditingController _searchController;
   List<Event> eventsDataOriginal = [];
@@ -22,50 +26,60 @@ class _EventScreenState extends State<EventScreen> {
   late DateTime _focusedDay;
   late DateTime _selectedDay;
 
-Widget buildEventList(DateTime selectedDay) {
-  List<Event> eventsForDay = eventsData
-      .where((event) =>
-          isSameDay(event.dateDebut, selectedDay) ||
-          (event.dateDebut.isBefore(selectedDay) &&
-              event.dateFin.isAfter(selectedDay)))
-      .toList();
+  Widget buildEventList(DateTime selectedDay) {
+    List<Event> eventsForDay = eventsData
+        .where((event) =>
+            isSameDay(event.dateDebut, selectedDay) ||
+            (event.dateDebut.isBefore(selectedDay) &&
+                event.dateFin.isAfter(selectedDay)))
+        .toList();
 
-  return Padding(
-    padding: const EdgeInsets.all(8.0), // Add padding for the entire ListView
-    child: Container(
-      height: 200, // Set a finite height for the ListView
-      child: ListView.builder(
-        itemCount: eventsForDay.length,
-        itemBuilder: (context, index) {
-          return Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.black, // Set your border color
-                width: 1.0, // Set your border width
-              ),
-              borderRadius: BorderRadius.all(Radius.circular(10.0)), // Optional: Add border radius
-            ),
-            margin: EdgeInsets.symmetric(vertical: 8.0),
-            child: ListTile(
-              title: Text(
-                eventsForDay[index].eventName,
-                style: TextStyle(
-                  // Optional: Adjust the text style
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
+    return Padding(
+      padding: const EdgeInsets.all(8.0), // Add padding for the entire ListView
+      child: Container(
+        height: 200, // Set a finite height for the ListView
+        child: ListView.builder(
+          itemCount: eventsForDay.length,
+          itemBuilder: (context, index) {
+            return Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black, // Set your border color
+                  width: 1.0, // Set your border width
                 ),
+                borderRadius: BorderRadius.all(
+                    Radius.circular(10.0)), // Optional: Add border radius
               ),
-              // Add more details if needed
-            ),
-          );
-        },
+              margin: EdgeInsets.symmetric(vertical: 8.0),
+              child: ListTile(
+                title: Text(
+                  eventsForDay[index].eventName,
+                  style: TextStyle(
+                    // Optional: Adjust the text style
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                // Add more details if needed
+              ),
+            );
+          },
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
-
-
+  void refreshEvents() {
+    EventWebService().fetchEvents(widget.token).then((events) {
+      setState(() {
+        eventsData = events;
+        eventsDataOriginal = List.from(eventsData);
+      });
+    }).catchError((error) {
+      // Handle the error, e.g., show an error message to the user
+      print('Error fetching events: $error');
+    });
+  }
 
   @override
   void initState() {
@@ -104,7 +118,7 @@ Widget buildEventList(DateTime selectedDay) {
       child: Scaffold(
         appBar: AppBar(
           title: const Text(
-            'Events List',
+            'Event List',
             style: TextStyle(
               color: Colors.white,
             ),
@@ -235,6 +249,14 @@ Widget buildEventList(DateTime selectedDay) {
                                   ),
                                   DataColumn(
                                     label: Text(
+                                      'Status',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xff00689B)),
+                                    ),
+                                  ),
+                                  DataColumn(
+                                    label: Text(
                                       'Actions',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
@@ -271,6 +293,78 @@ Widget buildEventList(DateTime selectedDay) {
                                           .toString())),
                                       DataCell(Text(event.participants.length
                                           .toString())),
+                                      DataCell(
+                                        IconButton(
+                                          onPressed: () async {
+                                            bool confirmed = await showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: const Text(
+                                                      'Confirm Status Update'),
+                                                  content: const Text(
+                                                      'Are you sure you want to update the event status?'),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context).pop(
+                                                            false); // User pressed No
+                                                      },
+                                                      child: const Text('No'),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context).pop(
+                                                            true); // User pressed Yes
+                                                      },
+                                                      child: const Text('Yes'),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+
+                                            if (confirmed == true) {
+                                              EventWebService()
+                                                  .updateEventStatus(
+                                                      event.idEvent,
+                                                      widget.token);
+                                              setState(() {
+                                                event.hidden = !event.hidden;
+                                              });
+                                              SnackBar snackBar =
+                                                  const SnackBar(
+                                                content: Row(
+                                                  children: [
+                                                    Icon(Icons.check,
+                                                        color: Colors
+                                                            .white), // Replace with your desired icon
+                                                    SizedBox(
+                                                        width:
+                                                            8), // Adjust spacing as needed
+                                                    Text(
+                                                        'Event status updated successfully!',
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white)),
+                                                  ],
+                                                ),
+                                                backgroundColor: Colors.green,
+                                              );
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(snackBar);
+                                            }
+                                          },
+                                          icon: Icon(
+                                            event.hidden
+                                                ? Icons.visibility_off
+                                                : Icons.visibility,
+                                            color: event.hidden
+                                                ? Colors.red
+                                                : Colors.green,
+                                          ),
+                                        ),
+                                      ),
                                       DataCell(
                                         IconButton(
                                           icon: const Icon(Icons.info,
@@ -326,7 +420,7 @@ Widget buildEventList(DateTime selectedDay) {
                                     (event.dateDebut.isBefore(day) &&
                                         event.dateFin.isAfter(day)))
                                 .toList();
-                                
+
                             return eventsForDay
                                 .map((event) => event.eventName)
                                 .toList();
@@ -346,7 +440,6 @@ Widget buildEventList(DateTime selectedDay) {
                             titleCentered: true,
                             titleTextStyle: TextStyle(fontSize: 20),
                           ),
-                        
                         ),
                         if (_selectedDay != null) buildEventList(_selectedDay),
                       ]),
@@ -362,7 +455,7 @@ Widget buildEventList(DateTime selectedDay) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => AddEventForm(token: widget.token)),
+                  builder: (context) => AddEventForm(token: widget.token,onEventUpdated: refreshEvents)),
             );
           },
           backgroundColor: const Color(0xff00689B),
@@ -371,6 +464,14 @@ Widget buildEventList(DateTime selectedDay) {
             Icons.add,
             color: Colors.white,
           ),
+        ),
+        drawer: MyDrawer(
+          selectedIndex: _selectedIndex,
+          onItemTapped: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
         ),
       ),
     );

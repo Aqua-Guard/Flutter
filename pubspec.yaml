@@ -34,7 +34,7 @@ dependencies:
   http: ^1.1.2
   http_parser: ^4.0.0
   image_picker: ^1.0.5
-  path: ^1.8.0
+  path: ^1.8.3
   html: ^0.15.0
   fl_chart: ^0.66.0
   intl: ^0.18.1
