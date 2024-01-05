@@ -1,3 +1,4 @@
+import 'dart:html' as html;
 import 'package:flutter/material.dart';
 import 'package:aquaguard/Models/Product.Dart';
 
@@ -35,11 +36,25 @@ class ProductDetailScreen extends StatelessWidget {
                     topLeft: Radius.circular(12.0),
                     topRight: Radius.circular(12.0),
                   ),
-                  child: Image.network(
-                    'https://aquaguard-tux1.onrender.com/public/images/produit/${product.image}',
-                    fit: BoxFit.cover,
-                    height: 200,
-                  ),
+              child: Image.network(
+  product.image,
+  fit: BoxFit.cover,
+  height: 200,
+  errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+    return Container(
+      color: Colors.grey, // Placeholder color or any UI widget
+      height: 200, // Set placeholder height to match the original height
+      child: Center(
+        child: Icon(
+          Icons.error_outline, // Placeholder icon for error
+          color: Colors.red, // Error icon color
+          size: 50.0, // Error icon size
+        ),
+      ),
+    );
+  },
+),
+
                 ),
                 Padding(
                   padding: EdgeInsets.all(16.0),

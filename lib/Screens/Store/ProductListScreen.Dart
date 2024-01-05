@@ -1,3 +1,4 @@
+import 'dart:html' as html;
 import 'package:flutter/material.dart';
 import 'package:aquaguard/Services/StoreWebService.dart' as networkService;
 import 'package:aquaguard/Screens/Store/ProductDetailScreen.Dart';
@@ -85,10 +86,22 @@ class _ProductListScreenState extends State<ProductListScreen> {
             leading: SizedBox(
               width: 50,
               height: 50,
-              child: Image.network(
-                'https://aquaguard-tux1.onrender.com/public/images/produit/${products[index].image}',
-                fit: BoxFit.cover,
-              ),
+             child: Image.network(
+  products[index].image,
+  fit: BoxFit.cover,
+  errorBuilder: (context, error, stackTrace) {
+    return Container(
+      color: Colors.grey, // Placeholder color or any UI widget
+      child: Center(
+        child: Icon(
+          Icons.error_outline, // Placeholder icon for error
+          color: Colors.red, // Error icon color
+          size: 50.0, // Error icon size
+        ),
+      ),
+    );
+  },
+),
             ),
             title: Text(products[index].name),
             subtitle: Text('Price: ${products[index].price.toStringAsFixed(1)}\ \P\T'),
