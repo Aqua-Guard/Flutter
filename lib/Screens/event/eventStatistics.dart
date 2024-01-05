@@ -15,7 +15,7 @@ class EventStatistics extends StatefulWidget {
 }
 
 class _EventStatisticsState extends State<EventStatistics> {
-  int _selectedIndex = 2;
+  //int _selectedIndex = 2;
   late List<Event> eventsData = [];
 
   @override
@@ -67,14 +67,14 @@ class _EventStatisticsState extends State<EventStatistics> {
             ]),
           ],
         ),
-        drawer: MyDrawer(
+       /* drawer: MyDrawer(
           selectedIndex: _selectedIndex,
           onItemTapped: (index) {
             setState(() {
               _selectedIndex = index;
             });
           },
-        ),
+        ),*/
       ),
     );
   }

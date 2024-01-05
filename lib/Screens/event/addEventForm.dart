@@ -3,10 +3,13 @@ import 'package:aquaguard/Services/EventWebService.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:html' as html;
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class AddEventForm extends StatefulWidget {
   String token;
-  AddEventForm({Key? key, required this.token}) : super(key: key);
+    final Function onEventUpdated;
+
+  AddEventForm({Key? key, required this.token,required this.onEventUpdated}) : super(key: key);
 
   @override
   State<AddEventForm> createState() => _AddEventFormState();
@@ -14,6 +17,12 @@ class AddEventForm extends StatefulWidget {
 
 class _AddEventFormState extends State<AddEventForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  TextEditingController _descriptionController = TextEditingController();
+  bool _isLoading = false;
+
+  late stt.SpeechToText _speechToText;
+  bool _isListening = false;
 
   // Variables to store form data
   String _eventName = '';
@@ -56,15 +65,15 @@ class _AddEventFormState extends State<AddEventForm> {
   String? _validateLocation(String? value) {
     if (value == null || value.isEmpty) {
       return 'Please enter the event location';
-    } else if (value.length < 3 || value.length > 30) {
-      return 'Location should be between 3 and 30 characters';
+    } else if (value.length < 3 || value.length > 50) {
+      return 'Location should be between 3 and 50 characters';
     }
     return null;
   }
 
   String? _validateDescription(String? value) {
-    if (value != null && (value.length < 10 || value.length > 100)) {
-      return 'Description should be between 10 and 100 characters';
+    if (value != null && (value.length < 10 || value.length > 500)) {
+      return 'Description should be between 10 and 500 characters';
     }
     return null;
   }
@@ -80,10 +89,10 @@ class _AddEventFormState extends State<AddEventForm> {
     return null;
   }
 
-html.File? _pickedImage;
+  html.File? _pickedImage;
   String? _imageDataUrl; //
 
-   Future<void> _pickImage() async {
+  Future<void> _pickImage() async {
     final picker = html.FileUploadInputElement()..accept = 'image/*';
     picker.click();
 
@@ -103,10 +112,51 @@ html.File? _pickedImage;
 
   List<Partenaire> partenairesData = [];
 
+  void _showMicInfoDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Voice Typing'),
+          content: const Text(
+              'Tap the microphone icon to use voice typing for your description.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _listen() async {
+    if (!_isListening) {
+      bool available = await _speechToText.initialize();
+      if (available) {
+        setState(() => _isListening = true);
+        _speechToText.listen(
+          onResult: (result) {
+            setState(() {
+              _descriptionController.text = result.recognizedWords;
+            });
+          },
+        );
+      }
+    } else {
+      setState(() => _isListening = false);
+      _speechToText.stop();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-
+    _speechToText = stt.SpeechToText();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _showMicInfoDialog());
     EventWebService().fetchPartenaires().then((partenaires) {
       setState(() {
         partenairesData = partenaires;
@@ -172,7 +222,6 @@ html.File? _pickedImage;
                               width: 100,
                               height: 100,
                               child: Image.network(_imageDataUrl!),
-
                             ),
                           const SizedBox(height: 16.0),
                           TextFormField(
@@ -186,14 +235,116 @@ html.File? _pickedImage;
                           ),
                           const SizedBox(height: 16.0),
                           TextFormField(
-                            decoration: const InputDecoration(
+                            controller: _descriptionController,
+                            decoration: InputDecoration(
                               labelText: 'Event Description',
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  Icons.mic,
+                                  color: _isListening
+                                      ? Colors.blueAccent
+                                      : Colors.grey,
+                                ),
+                                onPressed: () {
+                                  _listen();
+                                },
+                              ),
                             ),
                             maxLines: 3,
                             validator: _validateDescription,
                             onSaved: (value) {
                               _eventDescription = value ?? '';
+                              print('event description: $_eventDescription');
                             },
+                            onChanged: (value) {
+                              // This will be called whenever the text in the field changes
+                              print('Changed: $value');
+                              // Update _eventDescription if needed
+                              setState(() {
+                                _eventDescription = value;
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 16.0),
+                          ElevatedButton(
+                            onPressed: () async {
+                              print('prompting chatgpt : $_eventDescription');
+                              setState(() {
+                                // Set a flag to indicate that the operation is in progress
+                                _isLoading = true;
+                              });
+
+                              try {
+                                String? generatedDescription =
+                                    await EventWebService().generateWithChatGPT(
+                                        _eventDescription, widget.token);
+
+                                if (generatedDescription == null) {
+                                  // Show error message
+                                  SnackBar snackBar = const SnackBar(
+                                    content: Row(
+                                      children: [
+                                        Icon(Icons.error, color: Colors.white),
+                                        SizedBox(width: 8),
+                                        Text(
+                                          'You must provide a prompt to generate a description',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ],
+                                    ),
+                                    backgroundColor: Colors.red,
+                                  );
+
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
+                                  print('Generated description is null');
+                                } else {
+                                  // Update the _eventDescription with the generated result
+                                  setState(() {
+                                    _eventDescription = generatedDescription;
+                                    _descriptionController.text =
+                                        generatedDescription; // Update controller value
+                                  });
+
+                                  print(
+                                      'Generated description: $_eventDescription');
+                                }
+                              } finally {
+                                setState(() {
+                                  // Set the flag back to false after the operation is complete
+                                  _isLoading = false;
+                                });
+                              }
+
+                              // Additional logic after the generation if needed
+                            },
+                            child: _isLoading
+                                ? Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      CircularProgressIndicator(),
+                                      SizedBox(width: 8.0),
+                                      Text('Generating...'),
+                                    ],
+                                  )
+                                : Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      ColorFiltered(
+                                        colorFilter: ColorFilter.mode(
+                                          Color(0xff00689B),
+                                          BlendMode.srcIn,
+                                        ),
+                                        child: Image.asset(
+                                          'images/openai-icon.png',
+                                          width: 24.0,
+                                          height: 24.0,
+                                        ),
+                                      ),
+                                      SizedBox(width: 8.0),
+                                      Text('Generate with ChatGPT'),
+                                    ],
+                                  ),
                           ),
                           const SizedBox(height: 16.0),
                           TextFormField(
@@ -269,9 +420,12 @@ html.File? _pickedImage;
                                     SnackBar snackBar = SnackBar(
                                       content: Row(
                                         children: [
-                                          const Icon(Icons.error,color: Colors.white), 
-                                          const SizedBox(width:8), 
-                                          Text(dateValidation,style: const TextStyle(color: Colors.white)),
+                                          const Icon(Icons.error,
+                                              color: Colors.white),
+                                          const SizedBox(width: 8),
+                                          Text(dateValidation,
+                                              style: const TextStyle(
+                                                  color: Colors.white)),
                                         ],
                                       ),
                                       backgroundColor: Colors
@@ -301,7 +455,7 @@ html.File? _pickedImage;
                                         fileimage: _pickedImage!,
                                         context: context,
                                       );
-
+                                      widget.onEventUpdated();
                                       Navigator.pop(context);
                                     }
                                   }

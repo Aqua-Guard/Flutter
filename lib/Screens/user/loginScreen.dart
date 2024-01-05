@@ -1,13 +1,17 @@
 import 'dart:convert';
 
+import 'package:aquaguard/Screens/user/codeModal.dart';
+import 'package:aquaguard/Screens/user/emailModal.dart';
+import 'package:aquaguard/Screens/user/resetPasswordModal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../Components/customButton.dart';
-import '../Components/customTextField.dart';
-import '../Services/loginService.dart';
+import '../../Components/customButton.dart';
+import '../../Components/customTextField.dart';
+import '../../Services/loginService.dart';
 import 'RegisterScreen.dart';
-import 'homeScreen.dart';
+import '../homeScreen.dart';
+import 'UserStats.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,7 +21,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class LoginScreenState extends State<LoginScreen> {
-  bool _isPasswordVisible = false;
+  bool _isPasswordVisible = true;
   final TextEditingController _username = TextEditingController();
   final TextEditingController _password = TextEditingController();
   final storage = const FlutterSecureStorage();
@@ -66,10 +70,10 @@ class LoginScreenState extends State<LoginScreen> {
                     ),
                     child: CustomTextField(
                       textEditingController: _username,
-                      label: 'Email',
-                      hintText: 'Enter valid email id as example@gmail.com',
+                      label: 'Username',
+                      hintText: 'Please enter your username',
                       icon: const Icon(
-                        Icons.email_rounded,
+                        CupertinoIcons.person_crop_circle_fill,
                         size: 40,
                         color: Colors.blue,
                       ),
@@ -124,18 +128,52 @@ class LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   onTap: () async {
-                    if (_username.text.isNotEmpty && _password.text.isNotEmpty){
-                      await LoginService().login(context,
-                          _username.text,_password.text).then((response) async {
-
+                    if (_username.text.isNotEmpty &&
+                        _password.text.isNotEmpty) {
+                      await LoginService()
+                          .login(context, _username.text, _password.text)
+                          .then((response) async {
                         if (response?.statusCode == 200) {
                           final responseData = json.decode(response!.body);
-                          final token = responseData['token'];
                           const storage = FlutterSecureStorage();
-                          await storage.write(key: "token", value: token);
+                          await storage.write(
+                              key: "token", value: responseData['token']);
+                          await storage.write(
+                              key: "email", value: responseData['email']);
+                          await storage.write(
+                              key: "id", value: responseData['id']);
+                          await storage.write(
+                              key: "username", value: responseData['username']);
+                          await storage.write(
+                              key: "image", value: responseData['image']);
+                          await storage.write(
+                              key: "firstName", value: responseData['firstName']);
+                          await storage.write(
+                              key: "lastName", value: responseData['lastName']);
+                          await storage.write(
+                              key: "nbPts",
+                              value: responseData['nbPts'].toString());
+                          var token = await storage.read(key: "token");
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const HomeScreen()),
+                            MaterialPageRoute(
+                                builder: (context) => HomeScreen(token: token!,)),
+                          );
+                        } else if (response?.statusCode == 403) {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text("Error"),
+                                content: const Text(
+                                    "Access Denied. Only admin can login!"),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text("Dismiss"))
+                                ],
+                              );
+                            },
                           );
                         } else if (response?.statusCode == 400) {
                           showDialog(
@@ -143,7 +181,8 @@ class LoginScreenState extends State<LoginScreen> {
                             builder: (context) {
                               return AlertDialog(
                                 title: const Text("Information"),
-                                content: const Text("wrong username or password!"),
+                                content:
+                                const Text("wrong username or password!"),
                                 actions: [
                                   TextButton(
                                       onPressed: () => Navigator.pop(context),
@@ -158,7 +197,8 @@ class LoginScreenState extends State<LoginScreen> {
                             builder: (context) {
                               return AlertDialog(
                                 title: const Text("Information"),
-                                content: const Text("Server error! Try again later"),
+                                content:
+                                const Text("Server error! Try again later"),
                                 actions: [
                                   TextButton(
                                       onPressed: () => Navigator.pop(context),
@@ -169,9 +209,7 @@ class LoginScreenState extends State<LoginScreen> {
                           );
                         }
                       });
-
-                    }
-                    else{
+                    } else {
                       showDialog(
                         context: context,
                         builder: (context) {
@@ -187,21 +225,24 @@ class LoginScreenState extends State<LoginScreen> {
                         },
                       );
                     }
-
                   },
                 ),
-                Align(
-                  alignment: Alignment.center,
-                  child: const Padding(
-                    padding: EdgeInsets.all(28.0),
-                    child: Text(
-                      'Forgot password?',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 20,
+                GestureDetector(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: const Padding(
+                      padding: EdgeInsets.all(28.0),
+                      child: Text(
+                        'Forgot password?',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 20,
+                        ),
                       ),
                     ),
                   ),
+                  onTap: () => showModalBottomSheet(
+                      context: context, builder: (context) => EmailModal()),
                 ),
                 GestureDetector(
                   child: Align(

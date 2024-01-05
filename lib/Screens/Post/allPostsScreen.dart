@@ -1,11 +1,13 @@
 import 'dart:html';
 
+import 'package:aquaguard/Components/MyDrawer.dart';
 import 'package:aquaguard/Models/comment.dart';
 import 'package:aquaguard/Models/like.dart';
 import 'package:aquaguard/Models/post.dart';
 import 'package:aquaguard/Screens/Post/AddPostForm.dart';
 import 'package:aquaguard/Screens/Post/PostDetails.dart';
 import 'package:aquaguard/Services/PostWebService.dart';
+import 'package:aquaguard/Utils/constantes.dart';
 
 import 'package:aquaguard/widgets/allPostList.dart';
 
@@ -22,9 +24,23 @@ class AllPostsScreen extends StatefulWidget {
 }
 
 class _AllPostsScreenState extends State<AllPostsScreen> {
+    int _selectedIndex = 3;
+
   late List<Post> postData = [];
   late List<Post> postDataOriginal = [];
   late TextEditingController _searchController;
+
+  void refreshPosts() {
+  PostWebService().getAllPosts(widget.token).then((posts) {
+    setState(() {
+      postData = posts;
+      postDataOriginal = List.from(postData);
+    });
+  }).catchError((error) {
+    print("Error Fetch posts: " + error);
+  });
+}
+
   @override
   void initState() {
     super.initState();
@@ -153,7 +169,7 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: DataTable(
-                          columns:  [
+                          columns: [
                             DataColumn(
                               label: Text(
                                 'Image',
@@ -204,6 +220,22 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                             ),
                             DataColumn(
                               label: Text(
+                                'Posted At',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff00689B)),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Status',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xff00689B)),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
                                 'Actions',
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
@@ -234,11 +266,11 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                                     child: ClipOval(
                                       child: post.userImage != null
                                           ? Image.network(
-                                              'http://localhost:9090/images/user/${post.userImage}',
+                                              '${Constantes.imageUrl}/${post.userImage}',
                                               fit: BoxFit.cover,
                                             )
                                           : Image.asset(
-                                              'http://localhost:9090/images/user/user_default.png', // Path to your placeholder image
+                                              '${Constantes.imageUrl}/user_default.png', // Path to your placeholder image
                                               fit: BoxFit.cover,
                                             ),
                                     ),
@@ -253,6 +285,50 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                                     .toString())),
                                 DataCell(Text('${post.nbLike}')),
                                 DataCell(Text('${post.nbComments}')),
+                                DataCell(Text('${post.postedAt}')),
+                                DataCell(
+                                  Builder(
+                                    builder: (context) {
+                                      // Determine the color and icon based on the post's verified status
+                                      Color bgColor;
+                                      IconData iconData;
+                                      String tooltipText;
+
+                                      if (post.verified == null) {
+                                        bgColor = Colors.orange;
+                                        iconData = Icons.warning;
+                                        tooltipText = 'Not yet verified';
+                                      } else if (post.verified == true) {
+                                        bgColor = Colors.green;
+                                        iconData = Icons.check;
+                                        tooltipText = 'Verified';
+                                      } else {
+                                        bgColor = Colors.red;
+                                        iconData = Icons.close;
+                                        tooltipText = 'Not verified';
+                                      }
+
+                                      return Container(
+                                        width: 24,
+                                        height: 24,
+                                        decoration: BoxDecoration(
+                                          color: bgColor,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Center(
+                                          child: Tooltip(
+                                            message: tooltipText,
+                                            child: Icon(
+                                              iconData,
+                                              size: 16,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
                                 DataCell(
                                   IconButton(
                                     icon: const Icon(Icons.info,
@@ -264,6 +340,7 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
                                           builder: (context) => PostDetails(
                                             post: post,
                                             token: widget.token,
+                                            onPostUpdated: refreshPosts
                                           ),
                                         ),
                                       );
@@ -286,7 +363,7 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => AddPostForm(token: widget.token)),
+                  builder: (context) => AddPostForm(onPostUpdated: refreshPosts ,token: widget.token)),
             );
           },
           backgroundColor: const Color(0xff00689B),
@@ -295,6 +372,14 @@ class _AllPostsScreenState extends State<AllPostsScreen> {
             Icons.add,
             color: Colors.white,
           ),
+        ),
+        drawer: MyDrawer(
+          selectedIndex: _selectedIndex,
+          onItemTapped: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
         ),
       ),
     );
