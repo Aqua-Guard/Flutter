@@ -8,4 +8,6 @@ class Constantes {
   static const String urlComment = 'http://localhost:9090/comments';
   static const String urlParticipation = 'http://localhost:9090/participations/admin';
   static const String urlActualite = 'http://localhost:9090/act';
+  static const String urlReclamation = 'http://localhost:9090/reclamation';
+  static const String urlDiscution = 'http://localhost:9090/discution';
 }
