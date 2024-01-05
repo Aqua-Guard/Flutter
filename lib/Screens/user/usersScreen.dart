@@ -178,7 +178,7 @@ class _UsersScreenState extends State<UsersScreen> {
                       children: [
                         PopupMenuButton<String>(
                           onSelected: (value) async {
-                            if (value == 'Delete') {
+                            if (value == 'Ban') {
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
