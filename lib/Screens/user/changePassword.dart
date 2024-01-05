@@ -48,9 +48,18 @@ class _ChangePasswordState extends State<ChangePassword> {
         ),
         child: Padding(
           padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: ListView(
+            // mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Container(
+                width: MediaQuery.of(context).size.width * .6,
+                height: MediaQuery.of(context).size.width * .6,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/forgot_password2.png'),
+                  ),
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.all(15),
                 child: Container(
